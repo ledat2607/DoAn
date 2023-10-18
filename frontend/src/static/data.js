@@ -1,24 +1,20 @@
 // navigation Data
 export const navItems = [
   {
-    title: "Home",
+    title: "Trang chủ",
     url: "/",
   },
   {
-    title: "Best Selling",
+    title: "Top Bán chạy",
     url: "/best-selling",
   },
   {
-    title: "Products",
+    title: "Sản phẩm",
     url: "/products",
   },
   {
-    title: "Events",
+    title: "Sự kiện",
     url: "/events",
-  },
-  {
-    title: "FAQ",
-    url: "/faq",
   },
 ];
 
@@ -271,11 +267,11 @@ export const productData = [
     image_Url: [
       {
         public_id: "test",
-        url: "https://www.istorebangladesh.com/images/thumbs/0000286_macbook-pro-m1_550.png",
+        url: "https://cdn.tgdd.vn/Products/Images/44/302150/macbook-pro-16-inch-m2-pro-1tb-silver-abc-8.jpg",
       },
       {
         public_id: "test",
-        url: "https://www.istorebangladesh.com/images/thumbs/0000286_macbook-pro-m1_550.png",
+        url: "https://cdn.tgdd.vn/Products/Images/44/302150/macbook-pro-16-inch-m2-pro-1tb-silver-abc-8.jpg",
       },
     ],
     shop: {
@@ -320,7 +316,6 @@ export const productData = [
     rating: 5,
     total_sell: 80,
     stock: 10,
-    category: "Mobile & Tablets",
   },
   {
     id: 1,
@@ -331,11 +326,11 @@ export const productData = [
     image_Url: [
       {
         public_id: "test",
-        url: "https://www.istorebangladesh.com/images/thumbs/0000286_macbook-pro-m1_550.png",
+        url: "https://cdn.tgdd.vn/Products/Images/44/302150/macbook-pro-16-inch-m2-pro-1tb-silver-abc-8.jpg",
       },
       {
         public_id: "test",
-        url: "https://www.istorebangladesh.com/images/thumbs/0000286_macbook-pro-m1_550.png",
+        url: "https://cdn.tgdd.vn/Products/Images/44/302150/macbook-pro-16-inch-m2-pro-1tb-silver-abc-8.jpg",
       },
     ],
     shop: {
@@ -351,7 +346,6 @@ export const productData = [
     rating: 4,
     total_sell: 75,
     stock: 10,
-    category: "Computers & Laptop",
   },
   {
     id: 4,
@@ -413,7 +407,6 @@ export const productData = [
     rating: 5,
     total_sell: 49,
     stock: 10,
-    category: "Shoes",
   },
   {
     id: 1,
