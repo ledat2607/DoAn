@@ -5,13 +5,12 @@ import styles from "../../../styles/styles";
 const Hero = () => {
   return (
     <div
-      className={`relative min-h-[70vh] 800px:min-h-[80vh] w-full bg-no-repeat ${styles.noramlFlex}`}
+      className={`relative min-h-[80vh] 800px:min-h-[80vh] w-full bg-no-repeat ${styles.noramlFlex}`}
       style={{
         backgroundImage:
           "url(https://themes.rslahmed.dev/rafcart/assets/images/banner-2.jpg)",
-        backgroundPosition: "center center",
-        backgroundRepeat:"no-repeat",
-        objectFit:"contain"
+        backgroundRepeat: "no-repeat",
+        objectFit: "contain",
       }}
     >
       <div className={`${styles.section} w-[90%] 800px:w-[60%]`}>
@@ -27,7 +26,7 @@ const Hero = () => {
           <br /> aliquam deserunt officia. Dolorum saepe nulla provident.
         </p>
         <Link to="/products" className="inline-block">
-          <div className={`${styles.button} mt-5`}>
+          <div className={`${styles.button} w-[110px] h-[40px] mt-5`}>
             <span className="font-[Poppins] text-[18px]">Mua ngay</span>
           </div>
         </Link>

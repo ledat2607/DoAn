@@ -22,6 +22,7 @@ const Login = () => {
       .then((res) => {
         toast.success("Đăng nhập thành công");
         navigate("/");
+        window.location.reload();
       })
       .catch((err) => {
         toast.error(err.response.data.message);

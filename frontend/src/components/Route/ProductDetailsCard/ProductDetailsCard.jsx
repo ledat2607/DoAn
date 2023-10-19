@@ -33,16 +33,16 @@ const ProductDetailsCard = ({ setOpen, open, data }) => {
       {data ? (
         <div className="fixed w-full h-screen top-0 left-0 bg-[#00000030] z-40 flex items-center justify-center overflow-y-scroll">
           <div className="w-[90%] 800px:w-[60%] h-[90vh] overflow-y-scroll 800px:h-[75vh] bg-white rounded-md shadow-md relative p-4">
-            <div className="flex">
-              <h3 className="mt-[3%]">Thông tin sản phẩm</h3>
+            <div className="flex justify-between items-center">
+              <h3 className="mt-[2%]">Thông tin sản phẩm</h3>
               <RxCross1
                 size={25}
-                className="absolute right-5 800px:top-12 mt-[6%] z-50 hover:text-red-500"
+                className="absolute right-5 800px:top-[-25px] mt-[6%]  z-50 hover:text-red-500"
                 onClick={() => setOpen(false)}
               />
             </div>
             <div className="block w-full 800px:flex">
-              <div className="w-full 800px:w-[50%]">
+              <div className="w-full 800px:w-[50%] mt-[35px]">
                 <img src={data.image_Url[0].url} alt="preview" width={"80%"} />
                 <div className="flex">
                   <img

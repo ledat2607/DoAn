@@ -83,7 +83,7 @@ const Header = ({ activeHeading }) => {
             </div>
           ) : null}
         </div>
-        <div className={`${styles.button} mr-4`}>
+        <div className={`${styles.button} w-[160px] h-[40px] mr-4`}>
           <Link to="/seller">
             <h1 className="flex items-center">
               Become a Seller <IoIosArrowForward className="ml-1" />
@@ -145,9 +145,19 @@ const Header = ({ activeHeading }) => {
           </div>
           <div className={`${styles.noramlFlex}`}>
             <div className="relative cursor-pointer mr-[15px]">
-              <Link to="/login">
-                <CgProfile size={30} color="rgb(255 255 255 / 83%)" />
-              </Link>
+              {isAuthenticated ? (
+                <Link to="/profile">
+                  <img
+                    src={`${backend_url}${user.avatar}`}
+                    alt="useavt"
+                    className="w-[40px] h-[40px] rounded-full"
+                  />
+                </Link>
+              ) : (
+                <Link to="/login">
+                  <CgProfile size={30} color="rgb(255 255 255 / 83%)" />
+                </Link>
+              )}
             </div>
           </div>
         </div>
