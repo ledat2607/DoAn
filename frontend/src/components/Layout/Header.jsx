@@ -16,6 +16,10 @@ import { useSelector } from "react-redux";
 import { backend_url } from "../../server";
 import Cart from "../cart/Cart";
 import Wishlist from "../Wishlist/Wishlist";
+import Account from "../Account";
+import { RxCross1 } from "react-icons/rx";
+import { Avatar } from "@mui/material";
+
 const Header = ({ activeHeading }) => {
   const { isAuthenticated, user } = useSelector((state) => state.user);
   const [searchTerm, setSearchTerm] = useState("");
@@ -24,7 +28,7 @@ const Header = ({ activeHeading }) => {
   const [dropDown, setDropDown] = useState(false);
   const [openCart, setOpenCart] = useState(false);
   const [openWishlist, setOpenWishlist] = useState(false);
-
+  const [open, setOpen] = useState(false);
   const handleSearchChange = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
@@ -86,7 +90,7 @@ const Header = ({ activeHeading }) => {
           ) : null}
         </div>
         <div className={`${styles.button} w-[160px] h-[40px] mr-4`}>
-          <Link to="/seller">
+          <Link to="/shop-create">
             <h1 className="flex items-center">
               Become a Seller <IoIosArrowForward className="ml-1" />
             </h1>
@@ -119,7 +123,7 @@ const Header = ({ activeHeading }) => {
           </div>
         </div>
         {/* navitems */}
-        <div className={`${styles.noramlFlex} mr-4`}>
+        <div className={`${styles.noramlFlex} mr-4 800px:block hidden`}>
           <Navbar active={activeHeading} />
         </div>
         <div className="flex">
@@ -148,13 +152,7 @@ const Header = ({ activeHeading }) => {
           <div className={`${styles.noramlFlex}`}>
             <div className="relative cursor-pointer mr-[15px]">
               {isAuthenticated ? (
-                <Link to="/profile">
-                  <img
-                    src={`${backend_url}${user.avatar}`}
-                    alt="useavt"
-                    className="w-[40px] h-[40px] rounded-full"
-                  />
-                </Link>
+                <Account />
               ) : (
                 <Link to="/login">
                   <CgProfile size={30} color="rgb(255 255 255 / 83%)" />
@@ -167,6 +165,120 @@ const Header = ({ activeHeading }) => {
           {/*wishlist popup */}
           {openWishlist ? <Wishlist setOpenWishlist={setOpenWishlist} /> : null}
         </div>
+      </div>
+      {/*mobile header */}
+      <div className="w-full h-[70px] fixed bg-[#fff] z-50 top-0 left-0 shadow-sm block 800px:hidden">
+        <div className="w-full flex items-center justify-between">
+          <div>
+            <BiMenuAltLeft
+              size={40}
+              className="ml-4 cursor-pointer"
+              onClick={() => setOpen(true)}
+            />
+          </div>
+          <div>
+            <Link to="/">
+              <img
+                src="../img/logo.png"
+                alt="logo"
+                width={"80px"}
+                className="flex items-center justify-center cursor-pointer"
+              />
+            </Link>
+          </div>
+          <div className="relative mr-[20px]">
+            <AiOutlineShoppingCart size={40} />
+            <span className="absolute h-[20px] w-[20px] flex items-center justify-center bottom-5 left-6 cursor-pointer rounded-full bg-green-400 ">
+              1
+            </span>
+          </div>
+        </div>
+        {/*header sidebar */}
+        {open && (
+          <div className="fixed w-full bg-[#000000ba] z-20 h-full top-0 left-0">
+            <div className="fixed w-[60%] bg-[#fff] h-screen  top-0 left-0 z-10">
+              <div className="w-full flex justify-between pr-3">
+                <div>
+                  <div className="relative mr-[15px]">
+                    <AiOutlineHeart size={30} className="mt-5 ml-3" />
+                    <span className="absolute h-[20px] w-[20px] flex items-center justify-center bottom-3 left-6 cursor-pointer rounded-full bg-green-400 ">
+                      1
+                    </span>
+                  </div>
+                </div>
+                <RxCross1
+                  size={20}
+                  className="cursor-pointer hover:text-red-500 hover:scale-[1.2] mt-8 mr-3"
+                  onClick={() => setOpen(false)}
+                />
+              </div>
+              <div className="my-8 w-[92%] m-auto h-[40px] relative">
+                <input
+                  type="text"
+                  placeholder="Nhập sản phẩm cần tìm..."
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  className="h-[40px] w-full px-2 border-[#3957db] border-[2px] rounded-md"
+                />
+                <AiOutlineSearch
+                  size={30}
+                  className="absolute right-2 top-1.5 cursor-pointer"
+                />
+                {searchData && searchData.length !== 0 ? (
+                  <div className="absolute min-h-[30vh] bg-slate-50 shadow-sm-2 z-[9] p-4">
+                    {searchData &&
+                      searchData.map((i, index) => {
+                        const d = i.name;
+                        const Product_name = d.replace(/\s+/g, "-");
+                        return (
+                          <Link to={`/product/${Product_name}`}>
+                            <div className="w-full flex items-start-py-3">
+                              <img
+                                src={`${i.image_Url[0]?.url}`}
+                                alt="img-search"
+                                className="w-[40px] h-[40px] mr-[10px]"
+                              />
+                              <h1>{i.name}</h1>
+                            </div>
+                          </Link>
+                        );
+                      })}
+                  </div>
+                ) : null}
+              </div>
+              <Navbar active={activeHeading} />
+              <div className={`${styles.button} w-[160px] h-[40px] ml-4`}>
+                <Link to="/shop-create">
+                  <h1 className="flex items-center">
+                    Become a Seller <IoIosArrowForward className="ml-1" />
+                  </h1>
+                </Link>
+              </div>
+              <div className="flex w-full justify-center">
+                {isAuthenticated ? (
+                  <div className="mt-[15%]">
+                    <Account />
+                  </div>
+                ) : (
+                  <>
+                    <Link
+                      to="/login"
+                      className="text-[18px] pr-[10px] text-[#000000ba]"
+                    >
+                      Đăng nhập /
+                    </Link>
+                    <Link
+                      to="/sign-up"
+                      className="text-[18px] pr-[10px] text-[#000000ba]"
+                    >
+                      Đăng ký
+                    </Link>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

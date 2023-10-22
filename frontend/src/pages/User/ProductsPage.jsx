@@ -19,7 +19,7 @@ const ProductsPage = () => {
         productData && productData.filter((i) => i.category === categoryData);
       setData(d);
     }
-  }, []);
+  }, [categoryData]);
 
   return (
     <div>
