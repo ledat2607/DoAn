@@ -12,13 +12,15 @@ const ProductDetailsPage = () => {
   useEffect(() => {
     const data = productData.find((i) => i.name === productName);
     setData(data);
-  }, []);
+  }, [productName]);
 
   return (
     <div>
       <Header />
       <ProductDetails data={data} />
-      <div className="mt-5 bg-white">{data && <SuggestedProduct data={data} />}</div>
+      <div className="mt-5 bg-white">
+        {data && <SuggestedProduct data={data} />}
+      </div>
       <Footer />
     </div>
   );

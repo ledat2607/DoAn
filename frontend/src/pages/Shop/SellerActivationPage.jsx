@@ -2,16 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { server } from "../../server";
 import axios from "axios";
-//SellerActivationPage
-const ActivationPage = () => {
-  const { activation_token } = useParams();
+
+const SellerActivationPage = () => {
+  const { seller_activation_token } = useParams();
   const [error, setError] = useState(false);
   useEffect(() => {
-    if (activation_token) {
+    if (seller_activation_token) {
       const activationMail = async () => {
         try {
-          const res = await axios.post(`${server}/user/activation`, {
-            activation_token,
+          const res = await axios.post(`${server}/shop/activation`, {
+            seller_activation_token,
           });
           console.log(res.data.message);
         } catch (error) {
@@ -21,7 +21,7 @@ const ActivationPage = () => {
       };
       activationMail();
     }
-  }, [activation_token]);
+  }, [seller_activation_token]);
 
   return (
     <div
@@ -42,4 +42,4 @@ const ActivationPage = () => {
   );
 };
 
-export default ActivationPage;
+export default SellerActivationPage;

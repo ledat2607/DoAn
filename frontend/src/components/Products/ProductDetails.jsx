@@ -144,7 +144,7 @@ const ProductDetails = ({ data }) => {
 const ProductDetailsInfo = ({ data }) => {
   const [active, setActive] = useState(1);
   return (
-    <div className="bg-[#f5f6fb] px-3 800px:px-10 py-2 rounded h-[40vh]">
+    <div className="bg-[#f5f6fb] px-3 800px:px-10 py-2 rounded 800px:h-[40vh]">
       <div className="w-full flex justify-between border-b pt-10 pb-2">
         <div className="relative">
           <h5
@@ -224,7 +224,7 @@ const ProductDetailsInfo = ({ data }) => {
               aperiam tenetur dignissimos assumenda.
             </p>
           </div>
-          <div className="w-full 800px:w-[50%] mt-5 800px:mt-0 flex items-end flex-col">
+          <div className="w-full 800px:w-[50%] mt-5 800px:mt-0 flex 800px:items-end flex-col">
             <div className="text-left">
               <h5 className="font-[600]">
                 Đăng ký: <span>20/10/2023</span>

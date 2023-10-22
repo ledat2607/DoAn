@@ -21,6 +21,10 @@ const Login = () => {
       )
       .then((res) => {
         toast.success("Đăng nhập thành công");
+        setTimeout(() => {
+          navigate("/");
+          window.location.reload(true);
+        }, 1500);
       })
       .catch((err) => {
         toast.error(err.response.data.message);
@@ -28,13 +32,13 @@ const Login = () => {
   };
   return (
     <div className="min-h-screen bg-gray-300 flex flex-col justify-center py-12 sm:px-6 lg-px-8">
-      <div className="sm:w-full sm:mx-auto sm:max-w-md">
+      <div className="sm:w-full sm:mx-auto sm:max-w-md  w-[95%]  mx-auto ">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
           Đăng nhập
         </h2>
       </div>
-      <div className="sm:w-full sm:mx-auto sm:max-w-md mt-8">
-        <div className="bg-gray-50  py-8 px-4 shadow sm:rounded-lg sm:px-10">
+      <div className="800px:w-full w-[90%] mx-auto sm:max-w-md mt-8 ">
+        <div className="bg-gray-50  py-8 px-4 shadow-lg rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label
