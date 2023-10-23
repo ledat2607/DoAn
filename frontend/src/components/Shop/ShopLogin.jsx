@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { BsFacebook, BsInstagram, BsTwitter, BsGoogle } from "react-icons/bs";
-import styles from "../styles/styles";
+import styles from "../../styles/styles";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { server } from "../server";
+import { server } from "../../server";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
-const Login = () => {
+const ShopLogin = () => {
+  const { seller } = useSelector((state) => state.seller);
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,16 +18,12 @@ const Login = () => {
     e.preventDefault();
     await axios
       .post(
-        `${server}/user/login-user`,
+        `${server}/shop/shop-login`,
         { email, password },
         { withCredentials: true }
       )
       .then((res) => {
-        toast.success("Đăng nhập thành công");
-        setTimeout(() => {
-          navigate("/");
-          window.location.reload(true);
-        }, 1500);
+        toast.success("Đăng nhập vào cửa hàng thành công");
       })
       .catch((err) => {
         toast.error(err.response.data.message);
@@ -35,7 +33,7 @@ const Login = () => {
     <div className="min-h-screen bg-gray-300 flex flex-col justify-center py-12 sm:px-6 lg-px-8">
       <div className="sm:w-full sm:mx-auto sm:max-w-md  w-[95%]  mx-auto ">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Đăng nhập
+          Đăng nhập vào cửa hàng
         </h2>
       </div>
       <div className="800px:w-full w-[90%] mx-auto sm:max-w-md mt-8 ">
@@ -127,7 +125,7 @@ const Login = () => {
             <div className={`${styles.noramlFlex} w-full`}>
               <h4>Bạn chưa có tài khoản ?</h4>
               <Link
-                to="/sign-up"
+                to="/shop-create"
                 className="pl-2 cursor-pointer text-blue-400 hover:text-blue-900 font-medium"
               >
                 Đăng ký
@@ -159,4 +157,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ShopLogin;

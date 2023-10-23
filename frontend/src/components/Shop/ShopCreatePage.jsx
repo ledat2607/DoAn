@@ -45,7 +45,7 @@ const ShopCreatePage = () => {
       .post(`${server}/shop/create-shop`, newForm, config)
       .then((res) => {
         toast.success(res.data.message);
-        //navigate("/login");
+        navigate("/shop-login");
         setName("");
         setShopName("");
         setDescriptions("");
@@ -348,7 +348,7 @@ const ShopCreatePage = () => {
             <div className={`${styles.noramlFlex} w-full`}>
               <h4>Bạn đã có tài khoản ?</h4>
               <Link
-                to="/login"
+                to="/shop-login"
                 className="pl-2 cursor-pointer text-blue-400 hover:text-blue-900 font-medium"
               >
                 Đăng nhập
