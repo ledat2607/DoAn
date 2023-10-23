@@ -22,6 +22,7 @@ import { Avatar } from "@mui/material";
 
 const Header = ({ activeHeading }) => {
   const { isAuthenticated, user } = useSelector((state) => state.user);
+  const { isSeller, seller } = useSelector((state) => state.seller);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchData, setSearchData] = useState(null);
   const [active, setActive] = useState(false);
@@ -89,12 +90,21 @@ const Header = ({ activeHeading }) => {
             </div>
           ) : null}
         </div>
-        <div className={`${styles.button} w-[160px] h-[40px] mr-4`}>
-          <Link to="/shop-create">
-            <h1 className="flex items-center">
-              Become a Seller <IoIosArrowForward className="ml-1" />
-            </h1>
-          </Link>
+        <div className={`${styles.button} w-[180px] h-[40px] mr-4`}>
+          {isSeller ? (
+            <Link to={`/shop/${seller._id}`}>
+              <h1 className="flex items-center justify-center transform hover:translate-x-2 transition-transform">
+                Truy cập cửa hàng
+                <IoIosArrowForward className="ml-1 mt-[4px]" />
+              </h1>
+            </Link>
+          ) : (
+            <Link to="/shop-login">
+              <h1 className="flex items-center justify-center transform hover:translate-x-2 transition-transform">
+                Đăng ký cửa hàng <IoIosArrowForward className="ml-1 mt-[4px]" />
+              </h1>
+            </Link>
+          )}
         </div>
       </div>
       <div
@@ -248,7 +258,7 @@ const Header = ({ activeHeading }) => {
               </div>
               <Navbar active={activeHeading} />
               <div className={`${styles.button} w-[160px] h-[40px] ml-4`}>
-                <Link to="/shop-create">
+                <Link to="/shop-login">
                   <h1 className="flex items-center">
                     Become a Seller <IoIosArrowForward className="ml-1" />
                   </h1>

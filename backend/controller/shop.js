@@ -4,7 +4,7 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const sendMail = require("../utils/sendMail");
 const Shop = require("../model/shop");
-const { isAuthenticated, isSeller, isAdmin } = require("../middleware/auth");
+const { isSeller, isAdmin } = require("../middleware/auth");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const ErrorHandler = require("../utils/ErrorHandler");
 const sendShopToken = require("../utils/shopToken");
@@ -47,7 +47,7 @@ router.post("/create-shop", upload.single("file"), async (req, res, next) => {
       email: req.body.email,
       password: req.body.password,
       address: req.body.address,
-      descriptions: req.body.descriptions,
+      description: req.body.description,
       phoneNumber: req.body.phoneNumber,
       avatar: {
         public_id: fileUrl,
@@ -99,7 +99,7 @@ router.post(
         avatar,
         phoneNumber,
         address,
-        descriptions,
+        description,
         shopName,
       } = newSeller;
       let seller = await Shop.findOne({ email });
@@ -112,16 +112,56 @@ router.post(
         password,
         avatar,
         shopName,
-        descriptions,
+        description,
         address,
         phoneNumber,
       });
-      sendToken(seller, 201, res);
+      sendShopToken(seller, 201, res);
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
   })
 );
 //Login shop
-//router.post()
+router.post(
+  "/shop-login",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const { email, password } = req.body;
+      if (!email || !password.trim()) {
+        return next(new ErrorHandler("Vui lòng nhập đầy đủ thông tin!", 400));
+      }
+      const seller = await Shop.findOne({ email }).select("+password");
+      if (!seller) {
+        return next(new ErrorHandler("Người dùng không tồn tại", 400));
+      }
+      const isPasswordValid = await seller.comparePassword(password);
+      if (!isPasswordValid) {
+        return next(new ErrorHandler("Mật khẩu không chính xác", 400));
+      }
+      sendShopToken(seller, 201, res);
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+//Load seller
+router.get(
+  "/getSeller",
+  isSeller,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const seller = await Shop.findById(req.seller._id);
+      if (!seller) {
+        return next(new ErrorHandler("Người dùng không tồn tại", 404));
+      }
+      res.status(200).json({
+        success: true,
+        seller,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  })
+);
 module.exports = router;
