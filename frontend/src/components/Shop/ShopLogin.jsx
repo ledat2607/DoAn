@@ -24,6 +24,7 @@ const ShopLogin = () => {
       )
       .then((res) => {
         toast.success("Đăng nhập vào cửa hàng thành công");
+        window.location.reload(true);
       })
       .catch((err) => {
         toast.error(err.response.data.message);
