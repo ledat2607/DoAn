@@ -5,7 +5,7 @@ const DashboardPage = () => {
   return (
     <div>
       <DashboardHeader />
-      <div className="flex items-center justify-between w-full">
+      <div className="flex items-center justify-between w-[40%]">
         <div>
           <DashboardSideBar active={1} />
         </div>
