@@ -5,6 +5,7 @@ const Shop = require("../model/shop");
 const { upload } = require("../multer");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const ErrorHandler = require("../utils/ErrorHandler");
+const { isSeller } = require("../middleware/auth");
 //create product
 router.post(
   "/create-product",
@@ -48,4 +49,27 @@ router.get(
     }
   })
 );
+//delete product shop
+router.delete(
+  "/delete-shop-product/:id",
+  isSeller,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const productId = req.params.id;
+
+      const product = await Product.findByIdAndDelete(productId);
+      if (!product) {
+        return next(new ErrorHandler("Sản phẩm không tồn tại !", 404));
+      }
+      res.status(201).json({
+        success: true,
+        message: "Xóa sản phẩm thành công !",
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error, 404));
+    }
+  })
+);
+
+
 module.exports = router;

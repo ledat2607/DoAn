@@ -104,12 +104,12 @@ const DashboardMenu = ({ active }) => {
           >
             <VscNewFile
               size={30}
-              color={`${active === 6 ? "crimson" : "#555"}`}
+              color={`${active === 6 ? "#0000FF" : "#555"}`}
               title="Thêm mới sự kiện"
             />
             <h5
               className={`pl-2 text-[18px] font-[400] ${
-                active === 6 ? "text-[crimson]" : "text-[#555]"
+                active === 6 ? "text-[#0000FF]" : "text-[#555]"
               } 800px:block hidden`}
             >
               Thêm mới sự kiện
@@ -123,12 +123,12 @@ const DashboardMenu = ({ active }) => {
           >
             <CiMoneyBill
               size={30}
-              color={`${active === 7 ? "crimson" : "#555"}`}
+              color={`${active === 7 ? "#0000FF" : "#555"}`}
               title="Rút tiền"
             />
             <h5
               className={`pl-2 text-[18px] font-[400] ${
-                active === 7 ? "text-[crimson]" : "text-[#555]"
+                active === 7 ? "text-[#0000FF]" : "text-[#555]"
               } 800px:block hidden`}
             >
               Rút tiền
@@ -139,13 +139,13 @@ const DashboardMenu = ({ active }) => {
           <Link to="/dashboard-messages" className="w-full flex items-center">
             <BiMessageSquareDetail
               size={30}
-              color={`${active === 8 ? "crimson" : "#555"}`}
+              color={`${active === 8 ? "#0000FF" : "#555"}`}
               title="Trò chuyện"
             />
             <h5
-              className={`pl-2 text-[18px] font-[400] ${
-                active === 8 ? "text-[crimson]" : "text-[#555]"
-              } 800px:block hidden`}
+             className={`pl-2 text-[18px] font-[400] ${
+              active === 8 ? "text-[#0000FF]" : "text-[#555]"
+            } 800px:block hidden`}
             >
               Trò chuyện
             </h5>
@@ -155,12 +155,12 @@ const DashboardMenu = ({ active }) => {
           <Link to="/dashboard-coupouns" className="w-full flex items-center">
             <AiOutlineGift
               size={30}
-              color={`${active === 9 ? "crimson" : "#555"}`}
+              color={`${active === 9 ? "#0000FF" : "#555"}`}
               title="Mã khuyến mãi"
             />
             <h5
               className={`pl-2 text-[18px] font-[400] ${
-                active === 9 ? "text-[crimson]" : "text-[#555]"
+                active === 9 ? "text-[#0000FF]" : "text-[#555]"
               } 800px:block hidden`}
             >
               Mã khuyến mãi
@@ -171,12 +171,12 @@ const DashboardMenu = ({ active }) => {
           <Link to="/dashboard-refunds" className="w-full flex items-center">
             <HiOutlineReceiptRefund
               size={30}
-              color={`${active === 10 ? "crimson" : "#555"}`}
+              color={`${active === 10 ? "#0000FF" : "#555"}`}
               title="Hoàn tiền"
             />
             <h5
               className={`pl-2 text-[18px] font-[400] ${
-                active === 10 ? "text-[crimson]" : "text-[#555]"
+                active === 10 ? "text-[#0000FF]" : "text-[#555]"
               } 800px:block hidden`}
             >
               Hoàn tiền
@@ -187,12 +187,12 @@ const DashboardMenu = ({ active }) => {
           <Link to="/settings" className="w-full flex items-center">
             <CiSettings
               size={30}
-              color={`${active === 11 ? "crimson" : "#555"}`}
+              color={`${active === 11 ? "#0000FF" : "#555"}`}
               title="Cài đặt"
             />
             <h5
               className={`pl-2 text-[18px] font-[400] ${
-                active === 11 ? "text-[crimson]" : "text-[#555]"
+                active === 11 ? "text-[#0000FF]" : "text-[#555]"
               } 800px:block hidden`}
             >
               Cài đặt
