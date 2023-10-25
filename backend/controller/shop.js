@@ -164,4 +164,22 @@ router.get(
     }
   })
 );
+//logout shop
+router.get(
+  "/logout",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      res.cookie("seller_token", null, {
+        expires: new Date(Date.now()),
+        httpOnly: true,
+      });
+      res.status(200).json({
+        success: true,
+        message: "Đăng xuất thành công",
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
 module.exports = router;

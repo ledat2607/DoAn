@@ -1,10 +1,14 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { backend_url } from "../../server";
+import { backend_url, server } from "../../server";
 import styles from "../../styles/styles";
+import axios from "axios";
 const ShopInfo = ({ isOwner }) => {
   const { seller } = useSelector((state) => state.seller);
-  const handleLogout = () => {};
+  const handleLogout = async () => {
+    axios.get(`${server}/shop/logout`, { withCredentials: true });
+    window.location.reload(true);
+  };
   return (
     <>
       <div className="w-full py-5">
