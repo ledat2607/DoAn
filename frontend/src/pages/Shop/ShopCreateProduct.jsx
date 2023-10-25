@@ -7,10 +7,10 @@ const ShopCreateProduct = ({ active }) => {
     <div>
       <DashboardHeader />
       <div className="flex items-center w-full">
-        <div className="800px:w-[25%] w-[10%]">
+        <div className="800px:w-[17%] w-[12%]">
           <DashboardSideBar active={4} />
         </div>
-        <div className="w-[85%] mx-auto justify-center flex">
+        <div className="w-[88%] mx-auto justify-center flex">
           <CreateProduct />
         </div>
       </div>
