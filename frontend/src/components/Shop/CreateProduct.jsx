@@ -99,7 +99,7 @@ const CreateProduct = () => {
       {/*create product*/}
       <form onSubmit={handleSubmit}>
         <div className="mt-5">
-          <label className="pb-2 ml-10 text-[18px] font-Poppins font-[400] mt-5">
+          <label className="pb-2 ml-12 text-[18px] font-Poppins font-[400] mt-5">
             Tên sản phẩm <span className="text-red-500">*</span>
           </label>
           <input
@@ -112,7 +112,7 @@ const CreateProduct = () => {
           />
         </div>
         <div className="mt-5">
-          <label className="pb-2 ml-10 text-[18px] font-Poppins font-[400] mt-5">
+          <label className="pb-2 ml-12 text-[18px] font-Poppins font-[400] mt-5">
             Mô tả về sản phẩm
             <i className="text-[12px] ml-2">(Dùng \n để xuống hàng)</i>
           </label>
@@ -126,12 +126,12 @@ const CreateProduct = () => {
           />
         </div>
         <div className="mt-5">
-          <label className="pb-2 ml-10 text-[18px] font-Poppins font-[400] mt-5">
+          <label className="pb-2 ml-12 text-[18px] font-Poppins font-[400] mt-5">
             Danh mục sản phẩm
             <i className="text-[12px] ml-2">*</i>
           </label>
           <select
-            className="w-[90%] ml-10 border h-[35px] rounded-[5px]"
+            className="w-[90%] ml-12 border h-[35px] rounded-[5px]"
             id=""
             value={category}
             onChange={(e) => setCategory(e.target.value)}
@@ -148,7 +148,7 @@ const CreateProduct = () => {
           </select>
         </div>
         <div className="mt-5">
-          <label className="pb-2 ml-10 text-[18px] font-Poppins font-[400] mt-5">
+          <label className="pb-2 ml-12 text-[18px] font-Poppins font-[400] mt-5">
             Sản phẩm liên quan
             <i className="text-[12px] ml-2">*</i>
           </label>
@@ -163,7 +163,7 @@ const CreateProduct = () => {
         </div>
         <div className="flex items-center">
           <div className="mt-5 w-[30%]">
-            <label className="pb-2 ml-10 text-[18px] font-Poppins font-[400] mt-5">
+            <label className="pb-2 ml-12 text-[18px] font-Poppins font-[400] mt-5">
               Giá gốc
               <i className="ml-2 text-[12px] text-red-500">
                 {formatVietnameseCurrency(originalPrice)}
@@ -172,9 +172,9 @@ const CreateProduct = () => {
             <input
               type="number"
               name="originalPrice"
-              placeholder="Vui lòng nhập giá gốc sản phẩm..."
+              placeholder="Vui lòng nhập giá gốc..."
               value={originalPrice}
-              className="mt-2 ml-10 mx-auto appearance-none block w-[70%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
+              className="mt-2 ml-12 mx-auto appearance-none block w-[70%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
               onChange={(e) => setOriginalPrice(e.target.value)}
             />
           </div>
@@ -222,7 +222,7 @@ const CreateProduct = () => {
           </div>
         </div>
         <div className="mt-5">
-          <label className="pb-2 ml-10 text-[18px] font-Poppins font-[400] mt-5">
+          <label className="pb-2 ml-12 text-[18px] font-Poppins font-[400] mt-5">
             Số lượng nhập kho
             <i className="text-[12px] ml-2">*</i>
           </label>
@@ -250,7 +250,11 @@ const CreateProduct = () => {
           <div className="w-full items-center justify-between flex ">
             <div className="w-full items-center flex flex-wrap">
               <label htmlFor="upload">
-                <AiOutlinePlusCircle size={30} className="mt-3" color="#555" />
+                <AiOutlinePlusCircle
+                  size={30}
+                  className="mt-3 ml-4"
+                  color="#555"
+                />
               </label>
               {images &&
                 images.map((i) => (

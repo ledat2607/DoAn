@@ -14,10 +14,8 @@ router.post(
   catchAsyncErrors(async (req, res, next) => {
     try {
       const shopId = req.body.shopId;
-      const productId = req.body.productId;
       const shop = await Shop.findById(shopId);
-      const product = await Product.findById(productId);
-      if (!shop || !product) {
+      if (!shop) {
         return next(new ErrorHandler("Lỗi !", 400));
       } else {
         const files = req.files;
@@ -25,7 +23,6 @@ router.post(
         const eventData = req.body;
         eventData.images = imageUrls;
         eventData.shop = shop;
-        eventData.discountPrice = shop.discountPrice;
 
         const event = await Event.create(eventData);
         res.status(201).json({

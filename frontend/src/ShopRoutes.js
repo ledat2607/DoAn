@@ -5,7 +5,7 @@ import ShopHomePage from "../src/pages/Shop/ShopHomePage";
 import DashboardPage from "../src/pages/Shop/DashboardPage";
 import ShopCreateProduct from "../src/pages/Shop/ShopCreateProduct";
 import ShopAllProduct from "../src/pages/Shop/ShopAllProduct";
-import ShopCreateEvent from "../src/page/Shop/ShopCreateEvent";
+import ShopCreateEvent from "./pages/Shop/ShopCreateEvent";
 export {
   ShopCreate,
   SellerActivationPage,
