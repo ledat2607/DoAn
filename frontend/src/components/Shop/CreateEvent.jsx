@@ -2,36 +2,32 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { categoriesData } from "../../static/data";
-import {
-  AiFillPlusCircle,
-  AiOutlineArrowRight,
-  AiOutlineDelete,
-  AiOutlinePlusCircle,
-} from "react-icons/ai";
-import { createProduct, getAllProductsShop } from "../../redux/actions/product";
+import { AiOutlineDelete, AiOutlinePlusCircle } from "react-icons/ai";
+
 import { toast } from "react-toastify";
+import { createevent } from "../../redux/actions/event";
 const CreateEvent = () => {
   const { seller } = useSelector((state) => state.seller);
-  const { products, success, error } = useSelector((state) => state.products);
+  const { success, error } = useSelector((state) => state.events);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [images, setImage] = useState([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
-  const [tags, setTags] = useState("");
-  const [originalPrice, setOriginalPrice] = useState("");
-  const [discountPrice, setDiscountPrice] = useState("");
+  const [minAmount, setMinAmount] = useState("");
+  const [maxAmount, setMaxAmount] = useState("");
   const [stock, setStock] = useState();
-  const [discount, setDiscount] = useState("");
   const [isPercentage, setIsPercentage] = useState(true);
-  const [productId, setProductId] = useState("");
+  const [isTrue, setIsTrue] = useState(true);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   useEffect(() => {
-    dispatch(getAllProductsShop(seller._id));
+    // dispatch(getAllProductsShop(seller._id));
     if (error) {
       toast.error(error);
     }
-    if (success) {
+    if (success === true) {
       toast.success("Tạo mới thành công !");
       navigate("/dashboard");
       window.location.reload(true);
@@ -45,10 +41,10 @@ const CreateEvent = () => {
       currency: "VND",
     }).format(value);
   }
-  //Thay đổi và hiển thị phần discount
-  const handleDiscountChange = (e) => {
+  //Thay đổi và hiển thị phần maxAmount
+  const handleMaxAmountChange = (e) => {
     const value = e.target.value;
-    setDiscount(value);
+    setMaxAmount(value);
 
     if (value <= 100) {
       setIsPercentage(true);
@@ -56,18 +52,37 @@ const CreateEvent = () => {
       setIsPercentage(false);
     }
   };
-  //Tính số tiền ở discountPrice
-  const calculateDiscountPrice = () => {
-    if (discount === "") {
-      // Nếu discount rỗng, gán discountPrice bằng originalPrice
-      setDiscountPrice(originalPrice);
-    } else if (isPercentage) {
-      const percentage = (100 - parseFloat(discount)) / 100;
-      setDiscountPrice(originalPrice * percentage);
+  ///Thay đổi span tại minAmount
+  const handleMinAmountChange = (e) => {
+    const value = e.target.value;
+    setMinAmount(value);
+
+    if (value <= 100) {
+      setIsTrue(true);
     } else {
-      setDiscountPrice(originalPrice - parseFloat(discount));
+      setIsTrue(false);
     }
   };
+  //thay đổi giá trị ngày bắt đầu và kết thúc
+  const handleChangeEndDate = (e) => {
+    const endDate = new Date(e.target.value);
+    setEndDate(endDate);
+  };
+  const handleChangeStartDate = (e) => {
+    const startDate = new Date(e.target.value);
+    const minEndDate = new Date(startDate.getTime() + 3 * 24 * 60 * 60 * 1000);
+    setStartDate(startDate);
+    setEndDate(null);
+    document.getElementById("end-date").min = minEndDate
+      .toISOString()
+      .slice(0, 10);
+  };
+  const today = new Date().toISOString().slice(0, 10);
+  const minEndDate = startDate
+    ? new Date(startDate.getTime() + 3 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .slice(0, 10)
+    : today;
   //Hàm submit
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -78,19 +93,15 @@ const CreateEvent = () => {
     newForm.append("name", name);
     newForm.append("description", description);
     newForm.append("category", category);
-    newForm.append("tags", tags);
-    newForm.append("originalPrice", originalPrice);
-    newForm.append("discountPrice", discountPrice);
-    newForm.append("discount", discount);
+    newForm.append("minAmount", minAmount);
+    newForm.append("maxAmount", maxAmount);
     newForm.append("stock", stock);
     newForm.append("shopId", seller._id);
-    dispatch(createProduct(newForm));
+    newForm.append("start_Date", startDate.toISOString());
+    newForm.append("Finish_Date", endDate.toISOString());
+    dispatch(createevent(newForm));
   };
-  const hanleChange = (e) => {
-    const selectedProductId = e.target.value;
-    setProductId(selectedProductId);
-    console.log(e.target.value);
-  };
+
   //Hàm thay đổi mảng chứa ảnh sản phẩm
   const handleChangeImage = (e) => {
     e.preventDefault();
@@ -100,26 +111,26 @@ const CreateEvent = () => {
   return (
     <div className="800px:w-[80%] mx-auto w-[90%] rounded-md bg-white shadow-lg h-[80vh] overflow-y-scroll">
       <h5 className="text-[30px] font-Poppins text-center font-[600] mt-5">
-        Thêm mới sản phẩm
+        Thêm mới sự kiện
       </h5>
       {/*create product*/}
       <form onSubmit={handleSubmit}>
         <div className="mt-5">
-          <label className="pb-2 ml-10 text-[18px] font-Poppins font-[400] mt-5">
-            Tên sản phẩm <span className="text-red-500">*</span>
+          <label className="pb-2 ml-12 text-[18px] font-Poppins font-[400] mt-5">
+            Tên sự kiện <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
             name="name"
-            placeholder="Vui lòng điền tên sản phẩm..."
+            placeholder="Vui lòng điền tên sự kiện..."
             value={name}
             className="mt-2 mx-auto appearance-none block w-[90%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
             onChange={(e) => setName(e.target.value)}
           />
         </div>
         <div className="mt-5">
-          <label className="pb-2 ml-10 text-[18px] font-Poppins font-[400] mt-5">
-            Mô tả về sản phẩm
+          <label className="pb-2 ml-12 text-[18px] font-Poppins font-[400] mt-5">
+            Mô tả về sự kiện
             <i className="text-[12px] ml-2">(Dùng \n để xuống hàng)</i>
           </label>
           <textarea
@@ -132,100 +143,95 @@ const CreateEvent = () => {
           />
         </div>
         <div className="mt-5">
-          <label className="pb-2 ml-10 text-[18px] font-Poppins font-[400] mt-5">
+          <label className="pb-2 ml-12 text-[18px] font-Poppins font-[400] mt-5">
             Sản phẩm khuyến mãi
             <i className="text-[12px] ml-2">*</i>
           </label>
           <select
-            className="w-[90%] ml-10 border h-[35px] rounded-[5px]"
+            className="w-[90%] ml-12 border h-[35px] rounded-[5px]"
             id=""
-            value={productId}
-            onChange={hanleChange}
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
           >
             <option value="Chọn danh mục sản phẩm của bạn">
               Chọn danh mục sản phẩm
             </option>
-            {products &&
-              products.map((product, index) => (
-                <option value={product.id} key={product.id}>
-                  {product.name}
+            {categoriesData &&
+              categoriesData.map((i, index) => (
+                <option value={i.title} key={i.title}>
+                  {i.title}
                 </option>
               ))}
           </select>
         </div>
+
+        <div className="flex">
+          <div className="mt-5 w-[40%] flex">
+            <label className="pb-2 ml-12 text-[18px] font-Poppins font-[400] mt-5">
+              Giảm giá từ
+              <div className="mt-1 text-[12px] text-red-600 relative">
+                {isTrue
+                  ? `${minAmount}%`
+                  : `${formatVietnameseCurrency(minAmount)}`}
+              </div>
+            </label>
+            <input
+              type="number"
+              name="minAmount"
+              placeholder="Giảm giá từ..."
+              value={minAmount}
+              className="mt-2 ml-10 mx-auto appearance-none block w-[30%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
+              onChange={handleMinAmountChange}
+            />
+          </div>
+          <div className="ml-2 mt-5 w-[30%] flex ">
+            <label className="pb-2 ml-3 text-[18px] font-Poppins font-[400] mt-5">
+              đến
+              <div className="mt-1 text-[12px] text-green-600">
+                {isPercentage
+                  ? `${maxAmount}%`
+                  : `${formatVietnameseCurrency(maxAmount)}`}
+              </div>
+            </label>
+            <input
+              type="number"
+              name="maxAmount"
+              placeholder="Khuyến mãi..."
+              value={maxAmount}
+              className="mt-2 ml-4 mx-auto appearance-none block w-[90%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
+              onChange={handleMaxAmountChange}
+            />
+          </div>
+        </div>
         <div className="mt-5">
           <label className="pb-2 ml-10 text-[18px] font-Poppins font-[400] mt-5">
-            Sản phẩm liên quan
+            Ngày bắt đầu
             <i className="text-[12px] ml-2">*</i>
           </label>
           <input
-            type="text"
-            name="tags"
-            placeholder="Vui lòng điền các danh mục liên quan..."
-            value={tags}
+            type="date"
+            // name="tags"
+            id="start-date"
+            value={startDate ? startDate.toISOString().slice(0, 10) : "null"}
             className="mt-2 mx-auto appearance-none block w-[90%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
-            onChange={(e) => setTags(e.target.value)}
+            onChange={handleChangeStartDate}
+            min={today}
           />
         </div>
-        <div className="flex items-center">
-          <div className="mt-5 w-[30%]">
-            <label className="pb-2 ml-10 text-[18px] font-Poppins font-[400] mt-5">
-              Giá gốc
-              <i className="ml-2 text-[12px] text-red-500">
-                {formatVietnameseCurrency(originalPrice)}
-              </i>
-            </label>
-            <input
-              type="number"
-              name="originalPrice"
-              placeholder="Vui lòng nhập giá gốc sản phẩm..."
-              value={originalPrice}
-              className="mt-2 ml-10 mx-auto appearance-none block w-[70%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
-              onChange={(e) => setOriginalPrice(e.target.value)}
-            />
-          </div>
-          <span className="text-redd-500 mt-12 ">
-            <AiOutlineArrowRight />
-          </span>
-          <div className="ml-2 mt-5 w-[30%]">
-            <label className="pb-2 ml-3 text-[18px] font-Poppins font-[400] mt-5">
-              Khuyến mãi
-              <span className="ml-2 text-[12px] text-blue-400">
-                {isPercentage
-                  ? `${discount}%`
-                  : `${formatVietnameseCurrency(discount)}`}
-              </span>
-            </label>
-            <input
-              type="number"
-              name="originalPrice"
-              placeholder="Khuyến mãi..."
-              value={discount}
-              className="mt-2 mx-auto appearance-none block w-[90%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
-              onChange={handleDiscountChange}
-              onBlur={calculateDiscountPrice}
-            />
-          </div>
-          <span>
-            <AiOutlineArrowRight className="mt-12" color="red" />
-          </span>
-          <div className="mt-5">
-            <label className="pb-2 ml-3 text-[18px] font-Poppins font-[400] mt-5">
-              Giá khuyến mãi
-              <i className="text-[12px] ml-2 text-green-500">
-                {formatVietnameseCurrency(discountPrice)}
-              </i>
-            </label>
-            <input
-              disabled
-              type="number"
-              name="discountPrice"
-              placeholder="Giá khuyến mãi..."
-              value={discountPrice}
-              className="mt-2 mx-auto appearance-none block w-[90%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
-              onChange={(e) => setDiscountPrice(e.target.value)}
-            />
-          </div>
+        <div className="mt-5">
+          <label className="pb-2 ml-10 text-[18px] font-Poppins font-[400] mt-5">
+            Ngày kết thúc
+            <i className="text-[12px] ml-2">*</i>
+          </label>
+          <input
+            type="date"
+            // name="tags"
+            id="end-date"
+            value={endDate ? endDate.toISOString().slice(0, 10) : "null"}
+            className="mt-2 mx-auto appearance-none block w-[90%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
+            onChange={handleChangeEndDate}
+            min={minEndDate}
+          />
         </div>
         <div className="mt-5">
           <label className="pb-2 ml-10 text-[18px] font-Poppins font-[400] mt-5">

@@ -21,23 +21,17 @@ const eventSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
-  //   status: {
-  //     type: String,
-  //     default: "Running",
-  //   },
-  tags: {
+  status: {
     type: String,
+    default: "Running",
   },
-  productId: {
-    type: String,
-    required: true,
-  },
-  discountPrice: {
+ 
+  minAmount: {
     type: Number,
     required: true,
   },
-  discountEventPrice: {
-    type: Number,
+  maxAmount: {
+    type: String,
     required: true,
   },
   stock: {
