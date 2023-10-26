@@ -35,4 +35,40 @@ router.post(
     }
   })
 );
+//get all events
+router.get(
+  "/get-all-events/:id",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const events = await Event.find({ shopId: req.params.id });
+      res.status(202).json({
+        success: true,
+        events,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error, 400));
+    }
+  })
+);
+//delete product shop
+router.delete(
+  "/delete-shop-event/:id",
+  isSeller,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const productId = req.params.id;
+
+      const event = await Event.findByIdAndDelete(productId);
+      if (!event) {
+        return next(new ErrorHandler("Sự kiện không tồn tại !", 404));
+      }
+      res.status(201).json({
+        success: true,
+        message: "Xóa sự kiện thành công !",
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error, 404));
+    }
+  })
+);
 module.exports = router;
