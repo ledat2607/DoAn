@@ -7,6 +7,7 @@ import ShopCreateProduct from "../src/pages/Shop/ShopCreateProduct";
 import ShopAllProduct from "../src/pages/Shop/ShopAllProduct";
 import ShopCreateEvent from "./pages/Shop/ShopCreateEvent";
 import ShopAllEvent from "./pages/Shop/ShopAllEvent";
+import ShopAllCoupouns from "./pages/Shop/ShopAllCoupouns.jsx";
 export {
   ShopCreate,
   SellerActivationPage,
@@ -17,4 +18,5 @@ export {
   ShopAllProduct,
   ShopCreateEvent,
   ShopAllEvent,
+  ShopAllCoupouns,
 };

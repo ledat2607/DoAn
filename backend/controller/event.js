@@ -7,6 +7,7 @@ const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const ErrorHandler = require("../utils/ErrorHandler");
 const { isSeller } = require("../middleware/auth");
 const Event = require("../model/event");
+const fs = require("fs");
 //create event
 router.post(
   "/create-event",
@@ -58,6 +59,16 @@ router.delete(
     try {
       const productId = req.params.id;
 
+      const eventData = await Event.findByIdAndDelete(productId);
+      eventData.images.forEach((imageUrl) => {
+        const filename = imageUrl;
+        const filePath = `uploads/${filename}`;
+        fs.unlink(filePath, (err) => {
+          if (err) {
+            console.log(err);
+          }
+        });
+      });
       const event = await Event.findByIdAndDelete(productId);
       if (!event) {
         return next(new ErrorHandler("Sự kiện không tồn tại !", 404));

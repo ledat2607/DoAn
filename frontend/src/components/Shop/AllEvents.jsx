@@ -24,7 +24,7 @@ const AllEvents = () => {
   const handleDelete = (id) => {
     if (isPopupVisible === true) {
       dispatch(deleteEvent(id));
-      toast.success("Xóa sản phẩm thành công !");
+      toast.success("Xóa sự kiện thành công !");
       window.location.reload(true);
     }
   };
