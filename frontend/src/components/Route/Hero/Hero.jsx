@@ -5,7 +5,7 @@ import styles from "../../../styles/styles";
 const Hero = () => {
   return (
     <div
-      className={`relative min-h-[80vh] 800px:min-h-[80vh] w-full bg-no-repeat ${styles.noramlFlex}`}
+      className={`relative h-[80vh] 1300px:h-[80vh] w-full bg-no-repeat ${styles.noramlFlex}`}
       style={{
         backgroundImage:
           "url(https://themes.rslahmed.dev/rafcart/assets/images/banner-2.jpg)",

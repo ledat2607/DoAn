@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import styles from "../../styles/styles";
 import {
   AiOutlineMinus,
@@ -7,10 +7,19 @@ import {
   AiOutlineShoppingCart,
   AiOutlineMessage,
 } from "react-icons/ai";
+import { backend_url } from "../../server";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllProductsShop } from "../../redux/actions/product";
 const ProductDetails = ({ data }) => {
+  const { products } = useSelector((state) => state.products);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getAllProductsShop(data && data?.shop?._id));
+  }, [dispatch]);
+
   const [count, setCount] = useState(1);
   const [click, setClick] = useState(false);
-  const [select, setSelect] = useState(1);
+  const [select, setSelect] = useState(0);
   const navigate = useNavigate();
   const decrementCount = () => {
     if (count > 1) {
@@ -24,6 +33,13 @@ const ProductDetails = ({ data }) => {
   const handleMessageSubmit = () => {
     console.log(`check`);
   };
+  //hàm định dạng tiền tệ
+  function formatVietnameseCurrency(value) {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(value);
+  }
   return (
     <div className="bg-white">
       {data ? (
@@ -32,48 +48,55 @@ const ProductDetails = ({ data }) => {
             <div className="block w-full 800px:flex">
               <div className="w-full 800px:w-[50%]">
                 <img
-                  src={data?.image_Url[select].url}
+                  src={`${backend_url}${data?.images && data?.images[select]}`}
                   alt="img-select"
-                  className="w-[80%]"
+                  className="w-[400px] object-contain"
                 />
-                <div className="w-full 800px:w-[50%]">
+                <div className="w-full 800px:w-[80%] mt-3">
                   <div className="w-full flex">
+                    {data &&
+                      data.images.map((i, index) => (
+                        <div
+                          className={`${
+                            select === 0 ? "border-blue-500" : "null"
+                          } cursor-pointer`}
+                        >
+                          <img
+                            src={`${backend_url}${i}`}
+                            alt="product-img"
+                            className="h-[160px] flex justify-center items-center"
+                            onClick={() => setSelect(index)}
+                          />
+                        </div>
+                      ))}
                     <div
                       className={`${
-                        select === 0 ? "border border-blue-500" : null
+                        select === 1 ? "border" : "null"
                       } cursor-pointer`}
-                    >
-                      <img
-                        src={data?.image_Url[0].url}
-                        alt="product-img"
-                        className="h-[180px]"
-                        onClick={() => setSelect(0)}
-                      />
-                    </div>
-                    <div
-                      className={`${
-                        select === 1 ? "border border-blue-500" : null
-                      } cursor-pointer ml-2`}
-                    >
-                      <img
-                        src={data?.image_Url[0].url}
-                        alt="product-img"
-                        className="h-[180px]"
-                        onClick={() => setSelect(1)}
-                      />
-                    </div>
+                    ></div>
                   </div>
                 </div>
               </div>
               <div className="w-[full] 800px:w-[50%] mt-5">
                 <h1 className={`${styles.productTitle}`}>{data.name}</h1>
-                <p className="mt-3">{data.description}</p>
+                <p className="mt-3">
+                  {data?.description.includes("\\n")
+                    ? data?.description.split("\\n").map((line, index) => (
+                        <React.Fragment key={index}>
+                          {line}
+                          <br />
+                        </React.Fragment>
+                      ))
+                    : data?.description}
+                </p>
                 <div className="flex pt-3">
                   <h4 className={`${styles.productDiscountPrice} mt-2`}>
-                    {data.discount_price}
+                    {formatVietnameseCurrency(data.discountPrice)}
                   </h4>
                   <h3 className={`${styles.price} mt-2 ml-3`}>
-                    {data.price ? data.price : null}
+                    {data.originalPrice
+                      ? formatVietnameseCurrency(data.originalPrice)
+                      : null}
                   </h3>
                 </div>
                 <div
@@ -109,19 +132,20 @@ const ProductDetails = ({ data }) => {
                   </span>
                 </div>
                 <div className="flex items-center pt-8">
-                  <img
-                    src={data.shop.shop_avatar.url}
-                    alt="shop-avt-detail"
-                    className="w-[50px] h-[50px] rounded-full ml-2"
-                  />
+                  <Link to={`/shop/preview/${data?.shop._id}`}>
+                    <img
+                      src={`${backend_url}${data?.shop.avatar.url}`}
+                      alt="shop-avt-detail"
+                      className="w-[50px] h-[50px] rounded-full ml-2"
+                    />
+                  </Link>
                   <div className="pr-8">
                     <h3 className={`${styles.shop_name} ml-3`}>
-                      {data.shop.name}
+                      {data.shop.shopName}
                     </h3>
-                    <h5 className="pb-3 text-[15px] ml-3">
-                      {data.shop.ratings}
-                    </h5>
+                    <h5 className="pb-3 text-[15px] ml-3">4.6 / 5</h5>
                   </div>
+
                   <div
                     className={`${styles.button} w-[170px] h-[40px] mt-4 rounded-lg`}
                     onClick={handleMessageSubmit}
@@ -134,17 +158,17 @@ const ProductDetails = ({ data }) => {
               </div>
             </div>
           </div>
-          <ProductDetailsInfo data={data} />
+          <ProductDetailsInfo data={data} products={products} />
           <br />
         </div>
       ) : null}
     </div>
   );
 };
-const ProductDetailsInfo = ({ data }) => {
+const ProductDetailsInfo = ({ data, products }) => {
   const [active, setActive] = useState(1);
   return (
-    <div className="bg-[#f5f6fb] px-3 800px:px-10 py-2 rounded 800px:h-[40vh]">
+    <div className="bg-[#f5f6fb] px-3 800px:px-10 py-2 rounded 800px:h-[60vh]">
       <div className="w-full flex justify-between border-b pt-10 pb-2">
         <div className="relative">
           <h5
@@ -204,17 +228,21 @@ const ProductDetailsInfo = ({ data }) => {
         </>
       ) : null}
       {active === 3 ? (
-        <div className="w-full block 800px:flex p-5">
+        <div className="w-full min-h-[40vh] block 800px:flex p-5">
           <div className="w-full 800px:w-[50%]">
             <div className="flex items-center">
-              <img
-                src={data.shop.shop_avatar.url}
-                alt="de"
-                className="w-[50px] h-[50px] rounded-full"
-              />
+              <Link to={`/shop/preview/${data?.shop._id}`}>
+                <img
+                  src={`${backend_url}${data?.shop?.avatar.url}`}
+                  alt="de"
+                  className="w-[50px] h-[50px] rounded-full"
+                />
+              </Link>
               <div className="pr-8">
-                <h3 className={`${styles.shop_name} ml-3`}>{data.shop.name}</h3>
-                <h5 className="pb-3 text-[15px] ml-3">{data.shop.ratings}</h5>
+                <h3 className={`${styles.shop_name} ml-3`}>
+                  {data.shop.shopName}
+                </h3>
+                <h5 className="pb-3 text-[15px] ml-3">4.6/5</h5>
               </div>
             </div>
             <p className="pt-2">
@@ -227,15 +255,15 @@ const ProductDetailsInfo = ({ data }) => {
           <div className="w-full 800px:w-[50%] mt-5 800px:mt-0 flex 800px:items-end flex-col">
             <div className="text-left">
               <h5 className="font-[600]">
-                Đăng ký: <span>20/10/2023</span>
+                Đăng ký: <span>{data?.createdAt.slice(0, 10)}</span>
               </h5>
               <h5 className="font-[600]">
-                Tổng sản phẩm: <span>12</span>
+                Tổng sản phẩm: <span> {products && products.length}</span>
               </h5>
               <h5 className="font-[600]">
                 Tổng lượt thích: <span>12456</span>
               </h5>
-              <Link to="/">
+              <Link to={`/shop/preview/${data?.shop._id}`}>
                 <div
                   className={`${styles.button} w-[150px] h-[40px] mt-6 rounded-md`}
                 >

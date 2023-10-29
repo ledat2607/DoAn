@@ -1,0 +1,48 @@
+import axios from "axios";
+import { server } from "../../server";
+
+export const addToCart =
+  (userId, shopId, productId, qty) => async (dispatch) => {
+    try {
+      dispatch({
+        type: "cartCreateRequest",
+      });
+
+      const { data } = await axios.post(`${server}/cart/add-to-cart`, {
+        userId,
+        shopId,
+        productId,
+        qty,
+      });
+
+      dispatch({
+        type: "cartCreateSuccess",
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: "cartCreateFail",
+        payload: error.response.data.message,
+      });
+    }
+  };
+export const getAllCartItemsUser = (id) => async (dispatch) => {
+  try {
+    dispatch({
+      type: "getAllCartItemsUserRequest",
+    });
+
+    const { data } = await axios.get(
+      `${server}/cart/get-items-in-cart-of-user/${id}`
+    );
+    dispatch({
+      type: "getAllCartItemsUserSuccess",
+      payload: data.cartItems,
+    });
+  } catch (error) {
+    dispatch({
+      type: "getAllCartItemsUserFailed",
+      payload: error.response.data.message,
+    });
+  }
+};

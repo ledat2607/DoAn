@@ -4,24 +4,8 @@ import { IoBagHandleOutline } from "react-icons/io5";
 import { HiOutlineMinus, HiPlus } from "react-icons/hi";
 import styles from "../../styles/styles";
 import { Link } from "react-router-dom";
-const Cart = ({ setOpenCart }) => {
-  const cartData = [
-    {
-      name: "Iphone 14 pro max 1TB",
-      descriptions: "Test",
-      price: "24990000",
-    },
-    {
-      name: "Laptop asus zenbook",
-      descriptions: "Test",
-      price: "28990000",
-    },
-    {
-      name: "Apple watch ultra",
-      descriptions: "Test",
-      price: "22990000",
-    },
-  ];
+import { backend_url } from "../../server";
+const Cart = ({ setOpenCart, data }) => {
   return (
     <div className="fixed top-0 left-0 w-full bg-[#0000004b] h-screen z-10">
       <div className="fixed  top-0 right-0 min-h-full 800px:w-[25%] w-[80%] shadow-sm bg-white flex flex-col justify-between">
@@ -29,7 +13,9 @@ const Cart = ({ setOpenCart }) => {
         <div>
           <div className={`flex p-4`}>
             <IoBagHandleOutline size={25} />
-            <h5 className="pl-2 text-[20px] font-[500]">3 Sản phẩm</h5>
+            <h5 className="pl-2 text-[20px] font-[500]">
+              {data.length} Sản phẩm
+            </h5>
           </div>
           <div className="absolute top-[20px] flex w-full justify-end pr-5">
             <RxCross1
@@ -39,8 +25,8 @@ const Cart = ({ setOpenCart }) => {
             />
           </div>
           <div className="w-full border-t ">
-            {cartData &&
-              cartData.map((i, index) => <CartSignle key={index} data={i} />)}
+            {data &&
+              data.map((i, index) => <CartSignle key={index} data={i} />)}
           </div>
         </div>
 
@@ -62,8 +48,8 @@ const Cart = ({ setOpenCart }) => {
 };
 //Cart signle
 const CartSignle = ({ data }) => {
-  const [value, setValue] = useState(1);
-  const total_price = data.price * value;
+  const [value, setValue] = useState(data && data?.qty);
+  const total_price = data.product.discountPrice * value;
   function formatVietnameseCurrency(value) {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -89,15 +75,15 @@ const CartSignle = ({ data }) => {
           </div>
         </div>
         <img
-          src="https://cdn.tgdd.vn/Products/Images/42/251192/iphone-14-pro-max-tim-thumb-600x600.jpg"
+          src={`${backend_url}${data.product.images[0]}`}
           alt="cart-img"
           className="w-[80px] h-h[80px] pl-2"
         />
         <div className="pl-[5px] flex justify-between w-full items-center">
           <div>
-            <h1>{data.name}</h1>
+            <h1>{data.product.name}</h1>
             <h4 className="font-[400] text-[15px] text-[#00000082]">
-              {formatVietnameseCurrency(data.price)} x {value}
+              {formatVietnameseCurrency(data.product.discountPrice)} x {value}
             </h4>
             <h4 className="font-[600] text-[17px] pt-[3px] text-[#d02222] font-Roboto">
               {formatVietnameseCurrency(total_price)}

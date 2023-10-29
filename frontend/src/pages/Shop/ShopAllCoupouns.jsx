@@ -8,7 +8,7 @@ const ShopAllCoupouns = () => {
     <div className="overflow-y-scroll">
       <DashboardHeader />
       <div className="flex w-full">
-        <div className="800px:w-[17%] w-[12%]">
+        <div className="800px:w-[17%] w-[12%]  z-100">
           <DashboardSideBar active={9} />
         </div>
         <div className="w-[83%] mx-auto">

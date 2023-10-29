@@ -84,7 +84,7 @@ const AllProducts = () => {
                 {isPopupVisible && (
                   <div
                     key={index}
-                    className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-1000"
+                    className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[10000]"
                   >
                     <div className="bg-white p-4 rounded-lg">
                       <p>Bạn có chắc chắn muốn xóa dữ liệu này không?</p>
