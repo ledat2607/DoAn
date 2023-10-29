@@ -1,28 +1,65 @@
 const express = require("express");
-const catchAsyncError = require("../middleware/catchAsyncErrors");
 const Shop = require("../model/shop");
-const ErrorHandle = require("../utils/ErrorHandler");
 const { isSeller } = require("../middleware/auth");
-const CouponCode = require("../model/couponCode");
+const CoupounCode = require("../model/couponCode");
+const catchAsyncErrors = require("../middleware/catchAsyncErrors");
+const ErrorHandler = require("../utils/ErrorHandler");
 const router = express.Router();
 
 //create coupon code
 router.post(
   "/create-coupon-code",
   isSeller,
-  catchAsyncError(async (req, res, next) => {
+  catchAsyncErrors(async (req, res, next) => {
     try {
-      const couponCode = await CouponCode.find({ code: req.body.code });
-      if (couponCode) {
-        return next(new ErrorHandle("Mã khuyến mãi đã tồn tại", 402));
+      const couponCode = await CoupounCode.find({ code: req.body.code });
+      if (couponCode.length !== 0) {
+        return next(new ErrorHandler("Mã khuyến mãi đã tồn tại", 402));
       }
-      const coupon = await CouponCode.create(req.body);
+
+      const coupon = await CoupounCode.create(req.body);
       res.status(201).json({
         success: true,
         coupon,
       });
     } catch (error) {
-      return next(new ErrorHandle(error.message, 400));
+      return next(new ErrorHandler(error.message, 400));
+    }
+  })
+);
+//get all coupouns
+router.get(
+  "/get-coupon/:id",
+  isSeller,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const couponCodes = await CoupounCode.find({ shopId: req.seller.id });
+      res.status(201).json({
+        success: true,
+        couponCodes,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error, 400));
+    }
+  })
+);
+//delete coupoun
+router.delete(
+  "/delete-coupon/:id",
+  isSeller,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const couponCode = await CoupounCode.findByIdAndDelete(req.params.id);
+
+      if (!couponCode) {
+        return next(new ErrorHandler("Mã khuyến mãi không tồn tại!", 400));
+      }
+      res.status(201).json({
+        success: true,
+        message: "Xóa thành công !",
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error, 400));
     }
   })
 );

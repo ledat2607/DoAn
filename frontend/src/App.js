@@ -31,6 +31,7 @@ import {
   ShopCreateEvent,
   ShopAllEvent,
   ShopAllCoupouns,
+  ShopPreviewPage,
 } from "./ShopRoutes.js";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -38,11 +39,22 @@ import Store from "./redux/store";
 import { loadSeller, loadUser } from "./redux/actions/user";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import SellerProtectedRoute from "./routes/SellerProtectedRoute";
+import { getAllProducts } from "./redux/actions/product";
+import { getAllEvents } from "./redux/actions/event";
+import { getAllCartItemsUser } from "./redux/actions/cart";
+import { useSelector } from "react-redux";
 const App = () => {
+  const { user } = useSelector((state) => state.user);
+  const { cartItems } = useSelector((state) => state.cart);
   useEffect(() => {
     Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
+    Store.dispatch(getAllProducts());
+    Store.dispatch(getAllEvents());
   }, []);
+  useEffect(() => {
+    Store.dispatch(getAllCartItemsUser(user?._id));
+  }, [user]);
 
   return (
     <BrowserRouter>
@@ -98,6 +110,7 @@ const App = () => {
             </SellerProtectedRoute>
           }
         />
+        <Route path="/shop/preview/:id" element={<ShopPreviewPage />} />
         <Route
           path="/dashboard-create-product"
           element={
