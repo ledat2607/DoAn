@@ -32,18 +32,18 @@ export const cartReducer = createReducer(initialState, {
     state.error = action.payload;
   },
 
-  //   // delete product of a shop
-  //   deleteProductRequest: (state) => {
-  //     state.isLoading = true;
-  //   },
-  //   deleteProductSuccess: (state, action) => {
-  //     state.isLoading = false;
-  //     state.message = action.payload;
-  //   },
-  //   deleteProductFailed: (state, action) => {
-  //     state.isLoading = false;
-  //     state.error = action.payload;
-  //   },
+    // delete itmes of a cart
+    deleteItemsRequest: (state) => {
+      state.isLoading = true;
+    },
+    deleteItemsSuccess: (state, action) => {
+      state.isLoading = false;
+      state.message = action.payload;
+    },
+    deleteItemsFailed: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
 
   //   // get all products
   //   getAllProductsRequest: (state) => {

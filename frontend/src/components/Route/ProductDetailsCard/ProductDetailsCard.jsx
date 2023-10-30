@@ -47,9 +47,7 @@ const ProductDetailsCard = ({ setOpen, open, data }) => {
   const addToCartHandler = () => {
     dispatch(addToCart(user?._id, data.shop?._id, data?._id, count));
     toast.success("Thêm vào giỏ hàng thành công !");
-    setTimeout(() => {
-      window.location.reload(true);
-    }, 1000);
+    dispatch(getAllCartItemsUser(user?._id));
   };
   return (
     <div className="bg-[#fff]">
