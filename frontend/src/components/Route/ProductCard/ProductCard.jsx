@@ -11,8 +11,13 @@ import { Link, useNavigate } from "react-router-dom";
 import styles from "../../../styles/styles";
 import ProductDetailsCard from "../ProductDetailsCard/ProductDetailsCard";
 import { backend_url } from "../../../server";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { addToCart, getAllCartItemsUser } from "../../../redux/actions/cart";
 const ProductCard = ({ data }) => {
+  const dispatch = useDispatch();
+
+  const { user } = useSelector((state) => state.user);
   const { cart } = useSelector((state) => state.cart);
   const [click, setClick] = useState(false);
   const [open, setOpen] = useState(false);
@@ -28,6 +33,12 @@ const ProductCard = ({ data }) => {
       currency: "VND",
     }).format(value);
   }
+  //Thêm vào giỏ hàng
+  const addToCartHandler = () => {
+    dispatch(addToCart(user?._id, data.shop?._id, data?._id, 1));
+    toast.success("Thêm vào giỏ hàng thành công !");
+    dispatch(getAllCartItemsUser(user?._id));
+  };
   return (
     <>
       <div className="border bg-white hover:border-2 hover:border-blue-300 border-gray-800 h-[350px] rounded-lg shadow-md p-3 relative cursor-pointer">
@@ -127,7 +138,7 @@ const ProductCard = ({ data }) => {
           <AiOutlineShoppingCart
             size={18}
             className="cursor-pointer absolute right-2 top-24"
-            onClick={() => setOpen(!open)}
+            onClick={addToCartHandler}
             color="#333"
             title="Thêm vào giỏ hàng"
           />

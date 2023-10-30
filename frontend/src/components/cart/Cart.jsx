@@ -1,48 +1,65 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RxCross1 } from "react-icons/rx";
 import { IoBagHandleOutline } from "react-icons/io5";
 import { HiOutlineMinus, HiPlus } from "react-icons/hi";
 import styles from "../../styles/styles";
 import { Link } from "react-router-dom";
-import { backend_url } from "../../server";
+import { backend_url, server } from "../../server";
+import { useDispatch } from "react-redux";
+import axios from "axios";
+import { getAllCartItemsUser } from "../../redux/actions/cart";
+import { toast } from "react-toastify";
 const Cart = ({ setOpenCart, data }) => {
   return (
     <div className="fixed top-0 left-0 w-full bg-[#0000004b] h-screen z-10">
-      <div className="fixed  top-0 right-0 min-h-full 800px:w-[25%] w-[80%] shadow-sm bg-white flex flex-col justify-between">
-        {/*items length */}
-        <div>
-          <div className={`flex p-4`}>
-            <IoBagHandleOutline size={25} />
-            <h5 className="pl-2 text-[20px] font-[500]">
-              {data.length} Sản phẩm
-            </h5>
-          </div>
-          <div className="absolute top-[20px] flex w-full justify-end pr-5">
-            <RxCross1
-              size={25}
-              className="cursor-pointer hover:text-red-500 hover:scale-[1.1]"
-              onClick={() => setOpenCart(false)}
-            />
-          </div>
-          <div className="w-full border-t ">
-            {data &&
-              data.map((i, index) => <CartSignle key={index} data={i} />)}
+      {data.length === 0 ? (
+        <div className="fixed top-0 right-0 min-h-full 800px:w-[25%] w-[80%] shadow-sm bg-white">
+          <RxCross1
+            className="flex justify-center items-end absolute right-3 top-3 cursor-pointer"
+            size={30}
+            onClick={() => setOpenCart(false)}
+          />
+          <div className="flex items-center justify-center mt-[50%]">
+            Chưa có sản phẩm nào trong giỏ hàng của bạn !
           </div>
         </div>
-
-        {/*Cart signle */}
-
-        <div className="px-5 mb-3">
-          {/*check out */}
-          <Link to="/checkout">
-            <div
-              className={`h-[45px] flex items-center justify-center w-[70%] mx-auto bg-[#e44343] rounded-[5px]`}
-            >
-              <h1 className="text-[#fff] text-[18px]">Xác nhận thanh toán</h1>
+      ) : (
+        <div className="fixed  top-0 right-0 min-h-full 800px:w-[25%] w-[80%] shadow-sm bg-white flex flex-col justify-between">
+          {/*items length */}
+          <div>
+            <div className={`flex p-4`}>
+              <IoBagHandleOutline size={25} />
+              <h5 className="pl-2 text-[20px] font-[500]">
+                {data.length} Sản phẩm
+              </h5>
             </div>
-          </Link>
+            <div className="absolute top-[20px] flex w-full justify-end pr-5">
+              <RxCross1
+                size={25}
+                className="cursor-pointer hover:text-red-500 hover:scale-[1.1]"
+                onClick={() => setOpenCart(false)}
+              />
+            </div>
+            <div className="w-full border-t ">
+              {data &&
+                data.map((i, index) => <CartSignle key={index} data={i} />)}
+            </div>
+          </div>
+
+          {/*Cart signle */}
+
+          <div className="px-5 mb-3">
+            {/*check out */}
+            <Link to="/checkout">
+              <div
+                className={`h-[45px] flex items-center justify-center w-[70%] mx-auto bg-[#e44343] rounded-[5px]`}
+              >
+                <h1 className="text-[#fff] text-[18px]">Xác nhận thanh toán</h1>
+              </div>
+            </Link>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
@@ -50,6 +67,35 @@ const Cart = ({ setOpenCart, data }) => {
 const CartSignle = ({ data }) => {
   const [value, setValue] = useState(data && data?.qty);
   const total_price = data.product.discountPrice * value;
+  console.log(data.product?.stock);
+  const dispatch = useDispatch();
+  const handleDelete = async (id) => {
+    try {
+      await axios.post(`${server}/cart/delete-items-in-cart/${id}`);
+      // Sau khi xóa thành công, cập nhật danh sách cartData
+      toast.success("Xóa thành công !");
+      // Tải lại danh sách mục trong giỏ hàng sau khi xóa
+      dispatch(getAllCartItemsUser(data?.user?._id));
+    } catch (error) {
+      console.error("Lỗi xóa mục khỏi giỏ hàng:", error);
+    }
+  };
+  //Incre
+  const incre = async (id) => {
+    try {
+      await axios.post(`${server}/cart/incre-qty-cart-items/${id}`);
+    } catch (error) {
+      console.error("Lỗi xóa mục khỏi giỏ hàng:", error);
+    }
+  };
+  //Decre
+  const decre = async (id) => {
+    try {
+      await axios.post(`${server}/cart/decre-qty-cart-items/${id}`);
+    } catch (error) {
+      console.error("Lỗi xóa mục khỏi giỏ hàng:", error);
+    }
+  };
   function formatVietnameseCurrency(value) {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -64,14 +110,21 @@ const CartSignle = ({ data }) => {
             className={`bg-[#e43443] border border-[#e4344373] rounded-full w-[25px] h-[25px] ${styles.noramlFlex} justify-center cursor-pointer`}
             onClick={() => setValue(value + 1)}
           >
-            <HiPlus size={18} color="#fff" />
+            <button
+              onClick={() => incre(data?._id)}
+              disabled={value >= data.product.stock}
+            >
+              <HiPlus size={16} color="white" />
+            </button>
           </div>
           <span className="pl-[10px]">{value}</span>
           <div
             className="bg-[#a7abb14f] rounded-full w-[25px] h-[25px] flex items-center justify-center cursor-pointer"
             onClick={() => setValue(value === 1 ? 1 : value - 1)}
           >
-            <HiOutlineMinus size={16} color="#7d879c" />
+            <button onClick={() => decre(data?._id)}>
+              <HiOutlineMinus size={16} color="#7d879c" />
+            </button>
           </div>
         </div>
         <img
@@ -89,7 +142,10 @@ const CartSignle = ({ data }) => {
               {formatVietnameseCurrency(total_price)}
             </h4>
           </div>
-          <RxCross1 className="cursor-pointer" />
+          <RxCross1
+            className="cursor-pointer"
+            onClick={() => handleDelete(data?._id)}
+          />
         </div>
       </div>
     </div>

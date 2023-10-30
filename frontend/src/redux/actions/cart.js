@@ -46,3 +46,28 @@ export const getAllCartItemsUser = (id) => async (dispatch) => {
     });
   }
 };
+//delete items in cart
+export const deleteItems = (id) => async (dispatch) => {
+  try {
+    dispatch({
+      type: "deleteItemsRequest",
+    });
+
+    const { data } = await axios.delete(
+      `${server}/cart/delete-items-in-cart/${id}`,
+      {
+        withCredentials: true,
+      }
+    );
+
+    dispatch({
+      type: "deleteItemsSuccess",
+      payload: data.message,
+    });
+  } catch (error) {
+    dispatch({
+      type: "deleteItemsFailed",
+      payload: error.response.data.message,
+    });
+  }
+};
