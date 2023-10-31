@@ -23,6 +23,7 @@ import { Avatar } from "@mui/material";
 const Header = ({ activeHeading }) => {
   const { isAuthenticated, user } = useSelector((state) => state.user);
   const { cartItems } = useSelector((state) => state.cart);
+  const { wishlistItems } = useSelector((state) => state.wishlist);
   const { isSeller, seller } = useSelector((state) => state.seller);
   const { allProducts } = useSelector((state) => state.products);
   const [searchTerm, setSearchTerm] = useState("");
@@ -146,7 +147,7 @@ const Header = ({ activeHeading }) => {
             >
               <AiOutlineHeart size={30} color="rgb(255 255 255 / 83%)" />
               <span className="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center">
-                1
+                {wishlistItems && wishlistItems.length}
               </span>
             </div>
           </div>
@@ -177,7 +178,9 @@ const Header = ({ activeHeading }) => {
             <Cart setOpenCart={setOpenCart} data={cartItems} />
           ) : null}
           {/*wishlist popup */}
-          {openWishlist ? <Wishlist setOpenWishlist={setOpenWishlist} /> : null}
+          {openWishlist ? (
+            <Wishlist setOpenWishlist={setOpenWishlist} data={wishlistItems} />
+          ) : null}
         </div>
       </div>
       {/*mobile header */}

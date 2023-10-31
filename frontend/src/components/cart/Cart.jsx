@@ -5,7 +5,7 @@ import { HiOutlineMinus, HiPlus } from "react-icons/hi";
 import styles from "../../styles/styles";
 import { Link } from "react-router-dom";
 import { backend_url, server } from "../../server";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { getAllCartItemsUser } from "../../redux/actions/cart";
 import { toast } from "react-toastify";
@@ -65,9 +65,9 @@ const Cart = ({ setOpenCart, data }) => {
 };
 //Cart signle
 const CartSignle = ({ data }) => {
-  const [value, setValue] = useState(data && data?.qty);
+  const { user } = useSelector((state) => state.user);
+  const [value, setValue] = useState(data?.qty);
   const total_price = data.product.discountPrice * value;
-  console.log(data.product?.stock);
   const dispatch = useDispatch();
   const handleDelete = async (id) => {
     try {
@@ -75,7 +75,7 @@ const CartSignle = ({ data }) => {
       // Sau khi xóa thành công, cập nhật danh sách cartData
       toast.success("Xóa thành công !");
       // Tải lại danh sách mục trong giỏ hàng sau khi xóa
-      dispatch(getAllCartItemsUser(data?.user?._id));
+      dispatch(getAllCartItemsUser(user?._id));
     } catch (error) {
       console.error("Lỗi xóa mục khỏi giỏ hàng:", error);
     }

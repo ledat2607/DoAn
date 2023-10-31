@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   AiFillHeart,
   AiFillStar,
@@ -14,9 +14,10 @@ import { backend_url } from "../../../server";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { addToCart, getAllCartItemsUser } from "../../../redux/actions/cart";
+import { addToWishlist } from "../../../redux/actions/wishlist";
 const ProductCard = ({ data }) => {
+  console.log(`check product cart`, data);
   const dispatch = useDispatch();
-
   const { user } = useSelector((state) => state.user);
   const { cart } = useSelector((state) => state.cart);
   const [click, setClick] = useState(false);
@@ -38,6 +39,19 @@ const ProductCard = ({ data }) => {
     dispatch(addToCart(user?._id, data.shop?._id, data?._id, 1));
     toast.success("Thêm vào giỏ hàng thành công !");
     dispatch(getAllCartItemsUser(user?._id));
+  };
+  //Thêm vào danh sách yêu thích
+  const addToWishlistHandler = () => {
+    const result = dispatch(
+      addToWishlist(user?._id, data.shop?._id, data?._id)
+    );
+    if (result.data.success === true) {
+      toast.success("Đã thêm vào danh sách yêu thích !");
+      setClick(!click);
+      dispatch(getAllCartItemsUser(user?._id));
+    } else {
+      toast.warning("Sản phẩm đã có trong danh sách yêu thích");
+    }
   };
   return (
     <>
@@ -123,7 +137,7 @@ const ProductCard = ({ data }) => {
             <AiOutlineHeart
               size={18}
               className="cursor-pointer absolute right-2 top-5"
-              onClick={() => setClick(!click)}
+              onClick={addToWishlistHandler}
               color={click ? "red" : "#333"}
               title="Thêm vào danh sách yêu thích"
             />
