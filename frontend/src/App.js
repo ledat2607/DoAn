@@ -43,6 +43,7 @@ import { getAllProducts } from "./redux/actions/product";
 import { getAllEvents } from "./redux/actions/event";
 import { getAllCartItemsUser } from "./redux/actions/cart";
 import { useSelector } from "react-redux";
+import { getAllWishlistItemsUser } from "./redux/actions/wishlist";
 const App = () => {
   const { user } = useSelector((state) => state.user);
   const { cartItems } = useSelector((state) => state.cart);
@@ -54,6 +55,7 @@ const App = () => {
   }, []);
   useEffect(() => {
     Store.dispatch(getAllCartItemsUser(user?._id));
+    Store.dispatch(getAllWishlistItemsUser(user?._id));
   }, [user]);
 
   return (

@@ -1,26 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import { RxCross1 } from "react-icons/rx";
 import { IoBagHandleOutline } from "react-icons/io5";
-import { HiOutlineMinus, HiPlus } from "react-icons/hi";
 import { BsCartPlus } from "react-icons/bs";
-const Wishlist = ({ setOpenWishlist }) => {
-  const WishlistData = [
-    {
-      name: "Iphone 14 pro max 1TB",
-      descriptions: "Test",
-      price: "24990000",
-    },
-    {
-      name: "Laptop asus zenbook",
-      descriptions: "Test",
-      price: "28990000",
-    },
-    {
-      name: "Apple watch ultra",
-      descriptions: "Test",
-      price: "22990000",
-    },
-  ];
+import { getAllWishlistItemsUser } from "../../redux/actions/wishlist";
+import { backend_url, server } from "../../server";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllCartItemsUser } from "../../redux/actions/cart";
+const Wishlist = ({ setOpenWishlist, data }) => {
   return (
     <div className="fixed top-0 left-0 w-full bg-[#0000004b] h-screen z-10">
       <div className="fixed  top-0 right-0 min-h-full 800px:w-[25%] w-[80%] shadow-sm bg-white flex flex-col justify-between">
@@ -39,38 +27,65 @@ const Wishlist = ({ setOpenWishlist }) => {
           </div>
           {/*wishlist signle */}
           <div className="w-full border-t ">
-            {WishlistData &&
-              WishlistData.map((i, index) => (
-                <WishlistSingle key={index} data={i} />
-              ))}
+            {data &&
+              data.map((i, index) => <WishlistSingle key={index} data={i} />)}
           </div>
         </div>
       </div>
     </div>
   );
 };
-//Cart signle
+//wishlist signle
 const WishlistSingle = ({ data }) => {
+  const { user } = useSelector((state) => state.user);
+  console.log(`check cart`, data);
+  const dispatch = useDispatch();
   function formatVietnameseCurrency(value) {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
     }).format(value);
   }
+  const handleDelete = async (id) => {
+    try {
+      await axios.post(
+        `${server}/wishlist/delete-items-in-wishlist/${data?._id}`
+      );
+      // Sau khi xóa thành công, cập nhật danh sách cartData
+      toast.success("Xóa thành công !");
+      // Tải lại danh sách mục trong giỏ hàng sau khi xóa
+      dispatch(getAllWishlistItemsUser(data?.user?._id));
+    } catch (error) {
+      console.error("Lỗi xóa mục khỏi giỏ hàng:", error);
+    }
+  };
+  const addToCart = () => {
+    try {
+      dispatch(
+        addToCart(data?.user?._id, data.shop?._id, data?.product?._id, 1)
+      );
+      toast.success("Thêm vào giỏ hàng thành công !");
+      // Tải lại danh sách mục trong giỏ hàng sau khi xóa
+      dispatch(getAllCartItemsUser(user?._id));
+    } catch (error) {
+      console.error("Lỗi xóa mục khỏi giỏ hàng:", error);
+    }
+  };
+
   return (
     <div className="border-b p-4">
       <div className="w-full flex items-center">
-        <RxCross1 className="cursor-pointer" size={25} />
+        <RxCross1 className="cursor-pointer" size={25} onClick={handleDelete} />
         <img
-          src="https://cdn.tgdd.vn/Products/Images/42/251192/iphone-14-pro-max-tim-thumb-600x600.jpg"
+          src={`${backend_url}${data.product?.images[0]}`}
           alt="cart-img"
           className="w-[80px] h-h[80px] pl-6"
         />
         <div className="pl-[5px] flex justify-between w-full items-center">
           <div>
-            <h1>{data.name}</h1>
+            <h1>{data.product?.name}</h1>
             <h4 className="font-[400] text-[15px] text-[#00000082]">
-              {formatVietnameseCurrency(data.price)} x 1
+              {formatVietnameseCurrency(data.product?.discountPrice)} x 1
             </h4>
           </div>
         </div>
@@ -79,6 +94,7 @@ const WishlistSingle = ({ data }) => {
             size={30}
             className="cursor-pointer"
             title="Thêm vào giỏ hàng"
+            onClick={addToCart}
           />
         </div>
       </div>
