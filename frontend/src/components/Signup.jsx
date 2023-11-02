@@ -16,6 +16,7 @@ const Signup = () => {
   const [confirm, setConfirm] = useState("");
   const [visibleConfirm, setvisibleConfirm] = useState(false);
   const [avatar, setAvatar] = useState(null);
+  const [phoneNumber, setPhoneNumber] = useState("");
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newForm = new FormData();
@@ -25,6 +26,7 @@ const Signup = () => {
     newForm.append("email", email);
     newForm.append("password", password);
     newForm.append("confirm", confirm);
+    newForm.append("phoneNumber", phoneNumber);
     axios
       .post(`${server}/user/new-user`, newForm, config)
       .then((res) => {
@@ -83,6 +85,25 @@ const Signup = () => {
                   placeholder="Vui lòng nhập địa chỉ email..."
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:ring-2 sm:text-sm"
+                />
+              </div>
+            </div>
+            <div>
+              <label
+                htmlFor="phoneNumber"
+                className="block text-md font-medium text-gray-700"
+              >
+                Số điện thoại
+              </label>
+              <div className="mt-3">
+                <input
+                  type="number"
+                  autoComplete="phoneNumber"
+                  required
+                  placeholder="Vui lòng nhập số điện thoại..."
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:ring-2 sm:text-sm"
                 />
               </div>

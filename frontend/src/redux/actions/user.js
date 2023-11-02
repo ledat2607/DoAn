@@ -45,7 +45,7 @@ export const loadSeller = () => async (dispatch) => {
 
 // user update information
 export const updateUserInformation =
-  (name, email, phoneNumber, password) => async (dispatch) => {
+  (name, email, phoneNumber) => async (dispatch) => {
     try {
       dispatch({
         type: "updateUserInfoRequest",
@@ -55,7 +55,6 @@ export const updateUserInformation =
         `${server}/user/update-user-info`,
         {
           email,
-          password,
           phoneNumber,
           name,
         },
@@ -81,8 +80,7 @@ export const updateUserInformation =
 
 // update user address
 export const updatUserAddress =
-  (country, city, address1, address2, zipCode, addressType) =>
-  async (dispatch) => {
+  (country, city, town, street, addressType) => async (dispatch) => {
     try {
       dispatch({
         type: "updateUserAddressRequest",
@@ -93,9 +91,8 @@ export const updatUserAddress =
         {
           country,
           city,
-          address1,
-          address2,
-          zipCode,
+          town,
+          street,
           addressType,
         },
         { withCredentials: true }
@@ -104,7 +101,7 @@ export const updatUserAddress =
       dispatch({
         type: "updateUserAddressSuccess",
         payload: {
-          successMessage: "User address updated succesfully!",
+          successMessage: "Cập nhật thành công!",
           user: data.user,
         },
       });

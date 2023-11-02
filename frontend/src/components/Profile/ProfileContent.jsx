@@ -1,23 +1,63 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import { backend_url } from "../../server";
-import {
-  AiOutlineCamera,
-  AiOutlineArrowRight,
-  AiOutlineDelete,
-} from "react-icons/ai";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { backend_url, server } from "../../server";
+import { AiOutlineCamera, AiOutlineDelete } from "react-icons/ai";
+import { RxCross1 } from "react-icons/rx";
 import styles from "../../styles/styles";
 import { MdOutlineTrackChanges } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { DataGrid } from "@material-ui/data-grid";
+import {
+  deleteUserAddress,
+  updatUserAddress,
+  updateUserInformation,
+} from "../../redux/actions/user";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { Country, State } from "country-state-city";
 const ProfileContent = ({ active }) => {
-  const { user } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const { user, error, successMessage } = useSelector((state) => state.user);
   const [name, setName] = useState(user && user?.name);
   const [email, setEmail] = useState(user && user?.email);
-  const [phoneNumber, setPhoneNumber] = useState(user && user?.phoneNumber);
+  const [avatar, setAvatar] = useState(null);
+  const [phoneNumber, setPhoneNumber] = useState(
+    user && "0" + user?.phoneNumber
+  );
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+      dispatch({ type: "clearErrors" });
+    }
+    if (successMessage) {
+      toast.success(successMessage.successMessage);
+      dispatch({ type: "clearMessage" });
+    }
+  }, [error, successMessage]);
+
+  //update information
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(`first`);
+    dispatch(updateUserInformation(name, email, phoneNumber));
+  };
+
+  //change image
+  const handleImage = async (e) => {
+    const file = e.target.files[0];
+    console.log(file);
+    setAvatar(file);
+    const formData = new FormData();
+
+    formData.append("image", e.target.files[0]);
+    await axios
+      .put(`${server}/user/update-avatar`, formData, { withCredentials: true })
+      .then((res) => {
+        window.location.reload();
+        toast.success("Cập nhật ảnh đại diện thành công !");
+      })
+      .catch((err) => {
+        toast.error(err);
+      });
   };
   return (
     <div className="w-full">
@@ -32,7 +72,15 @@ const ProfileContent = ({ active }) => {
                 alt="img-profile-avt"
               />
               <div className="800px:top-[40%] w-[30px] h-[30px] rounded-full bg-[#e3e9ee] flex items-center justify-center cursor-pointer absolute bottom-[5px] right-[5px]">
-                <AiOutlineCamera />
+                <input
+                  type="file"
+                  id="image"
+                  className="hidden"
+                  onChange={handleImage}
+                />
+                <label htmlFor="image">
+                  <AiOutlineCamera className="cursor-pointer" />
+                </label>
               </div>
             </div>
           </div>
@@ -109,6 +157,11 @@ const ProfileContent = ({ active }) => {
       {active === 7 && (
         <div>
           <Addresses />
+        </div>
+      )}
+      {active === 8 && (
+        <div>
+          <ChangePassword />
         </div>
       )}
     </div>
@@ -460,10 +513,102 @@ const PaymentMethod = () => {
     </div>
   );
 };
-const Addresses = () => {
+//Change password
+const ChangePassword = () => {
   const [isPopupVisible, setPopupVisible] = useState(false);
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const handleClick = () => {
     setPopupVisible(!isPopupVisible);
+  };
+  const passwordChangeHandler = async () => {};
+  return (
+    <div className="w-full px-5">
+      <div className="flex w-full items-center justify-between">
+        <h1 className="text-[25px] font-[600] text-[#000000ba] uppercase font-Poppins">
+          Thay đổi mật khẩu
+        </h1>
+      </div>
+      <div className="w-full ">
+        <form aria-required onSubmit={passwordChangeHandler}>
+          <div className="w-[60%] block mx-auto p-2">
+            <label className="block p-2">Mật khẩu cũ</label>
+            <input
+              type="text"
+              className="w-[95%] p-2 h-[40px] border ring-1 rounded-lg focus:ring-blue-500 focus:border-gray-400"
+              placeholder="Nhập mật khẩu cũ của bạn..."
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+            />
+          </div>
+          <div className="w-[60%] block mx-auto p-2">
+            <label className="block p-2">Mật khẩu mới</label>
+            <input
+              type="text"
+              className="w-[95%] p-2 h-[40px] border ring-1 rounded-lg focus:ring-blue-500 focus:border-gray-400"
+              placeholder="Nhập mật khẩu mới của bạn..."
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+          </div>
+          <div></div>
+          <div className="w-[60%] block mx-auto p-2">
+            <label className="block p-2">Xác nhận mật khẩu mới</label>
+            <input
+              type="text"
+              className="w-[95%] p-2 h-[40px] border ring-1 rounded-lg focus:ring-blue-500 focus:border-gray-400"
+              placeholder="Xác nhận mật khẩu mới của bạn..."
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </div>
+          <input
+            type="submit"
+            className={`${styles.button} w-[100px] h-[40px] mx-auto`}
+            value="Xác nhận"
+          />
+        </form>
+      </div>
+    </div>
+  );
+};
+const Addresses = () => {
+  const { user } = useSelector((state) => state.user);
+  const [isPopupVisible, setPopupVisible] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [country, setCountry] = useState("");
+  const [city, setCity] = useState("");
+  const [town, setTown] = useState("");
+  const [street, setStreet] = useState("");
+  const [addressType, setAddressType] = useState("");
+  const dispatch = useDispatch();
+  const addressTypeData = [
+    { name: "Mặc định" },
+    { name: "Nhà riêng" },
+    { name: "Mặc định" },
+    { name: "Khác" },
+  ];
+  //hàm thêm địa chỉ
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (addressType === "" || country === "" || city === "") {
+      toast.error("Vui lòng điền đầy đủ thông tin !");
+    } else {
+      //Cập nhật
+      dispatch(updatUserAddress(country, city, town, street, addressType));
+      setPopupVisible(false);
+      setCountry("");
+      setCity("");
+      setTown("");
+      setStreet("");
+    }
+  };
+  const handleClick = () => {
+    setPopupVisible(!isPopupVisible);
+  };
+  const handleDelete = (item) => {
+    dispatch(deleteUserAddress(item._id));
   };
   return (
     <div className="w-full px-5">
@@ -473,47 +618,184 @@ const Addresses = () => {
         </h1>
         <div
           className={`${styles.button} w-[150px] h-[40px] rounded-md text-[18px] shadow-lg bg-gray-300 `}
+          onClick={handleClick}
         >
           Thêm mới
         </div>
       </div>
-      <div className="mt-5 w-full bg-white h-[70px] rounded-[5px] flex items-center px-3 shadow-lg justify-between pr-10">
-        <div className="flex item-center">
-          <h5 className="pl-5 font-[600] text-[18px] mt-2">Mặc định</h5>
-        </div>
-        <div className="pl-8 flex items-center">
-          <h6 className="font-[600] text-[20px]">
-            Tân Thành 24, Huyện Bắc Tân Uyên, Tỉnh Bình Dương
-          </h6>
-        </div>
-        <div className="pl-6 flex items-center font-[400] text-[18px]">0966872138</div>
-        <div className="min-w-[10%] flex items-center justify-between pl-8">
-          <AiOutlineDelete
-            size={25}
-            className="cursor-pointer hover:scale-[1.1] hover:text-red-500"
-            onClick={handleClick}
-          />
-        </div>
-        {isPopupVisible && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white p-4 rounded-lg ">
-              <p>Bạn có chắc chắn muốn xóa dữ liệu này không?</p>
-              <button
-                className="bg-red-500 text-white px-2 py-1 rounded mt-[10%]"
-                onClick={handleClick}
-              >
-                Xác nhận
-              </button>
-              <button
-                className="bg-gray-300 px-2 py-1 rounded ml-5"
-                onClick={() => setPopupVisible(!isPopupVisible)}
-              >
-                Đóng
-              </button>
+      {user &&
+        user?.addresses.map((item, index) => (
+          <div className="mt-5 w-full bg-white h-[70px] rounded-[5px] flex items-center px-3 shadow-lg justify-between pr-10">
+            <div className="flex item-center" key={index}>
+              <h5 className="pl-5 font-[600] text-[18px] mt-2">
+                {item?.addressType}
+              </h5>
+            </div>
+            <div className="pl-8 flex items-center">
+              <h6 className="font-[600] text-[20px]">
+                {item.street} - {item.town} - {item.country}
+              </h6>
+            </div>
+            <div className="pl-6 flex items-center font-[400] text-[18px]">
+              0{user?.phoneNumber}
+            </div>
+            <div className="min-w-[10%] flex items-center justify-between pl-8">
+              <AiOutlineDelete
+                size={25}
+                className="cursor-pointer hover:scale-[1.1] hover:text-red-500"
+                onClick={() => setIsOpen(true)}
+              />
+              {isOpen && (
+                <div
+                  key={index}
+                  className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[20000]"
+                >
+                  <div className="bg-white p-4 rounded-lg">
+                    <p>Bạn có chắc chắn muốn xóa dữ liệu này không?</p>
+                    <button
+                      className="bg-red-500 text-white px-2 py-1 rounded mt-[10%]"
+                      onClick={() => handleDelete(item)}
+                    >
+                      Xác nhận
+                    </button>
+                    <button
+                      className="bg-gray-300 px-2 py-1 rounded ml-5"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Đóng
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
-        )}
-      </div>
+        ))}
+      {user && user.addresses.length === 0 && (
+        <h5 className="text-center font-Roboto font-[300] text-[25px]">
+          Bạn chưa thêm địa chỉ nào !
+        </h5>
+      )}
+      {isPopupVisible && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="w-[45%] h-[90vh] bg-white p-4 rounded-lg ">
+            <div className="w-full flex justify-end p-1">
+              <RxCross1
+                className="cursor-pointer"
+                size={20}
+                onClick={handleClick}
+              />
+            </div>
+            <h1 className="text-center text-[25px] font-Poppins">
+              Thêm mới địa chỉ nhận hàng
+            </h1>
+            <div className="w-full">
+              <form aria-required onSubmit={handleSubmit} className="w-full">
+                <div className="w-full block p-2">
+                  <label className="block p-2">Quốc gia</label>
+                  <select
+                    name=""
+                    id=""
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                    className="w-[95%] border h-[40px] rounded-[5px]"
+                  >
+                    <option value="" className="block border pb-2">
+                      Chọn quốc gia
+                    </option>
+                    {Country &&
+                      Country.getAllCountries().map((item) => (
+                        <option
+                          className="block pb-2"
+                          key={item.isoCode}
+                          value={item.isoCode}
+                        >
+                          {item.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+                <div className="w-full block p-2">
+                  <label className="block p-2">Tỉnh/Thành phố</label>
+                  <select
+                    name=""
+                    id=""
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    className="w-[95%] border h-[40px] rounded-[5px]"
+                  >
+                    <option value="" className="block border pb-2">
+                      Chọn Tỉnh/Thành phố
+                    </option>
+                    {State &&
+                      State.getStatesOfCountry(country).map((item) => (
+                        <option
+                          className="block pb-2"
+                          key={item.isoCode}
+                          value={item.isoCode}
+                        >
+                          {item.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+                <div className="w-full block p-2">
+                  <label className="block p-2">Quận/Huyện</label>
+                  <input
+                    type="text"
+                    className="w-[95%] p-2 h-[40px] border ring-1 rounded-lg focus:ring-blue-500 focus:border-gray-400"
+                    placeholder="Nhập Quận/Huyện của bạn..."
+                    value={town}
+                    onChange={(e) => setTown(e.target.value)}
+                  />
+                </div>
+                <div className="w-full block p-2">
+                  <label className="block p-2">Số nhà/Tên đường</label>
+                  <input
+                    type="text"
+                    className="w-[95%] p-2 h-[40px] border ring-1 rounded-lg focus:ring-blue-500 focus:border-gray-400"
+                    placeholder="Nhập Số nhà,Tên đường,..."
+                    value={street}
+                    onChange={(e) => setStreet(e.target.value)}
+                  />
+                </div>
+                <div className="w-full block p-2">
+                  <label className="block p-2">Số nhà/Tên đường</label>
+                  <select
+                    name=""
+                    id=""
+                    value={addressType}
+                    onChange={(e) => setAddressType(e.target.value)}
+                    className="w-[95%] border h-[40px] rounded-[5px]"
+                  >
+                    <option value="" className="block border pb-2">
+                      Chọn hình thức
+                    </option>
+                    {addressTypeData &&
+                      addressTypeData.map((item) => (
+                        <option
+                          className="block pb-2"
+                          key={item.name}
+                          value={item.name}
+                        >
+                          {item.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+                <div className="w-full flex justify-center pb-2">
+                  <input
+                    type="submit"
+                    className={`${styles.button} w-[100px] h-[40px] mt-5 cursor-pointer`}
+                    required
+                    value={"Xác nhận"}
+                    readOnly
+                  />
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -10,16 +10,19 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import styles from "../../../styles/styles";
 import ProductDetailsCard from "../ProductDetailsCard/ProductDetailsCard";
-import { backend_url } from "../../../server";
+import { backend_url, server } from "../../../server";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { addToCart, getAllCartItemsUser } from "../../../redux/actions/cart";
-import { addToWishlist } from "../../../redux/actions/wishlist";
+import {
+  addToWishlist,
+  getAllWishlistItemsUser,
+} from "../../../redux/actions/wishlist";
+import axios from "axios";
 const ProductCard = ({ data }) => {
-  console.log(`check product cart`, data);
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
-  const { cart } = useSelector((state) => state.cart);
+  const { wishlistItems } = useSelector((state) => state.wishlist);
   const [click, setClick] = useState(false);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
@@ -27,6 +30,17 @@ const ProductCard = ({ data }) => {
     navigate(`/product/${data.name}`);
     window.location.reload(true);
   };
+  useEffect(() => {
+    if (
+      wishlistItems &&
+      wishlistItems?.find((i) => i.product?._id === data?._id)
+    ) {
+      setClick(true);
+    } else {
+      setClick(false);
+    }
+  }, [wishlistItems, data]);
+
   //hiển thị định dạng tiền tệ
   function formatVietnameseCurrency(value) {
     return new Intl.NumberFormat("vi-VN", {
@@ -34,25 +48,44 @@ const ProductCard = ({ data }) => {
       currency: "VND",
     }).format(value);
   }
+  //xóa khỏi danh sách yêu thích
+  // const handleDelete = async (id) => {
+  //   try {
+  //     await axios.post(
+  //       `${server}/wishlist/delete-items-in-wishlist/${user?._id}`
+  //     );
+  //     // Sau khi xóa thành công, cập nhật danh sách cartData
+  //     toast.success("Xóa thành công !");
+  //     console.log(wishlistItems?._id);
+  //     setClick(false);
+  //     // Tải lại danh sách mục trong giỏ hàng sau khi xóa
+  //     dispatch(getAllWishlistItemsUser(data?.user?._id));
+  //   } catch (error) {
+  //     console.error("Lỗi xóa mục khỏi giỏ hàng:", error);
+  //   }
+  // };
   //Thêm vào giỏ hàng
   const addToCartHandler = () => {
     dispatch(addToCart(user?._id, data.shop?._id, data?._id, 1));
     toast.success("Thêm vào giỏ hàng thành công !");
     dispatch(getAllCartItemsUser(user?._id));
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
   };
+
   //Thêm vào danh sách yêu thích
-  const addToWishlistHandler = () => {
+  const addToWishlistHandler = async () => {
     const result = dispatch(
       addToWishlist(user?._id, data.shop?._id, data?._id)
     );
-    if (result.data.success === true) {
-      toast.success("Đã thêm vào danh sách yêu thích !");
-      setClick(!click);
-      dispatch(getAllCartItemsUser(user?._id));
-    } else {
-      toast.warning("Sản phẩm đã có trong danh sách yêu thích");
-    }
+    toast.success("Thêm vào danh sách thành công !");
+    dispatch(getAllWishlistItemsUser(user?._id));
+    setTimeout(() => {
+      window.location.reload(true);
+    }, 1200);
   };
+
   return (
     <>
       <div className="border bg-white hover:border-2 hover:border-blue-300 border-gray-800 h-[350px] rounded-lg shadow-md p-3 relative cursor-pointer">

@@ -10,7 +10,7 @@ export const wishlistReducer = createReducer(initialState, {
   },
   wishlistCreateSuccess: (state, action) => {
     state.isLoading = false;
-    state.cart = action.payload;
+    state.wishlistItems = action.payload;
     state.success = true;
   },
   wishlistCreateFail: (state, action) => {

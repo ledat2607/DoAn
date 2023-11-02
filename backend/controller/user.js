@@ -13,7 +13,7 @@ const { isAuthenticated } = require("../middleware/auth");
 //new user
 router.post("/new-user", upload.single("file"), async (req, res, next) => {
   try {
-    const { name, email, password, confirm } = req.body;
+    const { name, email, password, confirm, phoneNumber } = req.body;
     const userEmail = await User.findOne({ email });
     if (userEmail) {
       const filename = req.file.fieldname;
@@ -44,6 +44,7 @@ router.post("/new-user", upload.single("file"), async (req, res, next) => {
       email: email,
       password: password,
       avatar: filePath,
+      phoneNumber: phoneNumber,
     };
     const activationToken = createAvtivationToken(user);
     const activationUrl = `http://localhost:3000/activation/${activationToken}`;
@@ -85,7 +86,7 @@ router.post(
       if (!newUser) {
         return next(new ErrorHandler("Mã xác thực lỗi", 400));
       }
-      const { name, email, password, avatar } = newUser;
+      const { name, email, password, avatar, phoneNumber } = newUser;
       let user = await User.findOne({ email });
       if (user) {
         return next(new ErrorHandler("Người dùng đã tồn tại", 400));
@@ -95,6 +96,7 @@ router.post(
         email,
         password,
         avatar,
+        phoneNumber,
       });
       sendToken(user, 201, res);
     } catch (error) {
@@ -155,6 +157,10 @@ router.get(
         expires: new Date(Date.now()),
         httpOnly: true,
       });
+      res.cookie("seller_token", null, {
+        expires: new Date(Date.now()),
+        httpOnly: true,
+      });
       res.status(200).json({
         success: true,
         message: "Đăng xuất thành công",
@@ -164,4 +170,108 @@ router.get(
     }
   })
 );
+//update user infor
+router.put(
+  "/update-user-info",
+  isAuthenticated,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const { name, email, phoneNumber } = req.body;
+      const user = await User.findOne({ email });
+      if (!user) {
+        return next(new ErrorHandler("Người dùng không tồn tại!", 400));
+      }
+      user.name = name;
+      user.email = email;
+      user.phoneNumber = phoneNumber;
+      await user.save();
+      res.status(201).json({
+        success: true,
+        user,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  })
+);
+//update user avatar
+router.put(
+  "/update-avatar",
+  isAuthenticated,
+  upload.single("image"),
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const existsUser = await User.findById(req.user.id);
+      const existsAvatarPath = `uploads/${existsUser.avatar}`;
+      fs.unlinkSync(existsAvatarPath);
+      const fileUrl = path.join(req.file.filename);
+      const user = await User.findByIdAndUpdate(req.user.id, {
+        avatar: fileUrl,
+      });
+      res.status(200).json({
+        success: true,
+        user,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+//update user addresses
+router.put(
+  "/update-user-addresses",
+  isAuthenticated,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const user = await User.findById(req.user.id);
+      const sameTypeAddress = user.addresses.find(
+        (address) => address.addressType === req.body.addressType
+      );
+      if (sameTypeAddress) {
+        return next(new ErrorHandler("Địa chỉ này đã tồn tại!", 404));
+      }
+      const existsAddress = user.addresses.find(
+        (address) => address._id === req.body._id
+      );
+      if (existsAddress) {
+        Object.assign(existsAddress, req.body);
+      } else {
+        //add new address
+        user.addresses.push(req.body);
+      }
+      await user.save();
+      res.status(200).json({
+        success: true,
+        user,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  })
+);
+//delete user address
+router.delete(
+  "/delete-user-address/:id",
+  isAuthenticated,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const userId = req.user._id;
+      const addressId = req.params.id;
+
+      await User.updateOne(
+        {
+          _id: userId,
+        },
+        { $pull: { addresses: { _id: addressId } } }
+      );
+
+      const user = await User.findById(userId);
+
+      res.status(200).json({ success: true, user });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
 module.exports = router;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../../styles/styles";
 import { Link } from "react-router-dom";
 import { productData, categoriesData } from "../../static/data";
@@ -12,13 +12,15 @@ import DropDown from "./DropDown";
 import { BiMenuAltLeft } from "react-icons/bi";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { backend_url } from "../../server";
 import Cart from "../cart/Cart";
 import Wishlist from "../Wishlist/Wishlist";
 import Account from "../Account";
 import { RxCross1 } from "react-icons/rx";
 import { Avatar } from "@mui/material";
+import { getAllWishlistItemsUser } from "../../redux/actions/wishlist";
+import { getAllCartItemsUser } from "../../redux/actions/cart";
 
 const Header = ({ activeHeading }) => {
   const { isAuthenticated, user } = useSelector((state) => state.user);
@@ -33,6 +35,9 @@ const Header = ({ activeHeading }) => {
   const [openCart, setOpenCart] = useState(false);
   const [openWishlist, setOpenWishlist] = useState(false);
   const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
+ 
+
   const handleSearchChange = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
@@ -50,6 +55,7 @@ const Header = ({ activeHeading }) => {
       setActive(false);
     }
   });
+
   return (
     <div className={`w-full`}>
       <div className="ml-4 hidden 800px:h-[50px] 800px:my-[20px] 800px:flex items-center justify-between">

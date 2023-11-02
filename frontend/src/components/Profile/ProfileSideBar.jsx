@@ -4,6 +4,7 @@ import { RxPerson } from "react-icons/rx";
 import { HiOutlineShoppingCart, HiOutlineReceiptRefund } from "react-icons/hi";
 import { AiOutlineMessage, AiOutlineCreditCard } from "react-icons/ai";
 import { MdOutlineTrackChanges } from "react-icons/md";
+import { RiLockPasswordLine } from "react-icons/ri";
 import { TbAddressBook } from "react-icons/tb";
 const ProfileSideBar = ({ active, setActive }) => {
   const navigate = useNavigate();
@@ -20,6 +21,19 @@ const ProfileSideBar = ({ active, setActive }) => {
           } 800px:block hidden`}
         >
           Thông tin
+        </span>
+      </div>
+      <div
+        className="flex items-center cursor-pointer w-full mb-8 relative"
+        onClick={() => setActive(8)} //|| navigate("/inbox")
+      >
+        <RiLockPasswordLine size={30} color={active === 8 ? "red" : ""} />
+        <span
+          className={`pl-3 ${
+            active === 8 ? "text-red-500" : ""
+          } 800px:block hidden`}
+        >
+          Thay đổi mật khẩu
         </span>
       </div>
       <div
@@ -91,6 +105,7 @@ const ProfileSideBar = ({ active, setActive }) => {
           Phương thức thanh toán
         </span>
       </div>
+
       <div
         className="flex items-center cursor-pointer w-full mb-8 relative"
         onClick={() => setActive(7)} //|| navigate("/inbox")
