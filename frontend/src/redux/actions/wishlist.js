@@ -2,7 +2,7 @@ import axios from "axios";
 import { server } from "../../server";
 
 export const addToWishlist =
-  (userId, shopId, productId, qty) => async (dispatch) => {
+  (userId, shopId, productId) => async (dispatch) => {
     try {
       dispatch({
         type: "wishlistCreateRequest",
@@ -16,7 +16,7 @@ export const addToWishlist =
 
       dispatch({
         type: "wishlistCreateSuccess",
-        payload: data,
+        payload: data.data,
       });
     } catch (error) {
       dispatch({

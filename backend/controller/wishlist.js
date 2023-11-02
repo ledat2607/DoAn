@@ -79,10 +79,9 @@ router.post(
       const wishlistId = req.params.id;
       const isExists = await Whishlist.findByIdAndDelete(wishlistId);
       if (!isExists) {
-        return next(
-          new ErrorHandler("Sản phẩm không có trong giỏ hàng !", 400)
-        );
+        return next(new ErrorHandler("Sản phẩm không có danh sách !", 400));
       }
+
       res.status(200).json({
         success: true,
         message: "Xóa khỏi danh sách yêu thích thành công !",

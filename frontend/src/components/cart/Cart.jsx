@@ -65,8 +65,8 @@ const Cart = ({ setOpenCart, data }) => {
 };
 //Cart signle
 const CartSignle = ({ data }) => {
-  const { user } = useSelector((state) => state.user);
-  const [value, setValue] = useState(data?.qty);
+  const [value, setValue] = useState(data && data?.qty);
+  const { cartItems } = useSelector((state) => state.cart);
   const total_price = data.product.discountPrice * value;
   const dispatch = useDispatch();
   const handleDelete = async (id) => {
@@ -75,7 +75,7 @@ const CartSignle = ({ data }) => {
       // Sau khi xóa thành công, cập nhật danh sách cartData
       toast.success("Xóa thành công !");
       // Tải lại danh sách mục trong giỏ hàng sau khi xóa
-      dispatch(getAllCartItemsUser(user?._id));
+      dispatch(getAllCartItemsUser(data.user?._id));
     } catch (error) {
       console.error("Lỗi xóa mục khỏi giỏ hàng:", error);
     }
@@ -102,6 +102,7 @@ const CartSignle = ({ data }) => {
       currency: "VND",
     }).format(value);
   }
+
   return (
     <div className="border-b p-4">
       <div className="w-full flex items-center">
@@ -117,7 +118,7 @@ const CartSignle = ({ data }) => {
               <HiPlus size={16} color="white" />
             </button>
           </div>
-          <span className="pl-[10px]">{value}</span>
+          <span className="pl-[10px]">{data && data?.qty}</span>
           <div
             className="bg-[#a7abb14f] rounded-full w-[25px] h-[25px] flex items-center justify-center cursor-pointer"
             onClick={() => setValue(value === 1 ? 1 : value - 1)}

@@ -46,18 +46,14 @@ import { useSelector } from "react-redux";
 import { getAllWishlistItemsUser } from "./redux/actions/wishlist";
 const App = () => {
   const { user } = useSelector((state) => state.user);
-  const { cartItems } = useSelector((state) => state.cart);
   useEffect(() => {
     Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
     Store.dispatch(getAllProducts());
     Store.dispatch(getAllEvents());
   }, []);
-  useEffect(() => {
-    Store.dispatch(getAllCartItemsUser(user?._id));
-    Store.dispatch(getAllWishlistItemsUser(user?._id));
-  }, [user]);
-
+  Store.dispatch(getAllCartItemsUser(user?._id));
+  Store.dispatch(getAllWishlistItemsUser(user?._id));
   return (
     <BrowserRouter>
       <Routes>

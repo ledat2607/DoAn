@@ -7,7 +7,7 @@ import { backend_url, server } from "../../server";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllCartItemsUser } from "../../redux/actions/cart";
+import { addToCart, getAllCartItemsUser } from "../../redux/actions/cart";
 const Wishlist = ({ setOpenWishlist, data }) => {
   return (
     <div className="fixed top-0 left-0 w-full bg-[#0000004b] h-screen z-10">
@@ -16,7 +16,9 @@ const Wishlist = ({ setOpenWishlist, data }) => {
         <div>
           <div className={`flex p-4`}>
             <IoBagHandleOutline size={25} />
-            <h5 className="pl-2 text-[20px] font-[500]">3 Sản phẩm</h5>
+            <h5 className="pl-2 text-[20px] font-[500]">
+              {data && data?.length} Sản phẩm
+            </h5>
           </div>
           <div className="absolute top-[20px] flex w-full justify-end pr-5">
             <RxCross1
@@ -28,7 +30,13 @@ const Wishlist = ({ setOpenWishlist, data }) => {
           {/*wishlist signle */}
           <div className="w-full border-t ">
             {data &&
-              data.map((i, index) => <WishlistSingle key={index} data={i} />)}
+              data.map((i, index) => (
+                <WishlistSingle
+                  key={index}
+                  data={i}
+                  setOpenWishlist={setOpenWishlist}
+                />
+              ))}
           </div>
         </div>
       </div>
@@ -36,9 +44,8 @@ const Wishlist = ({ setOpenWishlist, data }) => {
   );
 };
 //wishlist signle
-const WishlistSingle = ({ data }) => {
+const WishlistSingle = ({ setOpenWishlist, data }) => {
   const { user } = useSelector((state) => state.user);
-  console.log(`check cart`, data);
   const dispatch = useDispatch();
   function formatVietnameseCurrency(value) {
     return new Intl.NumberFormat("vi-VN", {
@@ -59,17 +66,11 @@ const WishlistSingle = ({ data }) => {
       console.error("Lỗi xóa mục khỏi giỏ hàng:", error);
     }
   };
-  const addToCart = () => {
-    try {
-      dispatch(
-        addToCart(data?.user?._id, data.shop?._id, data?.product?._id, 1)
-      );
-      toast.success("Thêm vào giỏ hàng thành công !");
-      // Tải lại danh sách mục trong giỏ hàng sau khi xóa
-      dispatch(getAllCartItemsUser(user?._id));
-    } catch (error) {
-      console.error("Lỗi xóa mục khỏi giỏ hàng:", error);
-    }
+  const addToCartHandler = () => {
+    dispatch(addToCart(data.user?._id, data.shop?._id, data?.product?._id, 1));
+    toast.success("Thêm vào giỏ hàng thành công !");
+    setOpenWishlist(false);
+    dispatch(getAllCartItemsUser(user?._id));
   };
 
   return (
@@ -94,7 +95,7 @@ const WishlistSingle = ({ data }) => {
             size={30}
             className="cursor-pointer"
             title="Thêm vào giỏ hàng"
-            onClick={addToCart}
+            onClick={addToCartHandler}
           />
         </div>
       </div>

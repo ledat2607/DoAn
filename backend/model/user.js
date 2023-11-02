@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema({
       city: {
         type: String,
       },
-      province: {
+      town: {
         type: String,
       },
       street: {
