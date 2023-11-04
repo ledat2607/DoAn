@@ -10,9 +10,9 @@ const CheckoutSteps = ({ active }) => {
             <span className={`${styles.cart_button_text}`}>1.</span>
             <span
               className={`${
-                active === 1
-                  ? "800px:block text-[#fff] font-[500]"
-                  : "800px:block hidden text-[#f63b60] font-[500]"
+                active > 1
+                  ? "800px:block hidden text-[#fff] font-[500]"
+                  : "800px:block  text-[#fff] font-[500]"
               } flex`}
             >
               Vận chuyển
@@ -46,9 +46,9 @@ const CheckoutSteps = ({ active }) => {
             </span>
             <span
               className={`${
-                active === 2
-                  ? "800px:block text-[#fff] font-[500]"
-                  : "800px:block hidden text-[#f63b60] font-[500]"
+                active > 2
+                  ? "800px:block hidden text-[#fff] font-[500]"
+                  : "800px:block  text-[#fff] font-[500]"
               } flex`}
             >
               Thanh toán
@@ -59,7 +59,7 @@ const CheckoutSteps = ({ active }) => {
         <div className={`${styles.noramlFlex}`}>
           <div
             className={`${
-              active > 3
+              active === 3
                 ? "w-[30px] 800px:w-[70px] h-[4px] !bg-[#f63b60]"
                 : "w-[30px] 800px:w-[70px] h-[4px] !bg-[#FDE1E6]"
             }`}
@@ -82,7 +82,7 @@ const CheckoutSteps = ({ active }) => {
             </span>
             <span
               className={`${
-                active === 2
+                active === 3
                   ? "800px:block text-[#fff] font-[500]"
                   : "800px:block hidden text-[#f63b60] font-[500]"
               } flex`}

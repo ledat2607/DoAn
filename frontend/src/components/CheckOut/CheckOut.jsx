@@ -22,7 +22,7 @@ const CheckOut = () => {
   const paymentSubmit = () => {
     navigate("/payment");
     if (town === "" || street === "" || country === "" || city === "") {
-      toast.error("Please choose your delivery address!");
+      toast.error("Vui lòng chọn địa chỉ nhận hàng!");
     } else {
       const shippingAddress = {
         town,
@@ -45,26 +45,28 @@ const CheckOut = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const name = couponCode;
+    const code = couponCode;
 
-    await axios.get(`${server}/coupon/get-coupon-value/${name}`).then((res) => {
-      const shopId = res.data.couponCode?.shopId;
-      const couponCodeValue = res.data.couponCode?.value;
+    await axios.get(`${server}/coupon/get-coupon-value/${code}`).then((res) => {
+      const shopId = res.data.coupon?.shopId;
+      const couponCodeValue =
+        (res.data.coupon?.minAmount + res.data.coupon?.maxAmount) / 2;
       if (res.data.couponCode !== null) {
         const isCouponValid =
           cartItems && cartItems.filter((item) => item.shopId === shopId);
 
         if (isCouponValid.length === 0) {
-          toast.error("Coupon code is not valid for this shop");
+          toast.error("Mã giảm giá không tồn tại !");
           setCouponCode("");
         } else {
           const eligiblePrice = isCouponValid.reduce(
-            (acc, item) => acc + item.qty * item.discountPrice,
+            (acc, item) => acc + item.qty * item.product?.discountPrice,
             0
           );
-          const discountPrice = (eligiblePrice * couponCodeValue) / 100;
+          const ship = eligiblePrice * 0.001;
+          const discountPrice = (ship * couponCodeValue) / 100;
           setDiscountPrice(discountPrice);
-          setCouponCodeData(res.data.couponCode);
+          setCouponCodeData(res.data.coupon);
           setCouponCode("");
         }
       }
@@ -314,7 +316,7 @@ const CartData = ({
       <div className="flex justify-between border-b pb-3">
         <h3 className="text-[16px] font-[400] text-[#000000a4]">Khuyến mãi:</h3>
         <h5 className="text-[18px] font-[600]">
-          - {discountPercentenge ? "$" + discountPercentenge.toString() : null}
+          - {formatVietnameseCurrency(discountPercentenge)}
         </h5>
       </div>
       <h5 className="text-[18px] font-[600] text-end pt-3">
