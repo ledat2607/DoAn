@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import {
   BrowserRouter,
@@ -45,18 +45,43 @@ import { getAllEvents } from "./redux/actions/event";
 import { getAllCartItemsUser } from "./redux/actions/cart";
 import { useSelector } from "react-redux";
 import { getAllWishlistItemsUser } from "./redux/actions/wishlist";
+import axios from "axios";
+import { server } from "./server.js";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 const App = () => {
   const { user } = useSelector((state) => state.user);
+  const [stripeApikey, setStripeApiKey] = useState("");
+  async function getStripeApiKey() {
+    const { data } = await axios.get(`${server}/payment/stripeapikey`);
+    setStripeApiKey(data.stripeApikey);
+  }
   useEffect(() => {
     Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
     Store.dispatch(getAllProducts());
     Store.dispatch(getAllEvents());
+    getStripeApiKey();
   }, []);
-  Store.dispatch(getAllCartItemsUser(user?._id));
+
   Store.dispatch(getAllWishlistItemsUser(user?._id));
+  Store.dispatch(getAllCartItemsUser(user?._id));
   return (
     <BrowserRouter>
+      {stripeApikey && (
+        <Elements stripe={loadStripe(stripeApikey)}>
+          <Routes>
+            <Route
+              path="/payment"
+              element={
+                <ProtectedRoute>
+                  <PaymentPage />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </Elements>
+      )}
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
@@ -90,14 +115,7 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/payment"
-          element={
-            <ProtectedRoute>
-              <PaymentPage />
-            </ProtectedRoute>
-          }
-        />
+
         {/*shop create */}
         <Route path="/shop-create" element={<ShopCreate />} />
         <Route path="/shop-login" element={<ShopLoginPage />} />

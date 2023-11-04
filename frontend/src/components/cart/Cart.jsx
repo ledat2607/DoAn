@@ -72,7 +72,7 @@ const CartSignle = ({ data }) => {
   const handleDelete = async (id) => {
     try {
       await axios.post(`${server}/cart/delete-items-in-cart/${id}`);
-      // Sau khi xóa thành công, cập nhật danh sách cartData
+
       toast.success("Xóa thành công !");
       // Tải lại danh sách mục trong giỏ hàng sau khi xóa
       dispatch(getAllCartItemsUser(data.user?._id));
@@ -84,6 +84,7 @@ const CartSignle = ({ data }) => {
   const incre = async (id) => {
     try {
       await axios.post(`${server}/cart/incre-qty-cart-items/${id}`);
+      window.location.reload();
     } catch (error) {
       console.error("Lỗi xóa mục khỏi giỏ hàng:", error);
     }
@@ -92,6 +93,7 @@ const CartSignle = ({ data }) => {
   const decre = async (id) => {
     try {
       await axios.post(`${server}/cart/decre-qty-cart-items/${id}`);
+      window.location.reload();
     } catch (error) {
       console.error("Lỗi xóa mục khỏi giỏ hàng:", error);
     }

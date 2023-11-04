@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "../../styles/styles";
-
+import {
+  CardNumberElement,
+  CardCvcElement,
+  CardExpiryElement,
+  useStripe,
+  useElements,
+} from "@stripe/react-stripe-js";
 const Payment = () => {
   const [orderData, setOrderData] = useState();
   useEffect(() => {
@@ -148,6 +154,51 @@ const PaymentInfo = () => {
   );
 };
 const CartData = ({ orderData }) => {
-  return <div>hello</div>;
+  function formatVietnameseCurrency(value) {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(value);
+  }
+
+  return (
+    <div className="w-full bg-[#fff] rounded-md p-5 pb-8 shadow-2xl">
+      <div className="flex justify-between">
+        <h3 className="text-[16px] font-[400] text-[#000000a4]">
+          Tổng tiền sản phẩm:
+        </h3>
+        <h5 className="text-[18px] font-[600]">
+          {formatVietnameseCurrency(orderData?.subTotalPrice)}
+        </h5>
+      </div>
+      <br />
+      <div className="flex justify-between">
+        <h3 className="text-[16px] font-[400] text-[#000000a4]">
+          Phí vận chuyển:
+        </h3>
+        <h5 className="text-[18px] font-[600]">
+          {formatVietnameseCurrency(orderData?.shipping.toFixed(2))}
+        </h5>
+      </div>
+      <br />
+      <div className="flex justify-between border-b pb-3">
+        <h3 className="text-[16px] font-[400] text-[#000000a4]">Khuyến mãi:</h3>
+        <h5 className="text-[18px] font-[600]">
+          - {formatVietnameseCurrency(orderData?.discountPrice)}
+        </h5>
+      </div>
+      <div className="flex justify-between pb-3">
+        <h3 className="text-[16px] mt-2 font-[400] text-[#000000a4]">
+          Tổng thanh toán:
+        </h3>
+        <h5 className="text-[18px] font-[600] text-end pt-3">
+          {formatVietnameseCurrency(orderData?.totalPrice)}
+        </h5>
+      </div>
+
+      <br />
+      <form></form>
+    </div>
+  );
 };
 export default Payment;

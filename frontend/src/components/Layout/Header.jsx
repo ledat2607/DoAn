@@ -36,7 +36,6 @@ const Header = ({ activeHeading }) => {
   const [openWishlist, setOpenWishlist] = useState(false);
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
- 
 
   const handleSearchChange = (e) => {
     const term = e.target.value;
@@ -153,7 +152,7 @@ const Header = ({ activeHeading }) => {
             >
               <AiOutlineHeart size={30} color="rgb(255 255 255 / 83%)" />
               <span className="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center">
-                {wishlistItems && wishlistItems.length}
+                {wishlistItems && wishlistItems?.length}
               </span>
             </div>
           </div>
@@ -164,7 +163,7 @@ const Header = ({ activeHeading }) => {
             >
               <AiOutlineShoppingCart size={30} color="rgb(255 255 255 / 83%)" />
               <span className="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center">
-                {cartItems && cartItems.length}
+                {cartItems && cartItems?.length}
               </span>
             </div>
           </div>
