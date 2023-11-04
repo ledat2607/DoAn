@@ -63,4 +63,19 @@ router.delete(
     }
   })
 );
+//get coupon code value its code
+router.get(
+  "/get-coupon-value/:code",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const coupon = await CoupounCode.findOne({ code: req.params.code });
+      res.status(201).json({
+        success: true,
+        coupon,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error, 400));
+    }
+  })
+);
 module.exports = router;

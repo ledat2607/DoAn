@@ -19,6 +19,7 @@ import {
   ProductDetailsPage,
   ProfilePage,
   CheckOutPage,
+  PaymentPage,
 } from "./Routes.js";
 import {
   ShopCreate,
@@ -86,6 +87,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <CheckOutPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/payment"
+          element={
+            <ProtectedRoute>
+              <PaymentPage />
             </ProtectedRoute>
           }
         />
