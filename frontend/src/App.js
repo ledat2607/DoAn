@@ -66,6 +66,7 @@ const App = () => {
 
   Store.dispatch(getAllWishlistItemsUser(user?._id));
   Store.dispatch(getAllCartItemsUser(user?._id));
+
   return (
     <BrowserRouter>
       {stripeApikey && (

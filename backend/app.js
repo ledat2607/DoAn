@@ -31,6 +31,7 @@ const coupon = require("./controller/couponCode");
 const cart = require("./controller/cart");
 const wishlist = require("./controller/wishlist");
 const payment = require("./controller/payment");
+const order = require("./controller/order");
 app.use("/api/v2/user", user);
 app.use("/api/v2/shop", shop);
 app.use("/api/v2/product", product);
@@ -39,6 +40,7 @@ app.use("/api/v2/coupon", coupon);
 app.use("/api/v2/cart", cart);
 app.use("/api/v2/wishlist", wishlist);
 app.use("/api/v2/payment", payment);
+app.use("/api/v2/order", order);
 
 //if handling
 app.use(ErrorHandler);

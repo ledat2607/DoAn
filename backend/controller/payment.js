@@ -10,9 +10,9 @@ router.post(
     const myPayment = await stripe.paymentIntents.create({
       amount: req.body.amount,
       currency: "vnd",
-      metadata: {
-        company: "qdEcommerce",
-      },
+      // metadata: {
+      //   company: "qdEcommerce",
+      // },
     });
     res.status(200).json({
       success: true,
