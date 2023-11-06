@@ -5,7 +5,7 @@ const Shop = require("../model/shop");
 const { upload } = require("../multer");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const ErrorHandler = require("../utils/ErrorHandler");
-const { isSeller } = require("../middleware/auth");
+const { isSeller, isAuthenticated } = require("../middleware/auth");
 const User = require("../model/user");
 const Cart = require("../model/cart");
 const fs = require("fs");
@@ -142,6 +142,31 @@ router.post(
       res.status(200).json({
         success: true,
         qty: isExists.qty,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  })
+);
+//delete all cartitems in cart
+router.delete(
+  "/delete-cartItems-in-cart/:id",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const userId = req.params.id;
+      const deleteResult = await Cart.deleteMany({ userId: userId });
+
+      if (deleteResult.deletedCount === 0) {
+        return next(
+          new ErrorHandler(
+            "Không có mục nào trong giỏ hàng của người dùng này.",
+            404
+          )
+        );
+      }
+      res.status(200).json({
+        success: true,
+        message: "Xóa giỏ hàng thành công !",
       });
     } catch (error) {
       return next(new ErrorHandler(error.message, 400));

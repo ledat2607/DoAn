@@ -69,6 +69,7 @@ const CartSignle = ({ data }) => {
   const { cartItems } = useSelector((state) => state.cart);
   const total_price = data.product.discountPrice * value;
   const dispatch = useDispatch();
+
   const handleDelete = async (id) => {
     try {
       await axios.post(`${server}/cart/delete-items-in-cart/${id}`);
@@ -120,7 +121,7 @@ const CartSignle = ({ data }) => {
               <HiPlus size={16} color="white" />
             </button>
           </div>
-          <span className="pl-[10px]">{data && data?.qty}</span>
+          <span className="pl-[10px]">{data?.qty}</span>
           <div
             className="bg-[#a7abb14f] rounded-full w-[25px] h-[25px] flex items-center justify-center cursor-pointer"
             onClick={() => setValue(value === 1 ? 1 : value - 1)}

@@ -23,6 +23,7 @@ const ProductCard = ({ data }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
   const { wishlistItems } = useSelector((state) => state.wishlist);
+  const { cartItems } = useSelector((state) => state.cart);
   const [click, setClick] = useState(false);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
@@ -30,6 +31,7 @@ const ProductCard = ({ data }) => {
     navigate(`/product/${data.name}`);
     window.location.reload(true);
   };
+
   useEffect(() => {
     if (
       wishlistItems &&
@@ -40,6 +42,10 @@ const ProductCard = ({ data }) => {
       setClick(false);
     }
   }, [wishlistItems, data]);
+  useEffect(() => {
+    dispatch(getAllWishlistItemsUser(user?._id));
+    dispatch(getAllCartItemsUser(user?._id));
+  }, [wishlistItems?.length, cartItems?.length]);
 
   //hiển thị định dạng tiền tệ
   function formatVietnameseCurrency(value) {
@@ -48,42 +54,17 @@ const ProductCard = ({ data }) => {
       currency: "VND",
     }).format(value);
   }
-  //xóa khỏi danh sách yêu thích
-  // const handleDelete = async (id) => {
-  //   try {
-  //     await axios.post(
-  //       `${server}/wishlist/delete-items-in-wishlist/${user?._id}`
-  //     );
-  //     // Sau khi xóa thành công, cập nhật danh sách cartData
-  //     toast.success("Xóa thành công !");
-  //     console.log(wishlistItems?._id);
-  //     setClick(false);
-  //     // Tải lại danh sách mục trong giỏ hàng sau khi xóa
-  //     dispatch(getAllWishlistItemsUser(data?.user?._id));
-  //   } catch (error) {
-  //     console.error("Lỗi xóa mục khỏi giỏ hàng:", error);
-  //   }
-  // };
+
   //Thêm vào giỏ hàng
   const addToCartHandler = () => {
     dispatch(addToCart(user?._id, data.shop?._id, data?._id, 1));
     toast.success("Thêm vào giỏ hàng thành công !");
-    dispatch(getAllCartItemsUser(user?._id));
-    setTimeout(() => {
-      window.location.reload();
-    }, 500);
   };
 
   //Thêm vào danh sách yêu thích
   const addToWishlistHandler = async () => {
-    const result = dispatch(
-      addToWishlist(user?._id, data.shop?._id, data?._id)
-    );
+    dispatch(addToWishlist(user?._id, data.shop?._id, data?._id));
     toast.success("Thêm vào danh sách thành công !");
-    dispatch(getAllWishlistItemsUser(user?._id));
-    setTimeout(() => {
-      window.location.reload(true);
-    }, 1200);
   };
 
   return (
