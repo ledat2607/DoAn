@@ -2,20 +2,26 @@ import React, { useState } from "react";
 import styles from "../../../styles/styles";
 import CountDown from "./CountDown";
 import { backend_url } from "../../../server";
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { AiOutlineArrowRight } from "react-icons/ai";
+import { toast } from "react-toastify";
+import { addToCart } from "../../../redux/actions/cart";
 const EventCard = ({ active, data }) => {
   const navigate = useNavigate();
   const { seller } = useSelector((state) => state.seller);
+  const { user } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   function formatVietnameseCurrency(value) {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
     }).format(value);
   }
-  const handleClick = () => {
-    navigate(`/shop/preview/${seller._id}`);
+
+  const addToCartHandler = () => {
+    dispatch(addToCart(user?._id, data.shop?._id, data?._id, 1));
+    toast.success("Thêm vào giỏ hàng thành công !");
   };
   return (
     <div
@@ -47,7 +53,7 @@ const EventCard = ({ active, data }) => {
                 {formatVietnameseCurrency(data?.minAmount)}
               </h5>
             )}
-            <AiOutlineArrowRight className="mt-2"/>
+            <AiOutlineArrowRight className="mt-2" />
             {data?.maxAmount <= 100 ? (
               <h5 className="font-[500] text-[18px] text-[#d55b45] pr-3 line-through ml-3">
                 {data?.maxAmount}%
@@ -59,16 +65,18 @@ const EventCard = ({ active, data }) => {
             )}
           </div>
         </div>
-        <div
-          className={`${styles.button} w-[100px] h-[40px]`}
-          onClick={handleClick}
-        >
-          Mua ngay
-        </div>
+
         <span className="pr-3 font-[400] text-[17px] text-[#44a55e]">
           Số lượng sản phẩm đã bán {data?.sold_out}
         </span>
         <CountDown data={data} />
+        <div className="flex">
+          <Link to={`/shop/preview/${data?.shop._id}`}>
+            <div className={`${styles.button} w-[150px] h-[40px]`}>
+              Xem chi tiết
+            </div>
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -93,24 +93,22 @@ const PaymentInfo = ({
             ) : null}
           </div>
           <h4 className="text-[18px] pl-2 font-[600] text-[#000000ba]">
-            Thanh toán qua Paypal
+            Thanh toán qua Paypal ngay
           </h4>
         </div>
         {/*pay with payment*/}
         {select === 2 ? (
           <div className="w-full flex border-b">
             <form className="w-full">
-              <div className="w-full flex pb-2">
-                <div className="w-full">
-                  <label className="block pb-2">Paypal Email</label>
-                  <input required className={`${styles.input}`} />
-                </div>
+              <div
+                className={`${styles.button} w-[120px] h-[40px] !bg-[#f63b60] !text-white rounded-[5px] cursor-pointer text-[18px] font-[600]`}
+                onClick={() => setOpen(true)}
+              >
+                Pay now
+                {open && (
+                  <div className="w-full fixed top-0 left-0 bg-[#00000039] h-screen"></div>
+                )}
               </div>
-              <input
-                type="submit"
-                value="Xác nhận"
-                className={`${styles.button} mx-auto w-[100px] text-[#fff] h-[35px] rounded-[5px] cursor-pointer text-[18px] font-[600]`}
-              />
             </form>
           </div>
         ) : null}
@@ -137,7 +135,7 @@ const PaymentInfo = ({
               <input
                 type="submit"
                 value="Xác nhận"
-                className={`${styles.button} w-[110px] mx-auto !bg-[#f63b60] text-[#fff] h-[45px] rounded-[5px] cursor-pointer text-[18px] font-[600]`}
+                className={`${styles.button} w-[110px] mx-auto !bg-[#f63b60] !text-[#fff] h-[45px] rounded-[5px] cursor-pointer text-[18px] font-[600]`}
               />
             </form>
           </div>

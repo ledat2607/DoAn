@@ -10,12 +10,17 @@ import {
 import { backend_url } from "../../server";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProductsShop } from "../../redux/actions/product";
+import { addToCart, getAllCartItemsUser } from "../../redux/actions/cart";
+import { toast } from "react-toastify";
 const ProductDetails = ({ data }) => {
   const { products } = useSelector((state) => state.products);
+  const { user } = useSelector((state) => state.user);
+  const { cartItems } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getAllProductsShop(data && data?.shop?._id));
-  }, [dispatch]);
+    dispatch(getAllCartItemsUser(user?._id));
+  }, [dispatch, cartItems.length, cartItems]);
 
   const [count, setCount] = useState(1);
   const [click, setClick] = useState(false);
@@ -40,6 +45,10 @@ const ProductDetails = ({ data }) => {
       currency: "VND",
     }).format(value);
   }
+  const addToCartHandler = () => {
+    dispatch(addToCart(user?._id, data.shop?._id, data?._id, count));
+    toast.success("Thêm vào giỏ hàng thành công !");
+  };
   return (
     <div className="bg-white">
       {data ? (
@@ -127,7 +136,10 @@ const ProductDetails = ({ data }) => {
                 <div
                   className={`${styles.button} w-[270px] h-[40px] mt-6 rounded flex items-center`}
                 >
-                  <span className="flex items-center">
+                  <span
+                    className="flex items-center"
+                    onClick={() => addToCartHandler(data?._id)}
+                  >
                     Thêm vào giỏ hàng <AiOutlineShoppingCart className="ml-2" />
                   </span>
                 </div>
