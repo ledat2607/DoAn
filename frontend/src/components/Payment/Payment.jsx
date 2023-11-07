@@ -3,34 +3,83 @@ import { useNavigate } from "react-router-dom";
 import styles from "../../styles/styles";
 import { useDispatch, useSelector } from "react-redux";
 import { server } from "../../server";
-import { deleteItems } from "../../redux/actions/cart";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { RxCross1 } from "react-icons/rx";
+import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 const Payment = () => {
   const { user } = useSelector((state) => state.user);
   const [open, setOpen] = useState(false);
   const [orderData, setOrderData] = useState();
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
   useEffect(() => {
     const orderData = JSON.parse(localStorage.getItem("latestOrder"));
     setOrderData(orderData);
   }, []);
-  const createOrder = (data, actions) => {};
-  const onApprove = (data, actions) => {
-    console.log(`fff`);
+  const createOrder = (data, actions) => {
+    return actions.order
+      .create({
+        purchase_units: [
+          {
+            description: "Sunflower",
+            amount: {
+              currency_code: "USD",
+              value: orderData?.totalPrice,
+            },
+          },
+        ],
+        // not needed if a shipping address is actually needed
+        application_context: {
+          shipping_preference: "NO_SHIPPING",
+        },
+      })
+      .then((orderID) => {
+        return orderID;
+      });
   };
-  const paypalPaymentHandler = async (paymentInfo) => {
-    console.log(`first`);
-  };
-  console.log(orderData);
   const order = {
     cart: orderData?.cartItems,
     shippingAddress: orderData?.shippingAddress,
     user: user && user,
     totalPrice: orderData?.totalPrice,
   };
+
+  const onApprove = async (data, actions) => {
+    return actions.order.capture().then(function (details) {
+      const { payer } = details;
+
+      let paymentInfo = payer;
+
+      if (paymentInfo !== undefined) {
+        paypalPaymentHandler(paymentInfo);
+      }
+    });
+  };
+  const paypalPaymentHandler = async (paymentInfo) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    order.paymentInfo = {
+      id: paymentInfo.payer_id,
+      status: "succeeded",
+      type: "Paypal",
+    };
+
+    await axios
+      .post(`${server}/order/create-order`, order, config)
+      .then((res) => {
+        setOpen(false);
+        navigate("/order/success");
+        toast.success("Order successful!");
+        localStorage.setItem("latestOrder", JSON.stringify([]));
+        window.location.reload();
+      });
+  };
+
   const cashOnDeliveryHandler = async (e) => {
     e.preventDefault();
 
@@ -89,27 +138,49 @@ const PaymentInfo = ({
             onClick={() => setSelect(2)}
           >
             {select === 2 ? (
-              <div className="w-[13px] h-[13px] bg-[#1d1a1ab4] rounded-full"></div>
+              <div className="w-[13px] h-[13px] bg-[#1d1a1acb] rounded-full" />
             ) : null}
           </div>
-          <h4 className="text-[18px] pl-2 font-[600] text-[#000000ba]">
-            Thanh toán qua Paypal ngay
+          <h4 className="text-[18px] pl-2 font-[600] text-[#000000b1]">
+            Pay with Paypal
           </h4>
         </div>
-        {/*pay with payment*/}
+
+        {/* pay with payement */}
         {select === 2 ? (
           <div className="w-full flex border-b">
-            <form className="w-full">
-              <div
-                className={`${styles.button} w-[120px] h-[40px] !bg-[#f63b60] !text-white rounded-[5px] cursor-pointer text-[18px] font-[600]`}
-                onClick={() => setOpen(true)}
-              >
-                Pay now
-                {open && (
-                  <div className="w-full fixed top-0 left-0 bg-[#00000039] h-screen"></div>
-                )}
+            <div
+              className={`${styles.button} !bg-[#f63b60] text-white h-[45px] rounded-[5px] cursor-pointer text-[18px] font-[600]`}
+              onClick={() => setOpen(true)}
+            >
+              Pay Now
+            </div>
+            {open && (
+              <div className="w-full fixed top-0 left-0 bg-[#00000039] h-screen flex items-center justify-center z-[99999]">
+                <div className="w-full 800px:w-[45%] h-screen 800px:h-[80vh] bg-white rounded-[5px] shadow flex flex-col justify-center p-8 relative overflow-y-scroll">
+                  <div className="w-full flex justify-end p-3">
+                    <RxCross1
+                      size={30}
+                      className="cursor-pointer absolute top-3 right-3"
+                      onClick={() => setOpen(false)}
+                    />
+                  </div>
+                  <PayPalScriptProvider
+                    options={{
+                      "client-id":
+                        "AbwAPAAFsRk1iuqgYVpvpvdWGjA76vwqyKjubRWzJvso8awneuf99160qcRuCCpcJJmWGIdklFXzkSv5",
+                    }}
+                  >
+                    <PayPalButtons
+                      style={{ layout: "vertical" }}
+                      onApprove={onApprove}
+                      createOrder={createOrder}
+                      className="mt-[8vh]"
+                    />
+                  </PayPalScriptProvider>
+                </div>
               </div>
-            </form>
+            )}
           </div>
         ) : null}
       </div>
