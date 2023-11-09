@@ -22,6 +22,7 @@ import { toast } from "react-toastify";
 import { Country, State } from "country-state-city";
 import { getAllOrdersOfUser } from "../../redux/actions/order";
 import AllOrder from "../Profile/AllOrder";
+import AllRefunds from "./AllRefunds";
 const ProfileContent = ({ active }) => {
   const dispatch = useDispatch();
   const { user, error, successMessage } = useSelector((state) => state.user);
@@ -143,7 +144,11 @@ const ProfileContent = ({ active }) => {
         </div>
       )}
       {/*refund page */}
-      {active === 3 && <div>{/* <AllRefund /> */}</div>}
+      {active === 3 && (
+        <div>
+          <AllRefunds />
+        </div>
+      )}
       {/*track order */}
       {active === 5 && (
         <div>
