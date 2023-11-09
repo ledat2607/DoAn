@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 const ProfilePage = () => {
   const { loading } = useSelector((state) => state.user);
   const [active, setActive] = useState(1);
+  const [open, setOpen] = useState(false);
 
   return (
     <div>
@@ -16,11 +17,17 @@ const ProfilePage = () => {
       ) : (
         <>
           <Header />
-          <div className={`${styles.section} flex bg-[#f5f5f5] py-10`}>
-            <div className="w-[50px] 800px:w-[335px] sticky 800px:mt-0 mt-[18%]">
-              <ProfileSideBar active={active} setActive={setActive} />
+          <div className={`${styles.section} 800px:flex bg-[#f5f5f5] py-10`}>
+            <div className={`w-full 800px:w-[335px] mt-2 800px:mt-0`}>
+              <ProfileSideBar
+                active={active}
+                setActive={setActive}
+                open={open}
+              />
             </div>
-            <ProfileContent active={active} />
+            <div className="w-[95%] mx-auto mt-10 800px:mt-0">
+              <ProfileContent active={active} />
+            </div>
           </div>
         </>
       )}

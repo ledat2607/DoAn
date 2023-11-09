@@ -20,6 +20,8 @@ import {
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Country, State } from "country-state-city";
+import { getAllOrdersOfUser } from "../../redux/actions/order";
+import AllOrder from "../Profile/AllOrder";
 const ProfileContent = ({ active }) => {
   const dispatch = useDispatch();
   const { user, error, successMessage } = useSelector((state) => state.user);
@@ -29,6 +31,7 @@ const ProfileContent = ({ active }) => {
   const [phoneNumber, setPhoneNumber] = useState(
     user && "0" + user?.phoneNumber
   );
+
   useEffect(() => {
     if (error) {
       toast.error(error);
@@ -49,7 +52,6 @@ const ProfileContent = ({ active }) => {
   //change image
   const handleImage = async (e) => {
     const file = e.target.files[0];
-    console.log(file);
     setAvatar(file);
     const formData = new FormData();
 
@@ -141,11 +143,7 @@ const ProfileContent = ({ active }) => {
         </div>
       )}
       {/*refund page */}
-      {active === 3 && (
-        <div>
-          <AllRefund />
-        </div>
-      )}
+      {active === 3 && <div>{/* <AllRefund /> */}</div>}
       {/*track order */}
       {active === 5 && (
         <div>
@@ -172,196 +170,120 @@ const ProfileContent = ({ active }) => {
     </div>
   );
 };
-const AllOrder = () => {
-  const orders = [
-    {
-      _id: "189298A61267hbnzxb",
-      orderItems: [
-        {
-          name: "Iphone 14 pro max",
-        },
-      ],
-      totalPrice: 24990000,
-      orderStatus: "Delived",
-    },
-  ];
-  const columns = [
-    { field: "id", headerName: "Mã đơn hàng", minWidth: 250, flex: 0.7 },
-    {
-      field: "productName",
-      headerName: "Tên sản phẩm",
-      minWidth: 250,
-      flex: 0.7,
-    },
-    {
-      field: "status",
-      headerName: "Trạng thái",
-      minWidth: 150,
-      flex: 0.7,
-      cellClassName: (params) => {
-        return params.getValue(params.id, "status") === "Delivered"
-          ? "greenColor"
-          : "redColor";
-      },
-    },
-    {
-      field: "itemsQty",
-      headerName: "Số lượng",
-      type: "number",
-      minWidth: 150,
-      flex: 0.7,
-    },
+// const AllOrder = () => {
+//   const { user } = useSelector((state) => state.user);
+//   const { orders } = useSelector((state) => state.order);
+//   const dispatch = useDispatch();
 
-    {
-      field: "total",
-      headerName: "Tổng tiền",
-      type: "number",
-      minWidth: 170,
-      flex: 0.8,
-    },
+//   useEffect(() => {
+//     dispatch(getAllOrdersOfUser(user?._id));
+//   }, []);
 
-    {
-      field: " ",
-      flex: 1,
-      minWidth: 150,
-      headerName: "",
-      type: "number",
-      sortable: false,
-      renderCell: (params) => {
-        return (
-          <>
-            <Link
-              to={`/user/order/${params.id}`}
-              className="relative inline-block"
-            >
-              <span className="inline-block transition-transform duration-500 text-md hover:translate-x-2 hover:text-blue-500 hover:opacity-70">
-                Xem chi tiết
-              </span>
-            </Link>
-          </>
-        );
-      },
-    },
-  ];
+//   return (
+//     <div className="800px:pl-8 800px:pt-1 flex overflow-x-scroll overflow-hidden">
+//       <div>Hình ảnh sản phẩm</div>
+//       <div>Hình ảnh sản phẩm</div>
+//       <div>Hình ảnh sản phẩm</div>
+//       <div>Hình ảnh sản phẩm</div>
+//       <div>Hình ảnh sản phẩm</div>
+//     </div>
+//   );
+// };
+// const AllRefund = () => {
+//   const orders = [
+//     {
+//       _id: "189298A61267hbnzxb",
+//       orderItems: [
+//         {
+//           name: "Iphone 14 pro max",
+//         },
+//       ],
+//       totalPrice: 24990000,
+//       orderStatus: "Delived",
+//     },
+//   ];
+//   const columns = [
+//     { field: "id", headerName: "Mã đơn hàng", minWidth: 250, flex: 0.7 },
+//     {
+//       field: "productName",
+//       headerName: "Tên sản phẩm",
+//       minWidth: 250,
+//       flex: 0.7,
+//     },
+//     {
+//       field: "status",
+//       headerName: "Trạng thái",
+//       minWidth: 150,
+//       flex: 0.7,
+//       cellClassName: (params) => {
+//         return params.getValue(params.id, "status") === "Delivered"
+//           ? "greenColor"
+//           : "redColor";
+//       },
+//     },
+//     {
+//       field: "itemsQty",
+//       headerName: "Số lượng",
+//       type: "number",
+//       minWidth: 150,
+//       flex: 0.7,
+//     },
 
-  const row = [];
-  orders &&
-    orders.forEach((item) => {
-      row.push({
-        id: item._id,
-        productName: item.orderItems[0].name,
-        itemsQty: item.orderItems.length,
-        total: item.totalPrice,
-        status: item.orderStatus,
-      });
-    });
-  return (
-    <div className="pl-8 pt-1">
-      <DataGrid
-        rows={row}
-        columns={columns}
-        pageSize={10}
-        disableSelectionOnClick
-        autoHeight
-      />
-    </div>
-  );
-};
-const AllRefund = () => {
-  const orders = [
-    {
-      _id: "189298A61267hbnzxb",
-      orderItems: [
-        {
-          name: "Iphone 14 pro max",
-        },
-      ],
-      totalPrice: 24990000,
-      orderStatus: "Delived",
-    },
-  ];
-  const columns = [
-    { field: "id", headerName: "Mã đơn hàng", minWidth: 250, flex: 0.7 },
-    {
-      field: "productName",
-      headerName: "Tên sản phẩm",
-      minWidth: 250,
-      flex: 0.7,
-    },
-    {
-      field: "status",
-      headerName: "Trạng thái",
-      minWidth: 150,
-      flex: 0.7,
-      cellClassName: (params) => {
-        return params.getValue(params.id, "status") === "Delivered"
-          ? "greenColor"
-          : "redColor";
-      },
-    },
-    {
-      field: "itemsQty",
-      headerName: "Số lượng",
-      type: "number",
-      minWidth: 150,
-      flex: 0.7,
-    },
+//     {
+//       field: "total",
+//       headerName: "Tổng tiền",
+//       type: "number",
+//       minWidth: 170,
+//       flex: 0.8,
+//     },
 
-    {
-      field: "total",
-      headerName: "Tổng tiền",
-      type: "number",
-      minWidth: 170,
-      flex: 0.8,
-    },
+//     {
+//       field: " ",
+//       flex: 1,
+//       minWidth: 150,
+//       headerName: "",
+//       type: "number",
+//       sortable: false,
+//       renderCell: (params) => {
+//         return (
+//           <>
+//             <Link
+//               to={`/user/order/${params.id}`}
+//               className="relative inline-block"
+//             >
+//               <span className="hover:scale-[1.1] inline-block transition-transform duration-500 text-md  hover:text-green-500 hover:opacity-70">
+//                 Xem chi tiết
+//               </span>
+//             </Link>
+//           </>
+//         );
+//       },
+//     },
+//   ];
 
-    {
-      field: " ",
-      flex: 1,
-      minWidth: 150,
-      headerName: "",
-      type: "number",
-      sortable: false,
-      renderCell: (params) => {
-        return (
-          <>
-            <Link
-              to={`/user/order/${params.id}`}
-              className="relative inline-block"
-            >
-              <span className="hover:scale-[1.1] inline-block transition-transform duration-500 text-md  hover:text-green-500 hover:opacity-70">
-                Xem chi tiết
-              </span>
-            </Link>
-          </>
-        );
-      },
-    },
-  ];
-
-  const row = [];
-  orders &&
-    orders.forEach((item) => {
-      row.push({
-        id: item._id,
-        productName: item.orderItems[0].name,
-        itemsQty: item.orderItems.length,
-        total: item.totalPrice,
-        status: item.orderStatus,
-      });
-    });
-  return (
-    <div className="pl-8 pt-1">
-      <DataGrid
-        rows={row}
-        columns={columns}
-        pageSize={10}
-        disableSelectionOnClick
-        autoHeight
-      />
-    </div>
-  );
-};
+//   const row = [];
+//   orders &&
+//     orders.forEach((item) => {
+//       row.push({
+//         id: item._id,
+//         productName: item.orderItems[0].name,
+//         itemsQty: item.orderItems.length,
+//         total: item.totalPrice,
+//         status: item.orderStatus,
+//       });
+//     });
+//   return (
+//     <div className="pl-8 pt-1">
+//       <DataGrid
+//         rows={row}
+//         columns={columns}
+//         pageSize={10}
+//         disableSelectionOnClick
+//         autoHeight
+//       />
+//     </div>
+//   );
+// };
 const TrackOrder = () => {
   const orders = [
     {

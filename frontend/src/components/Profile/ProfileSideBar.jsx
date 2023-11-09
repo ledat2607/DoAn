@@ -6,10 +6,14 @@ import { AiOutlineMessage, AiOutlineCreditCard } from "react-icons/ai";
 import { MdOutlineTrackChanges } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { TbAddressBook } from "react-icons/tb";
-const ProfileSideBar = ({ active, setActive }) => {
+const ProfileSideBar = ({ active, setActive, open }) => {
   const navigate = useNavigate();
   return (
-    <div className="w-full bg-white shadow-lg rounded-[10px] p-4 pt-8">
+    <div
+      className={`${
+        open === true ? "hidden 800px:block" : "block"
+      } w-full bg-white shadow-lg rounded-[10px] p-4 pt-8 800px:w-[335px] sticky flex 800px:flex-col 800px:mt-0 mt-[18%]`}
+    >
       <div
         className="flex items-center cursor-pointer w-full mb-8"
         onClick={() => setActive(1)}
