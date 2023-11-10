@@ -27,67 +27,59 @@ const AllOrder = () => {
     }).format(value);
   }
   return (
-    <div className="overflow-y-scroll max-h-[80vh]">
-      <div className="w-[150vw] 800px:w-[95%] mx-auto bg-gray-300 rounded-[10px] flex items-center justify-between">
-        <div className="ml-2 w-[35%]">Hình ảnh</div>
-        <div className="ml-2 w-[63%]">Trạng thái đơn hàng</div>
-        <div className="ml-4 w-[30%]">Số lượng</div>
-        <div className="p-2 w-[55%]">Tổng tiền</div>
-        <div className="p-2 w-[35%]">Chức năng</div>
-      </div>
-      <div className="w-[150vw] 800px:w-[95%] mx-auto bg-white mt-2 shadow-2xl rounded-b-[10px] flex items-center justify-between">
-        <div className="ml-2 w-[35%]">
-          <div className="p-2">
-            {data &&
-              data.map((i, index) => (
-                <div key={index}>
-                  {i.cart.map((item) => (
-                    <img
-                      src={`${backend_url}${item?.product?.images[0]}`}
-                      className="w-[100%] cursor-pointer"
-                    />
-                  ))}
-                </div>
-              ))}
-          </div>
-        </div>
-        <div className="ml-2 w-[63%]">
-          <div className="p-2">
-            {data && data.map((i, index) => <div key={index}>{i.status}</div>)}
-          </div>
-        </div>
-        <div className="ml-4 w-[30%]">
-          <div className="p-2">
-            {data &&
-              data.map((i, index) => (
-                <div key={index}>
-                  {i.cart.map((item) => (
-                    <span> {item.qty}</span>
-                  ))}
-                </div>
-              ))}
-          </div>
-        </div>
-        <div className="p-2 w-[55%]">
-          <div className="p-2">
-            {data &&
-              data.map((i, index) => (
-                <div key={index}>{formatVietnameseCurrency(i.totalPrice)}</div>
-              ))}
-          </div>
-        </div>
-        <div className="p-2 w-[35%] flex justify-center">
-          <TbListDetails
-            className="cursor-pointer hover:text-green-500"
-            size={25}
-          />
-          <MdDeleteForever
-            className="cursor-pointer hover:text-red-500 ml-4"
-            size={25}
-          />
+    <>
+      <div className="overflow-y-scroll max-h-[80vh]">
+        <div className="w-[150vw] 800px:w-[98%] ml-2 mx-auto bg-gray-300 rounded-[10px] flex items-center justify-between">
+          <div className="ml-2 w-[38%]">Hình ảnh</div>
+          <div className="ml-2 w-[63%]">Trạng thái đơn hàng</div>
+          <div className="ml-4 w-[30%]">Số lượng</div>
+          <div className="p-2 w-[55%]">Tổng tiền</div>
+          <div className="p-2 w-[35%]">Chức năng</div>
         </div>
       </div>
-    </div>
+      {data?.map((item, index) => (
+        <div className="w-[95%] mx-auto pb-2 shadow-2xl bg-white mt-2 rounded-[10px] flex items-center justify-between">
+          <div className="ml-2 w-[35%]">
+            {item?.cart?.map((items, ind) => (
+              <div>
+                <img
+                  src={`${backend_url}${items?.product?.images[0]}`}
+                  key={ind}
+                  className="mt-2"
+                />
+              </div>
+            ))}
+          </div>
+          <div className="ml-2 w-[63%]">
+            <label className="flex items-center justify-center">
+              {item.status}
+            </label>
+          </div>
+          <div className="ml-4 w-[30%]">
+            {item?.cart?.map((items, ind) => (
+              <div>
+                <label className="flex items-center justify-center">
+                  {items?.qty}
+                </label>
+              </div>
+            ))}
+          </div>
+          <div className="p-2 w-[55%]">
+            {formatVietnameseCurrency(item?.totalPrice)}
+          </div>
+          <div className="p-2 w-[35%] flex">
+            <TbListDetails
+              className="hover:text-green-500 cursor-pointer"
+              size={25}
+            />
+            <MdDeleteForever
+              className="hover:text-red-500 cursor-pointer ml-4"
+              size={25}
+            />
+          </div>
+        </div>
+      ))}
+    </>
   );
 };
 

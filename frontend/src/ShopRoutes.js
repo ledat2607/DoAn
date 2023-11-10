@@ -8,7 +8,9 @@ import ShopAllProduct from "../src/pages/Shop/ShopAllProduct";
 import ShopCreateEvent from "./pages/Shop/ShopCreateEvent";
 import ShopAllEvent from "./pages/Shop/ShopAllEvent";
 import ShopAllCoupouns from "./pages/Shop/ShopAllCoupouns";
-import ShopPreviewPage from "./pages/Shop/ShopPreviewPage.jsx";
+import ShopPreviewPage from "./pages/Shop/ShopPreviewPage";
+import ShopAllOrders from "./pages/Shop/ShopAllOrders.jsx";
+import ShopOrderDetails from "./pages/Shop/ShopOrderDetails.jsx";
 export {
   ShopCreate,
   SellerActivationPage,
@@ -21,4 +23,6 @@ export {
   ShopAllEvent,
   ShopAllCoupouns,
   ShopPreviewPage,
+  ShopAllOrders,
+  ShopOrderDetails,
 };

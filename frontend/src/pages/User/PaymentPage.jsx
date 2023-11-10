@@ -1,8 +1,8 @@
 import React from "react";
-import Header from "../../components/Layout/Header";
-import Footer from "../../components/Layout/Footer";
-import CheckoutSteps from "../../components/CheckOut/CheckOutStep";
-import Payment from "../../components/Payment/Payment.jsx"
+import Header from "../../components/Layout/Header.jsx";
+import Footer from "../../components/Layout/Footer.jsx";
+import CheckoutSteps from "../../components/CheckOut/CheckOutStep.jsx";
+import Payment from "../../components/Payment/Payment.jsx";
 const PaymentPage = () => {
   return (
     <div className="flex flex-col">
