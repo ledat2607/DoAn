@@ -7,7 +7,6 @@ import BestDeals from "../../components/Route/BestDeals/BestDeals";
 import FeaturedProduct from "../../components/Route/FeaturedProduct/FeaturedProduct";
 import Events from "../../components/Route/Events/Events";
 const HomePage = () => {
-  
   return (
     <div>
       <Header activeHeading={1} />

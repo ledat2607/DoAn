@@ -18,7 +18,6 @@ import Cart from "../cart/Cart";
 import Wishlist from "../Wishlist/Wishlist";
 import Account from "../Account";
 import { RxCross1 } from "react-icons/rx";
-import { Avatar } from "@mui/material";
 import { getAllWishlistItemsUser } from "../../redux/actions/wishlist";
 import { getAllCartItemsUser } from "../../redux/actions/cart";
 
@@ -35,7 +34,13 @@ const Header = ({ activeHeading }) => {
   const [openCart, setOpenCart] = useState(false);
   const [openWishlist, setOpenWishlist] = useState(false);
   const [open, setOpen] = useState(false);
+  const data = user?._id;
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllCartItemsUser(data));
+    dispatch(getAllWishlistItemsUser(data));
+  }, [isAuthenticated, user, wishlistItems?.length, cartItems?.length]);
 
   const handleSearchChange = (e) => {
     const term = e.target.value;
@@ -60,7 +65,7 @@ const Header = ({ activeHeading }) => {
       <div className="ml-4 hidden 800px:h-[50px] 800px:my-[20px] 800px:flex items-center justify-between">
         <div className="mt-5">
           <Link to="/">
-            <img src="../img/logo.png" alt="logo" width={"100px"} />
+            <img src="../../img/logo.png" alt="logo" width={"100px"} />
           </Link>
         </div>
         {/*Search box*/}
@@ -152,7 +157,7 @@ const Header = ({ activeHeading }) => {
             >
               <AiOutlineHeart size={30} color="rgb(255 255 255 / 83%)" />
               <span className="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center">
-                {wishlistItems && wishlistItems?.length}
+                {wishlistItems?.length}
               </span>
             </div>
           </div>
@@ -163,7 +168,7 @@ const Header = ({ activeHeading }) => {
             >
               <AiOutlineShoppingCart size={30} color="rgb(255 255 255 / 83%)" />
               <span className="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center">
-                {cartItems && cartItems?.length}
+                {cartItems?.length}
               </span>
             </div>
           </div>

@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { backend_url } from "../../server";
 import { TbListDetails } from "react-icons/tb";
 import { MdDeleteForever } from "react-icons/md";
+import { Link } from "react-router-dom";
 const AllOrder = () => {
   const { user, error, successMessage } = useSelector((state) => state.user);
   const { orders } = useSelector((state) => state.order);
@@ -26,10 +27,12 @@ const AllOrder = () => {
       currency: "VND",
     }).format(value);
   }
+  const [isPopupVisible, setPopupVisible] = useState(false);
+
   return (
     <>
       <div className="overflow-y-scroll max-h-[80vh]">
-        <div className="w-[150vw] 800px:w-[98%] ml-2 mx-auto bg-gray-300 rounded-[10px] flex items-center justify-between">
+        <div className="w-[150vw] 800px:w-[98%] ml-2 mx-auto bg-gray-300 rounded-[10px] flex itemss-center justify-between">
           <div className="ml-2 w-[38%]">Hình ảnh</div>
           <div className="ml-2 w-[63%]">Trạng thái đơn hàng</div>
           <div className="ml-4 w-[30%]">Số lượng</div>
@@ -37,10 +40,10 @@ const AllOrder = () => {
           <div className="p-2 w-[35%]">Chức năng</div>
         </div>
       </div>
-      {data?.map((item, index) => (
+      {data?.map((i, index) => (
         <div className="w-[95%] mx-auto pb-2 shadow-2xl bg-white mt-2 rounded-[10px] flex items-center justify-between">
           <div className="ml-2 w-[35%]">
-            {item?.cart?.map((items, ind) => (
+            {i?.cart?.map((items, ind) => (
               <div>
                 <img
                   src={`${backend_url}${items?.product?.images[0]}`}
@@ -52,26 +55,29 @@ const AllOrder = () => {
           </div>
           <div className="ml-2 w-[63%]">
             <label className="flex items-center justify-center">
-              {item.status}
+              {i.status}
             </label>
           </div>
           <div className="ml-4 w-[30%]">
-            {item?.cart?.map((items, ind) => (
+            {i?.cart?.map((item, ind) => (
               <div>
                 <label className="flex items-center justify-center">
-                  {items?.qty}
+                  {item?.qty}
                 </label>
               </div>
             ))}
           </div>
           <div className="p-2 w-[55%]">
-            {formatVietnameseCurrency(item?.totalPrice)}
+            {formatVietnameseCurrency(i?.totalPrice)}
           </div>
           <div className="p-2 w-[35%] flex">
-            <TbListDetails
-              className="hover:text-green-500 cursor-pointer"
-              size={25}
-            />
+            <Link to={`/user/order/${i?._id}`}>
+              <TbListDetails
+                className="hover:text-green-500 cursor-pointer"
+                size={25}
+              />
+            </Link>
+
             <MdDeleteForever
               className="hover:text-red-500 cursor-pointer ml-4"
               size={25}

@@ -20,7 +20,7 @@ const ProductDetails = ({ data }) => {
   useEffect(() => {
     dispatch(getAllProductsShop(data && data?.shop?._id));
     dispatch(getAllCartItemsUser(user?._id));
-  }, [dispatch, cartItems.length, cartItems]);
+  }, [dispatch, cartItems?.length, cartItems]);
 
   const [count, setCount] = useState(1);
   const [click, setClick] = useState(false);

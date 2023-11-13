@@ -84,7 +84,7 @@ const Payment = () => {
     e.preventDefault();
 
     order.paymentInfo = {
-      type: "Cash On Delivery",
+      type: "Thanh toán khi nhận hàng",
     };
 
     await axios.post(`${server}/order/create-order`, order).then((res) => {

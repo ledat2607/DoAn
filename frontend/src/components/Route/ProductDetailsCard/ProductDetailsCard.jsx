@@ -15,7 +15,7 @@ import { addToCart, getAllCartItemsUser } from "../../../redux/actions/cart";
 import axios from "axios";
 
 const ProductDetailsCard = ({ setOpen, open, data }) => {
-  const { user } = useSelector((state) => state.user);
+  const { isAuthenticated, user } = useSelector((state) => state.user);
   const [dataCart, setData] = useState([]);
   const [count, setCount] = useState(1);
   const [select, setSelect] = useState(false);
@@ -46,7 +46,15 @@ const ProductDetailsCard = ({ setOpen, open, data }) => {
   }
   const addToCartHandler = () => {
     dispatch(addToCart(user?._id, data.shop?._id, data?._id, count));
-    toast.success("Thêm vào giỏ hàng thành công !");
+    {
+      isAuthenticated
+        ? toast.success("Thêm vào giỏ hàng thành công !", {
+            onClose: () => {
+              dispatch(getAllCartItemsUser(user?._id));
+            },
+          })
+        : toast.warning("Vui lòng đăng nhập để tiếp tục !");
+    }
     dispatch(getAllCartItemsUser(user?._id));
   };
   return (

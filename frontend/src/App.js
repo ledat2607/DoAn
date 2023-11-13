@@ -20,6 +20,7 @@ import {
   ProfilePage,
   CheckOutPage,
   PaymentPage,
+  OrderDetailPage,
 } from "./Routes.js";
 import {
   ShopCreate,
@@ -49,8 +50,7 @@ import { useSelector } from "react-redux";
 import { getAllWishlistItemsUser } from "./redux/actions/wishlist";
 import axios from "axios";
 import { server } from "./server.js";
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
+
 const App = () => {
   const { user } = useSelector((state) => state.user);
   const [stripeApikey, setStripeApiKey] = useState("");
@@ -66,26 +66,20 @@ const App = () => {
     getStripeApiKey();
   }, []);
 
-  Store.dispatch(getAllWishlistItemsUser(user?._id));
-  Store.dispatch(getAllCartItemsUser(user?._id));
+  // Store.dispatch(getAllWishlistItemsUser(user?._id));
+  // Store.dispatch(getAllCartItemsUser(user?._id));
 
   return (
     <BrowserRouter>
-      {stripeApikey && (
-        <Elements stripe={loadStripe(stripeApikey)}>
-          <Routes>
-            <Route
-              path="/payment"
-              element={
-                <ProtectedRoute>
-                  <PaymentPage />
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-        </Elements>
-      )}
       <Routes>
+        <Route
+          path="/payment"
+          element={
+            <ProtectedRoute>
+              <PaymentPage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/sign-up" element={<SignupPage />} />
@@ -107,6 +101,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/user/order/:id"
+          element={
+            <ProtectedRoute>
+              <OrderDetailPage />
             </ProtectedRoute>
           }
         />
@@ -198,7 +200,7 @@ const App = () => {
       </Routes>
       <ToastContainer
         position="bottom-right"
-        autoClose={1500}
+        autoClose={1000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick

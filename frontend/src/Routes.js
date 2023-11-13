@@ -9,7 +9,8 @@ import OrderSuccessPage from "../src/pages/User/OrderSuccessPage";
 import ProductDetailsPage from "../src/pages/User/ProductDetailsPage";
 import ProfilePage from "../src/pages/User/ProfilePage";
 import CheckOutPage from "../src/pages/User/CheckOutPage";
-import PaymentPage from "./pages/User/PaymentPage.jsx";
+import PaymentPage from "./pages/User/PaymentPage";
+import OrderDetailPage from "./pages/User/OrderDetailPage";
 export {
   LoginPage,
   SignupPage,
@@ -23,4 +24,5 @@ export {
   ProfilePage,
   CheckOutPage,
   PaymentPage,
+  OrderDetailPage,
 };

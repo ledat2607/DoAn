@@ -71,7 +71,7 @@ router.get(
     }
   })
 );
-//delete product in cart
+//delete product in wishlist
 router.post(
   "/delete-items-in-wishlist/:id",
   catchAsyncErrors(async (req, res, next) => {
@@ -91,5 +91,26 @@ router.post(
     }
   })
 );
+//delete wishlist from product card
+router.post(
+  "/delete-product-wishlist/:id",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const productId = req.params.id;
+      const isExists = await Whishlist.findOneAndDelete({
+        productId: productId,
+      });
+      if (!isExists) {
+        return next(new ErrorHandler("Sản phẩm không có danh sách !", 400));
+      }
 
+      res.status(200).json({
+        success: true,
+        message: "Xóa khỏi danh sách yêu thích thành công !",
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  })
+);
 module.exports = router;

@@ -21,12 +21,13 @@ import {
 import axios from "axios";
 const ProductCard = ({ data }) => {
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.user);
+  const { isAuthenticated, user } = useSelector((state) => state.user);
   const { wishlistItems } = useSelector((state) => state.wishlist);
   const { cartItems } = useSelector((state) => state.cart);
   const [click, setClick] = useState(false);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const [dataCart, setData] = useState();
   const handleClick = () => {
     navigate(`/product/${data.name}`);
     window.location.reload(true);
@@ -42,10 +43,10 @@ const ProductCard = ({ data }) => {
       setClick(false);
     }
   }, [wishlistItems, data]);
-  useEffect(() => {
-    dispatch(getAllWishlistItemsUser(user?._id));
-    dispatch(getAllCartItemsUser(user?._id));
-  }, [wishlistItems?.length, cartItems?.length]);
+  // useEffect(() => {
+  //   dispatch(getAllCartItemsUser(user?._id));
+  //   dispatch(getAllWishlistItemsUser(user?._id));
+  // }, [isAuthenticated, user, wishlistItems?.length, cartItems?.length]);
 
   //hiển thị định dạng tiền tệ
   function formatVietnameseCurrency(value) {
@@ -58,15 +59,43 @@ const ProductCard = ({ data }) => {
   //Thêm vào giỏ hàng
   const addToCartHandler = () => {
     dispatch(addToCart(user?._id, data.shop?._id, data?._id, 1));
-    toast.success("Thêm vào giỏ hàng thành công !");
+    {
+      isAuthenticated
+        ? toast.success("Thêm vào giỏ hàng thành công !", {
+            onClose: () => {
+              dispatch(getAllCartItemsUser(user?._id));
+            },
+          })
+        : toast.warning("Vui lòng đăng nhập để tiếp tục !");
+    }
   };
 
   //Thêm vào danh sách yêu thích
   const addToWishlistHandler = async () => {
     dispatch(addToWishlist(user?._id, data.shop?._id, data?._id));
-    toast.success("Thêm vào danh sách thành công !");
+    {
+      isAuthenticated
+        ? toast.success("Thêm vào danh sách yêu thích thành công !")
+        : toast.warning("Vui lòng đăng nhập để tiếp tục !");
+    }
   };
-
+  const handleDelete = async () => {
+    try {
+      await axios.post(
+        `${server}/wishlist/delete-product-wishlist/${data?._id}`
+      );
+      // Sau khi xóa thành công, cập nhật danh sách cartData
+      toast.success("Xóa khỏi danh sách thành công !", {
+        onClose: () => {
+          dispatch(getAllWishlistItemsUser(user?._id));
+        },
+      });
+      // Tải lại danh sách mục trong giỏ hàng sau khi xóa
+      dispatch(getAllWishlistItemsUser(data?.user?._id));
+    } catch (error) {
+      console.error("Lỗi xóa mục khỏi giỏ hàng:", error);
+    }
+  };
   return (
     <>
       <div className="border bg-white hover:border-2 hover:border-blue-300 border-gray-800 h-[350px] rounded-lg shadow-md p-3 relative cursor-pointer">
@@ -143,7 +172,7 @@ const ProductCard = ({ data }) => {
             <AiFillHeart
               size={18}
               className="cursor-pointer absolute right-2 top-5"
-              onClick={() => setClick(!click)}
+              onClick={handleDelete}
               color={click ? "red" : "#333"}
               title="Xóa khỏi danh sách yêu thích"
             />

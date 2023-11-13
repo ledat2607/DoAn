@@ -1,15 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../components/Layout/Header";
 import styles from "../../styles/styles";
 import ProfileSideBar from "../../components/Profile/ProfileSideBar";
 import ProfileContent from "../../components/Profile/ProfileContent";
 import Loader from "../../components/Layout/Loader";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllOrdersOfUser } from "../../redux/actions/order";
 const ProfilePage = () => {
-  const { loading } = useSelector((state) => state.user);
+  const { user, loading } = useSelector((state) => state.user);
   const [active, setActive] = useState(1);
   const [open, setOpen] = useState(false);
-
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getAllOrdersOfUser(user?._id));
+  }, [user?._id, dispatch]);
   return (
     <div>
       {loading ? (
