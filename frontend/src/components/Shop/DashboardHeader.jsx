@@ -11,7 +11,7 @@ const DashboardHeader = () => {
       <div>
         <Link to="/dashboard">
           <img
-            src="./img/logo.png"
+            src="../img/logo.png"
             alt="logo-dashboard"
             className="w-[80px] cursor-pointer"
           />

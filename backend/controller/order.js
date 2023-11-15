@@ -98,21 +98,21 @@ router.put(
       const order = await Order.findById(req.params.id);
 
       if (!order) {
-        return next(new ErrorHandler("Order not found with this id", 400));
+        return next(new ErrorHandler("Không tìm thấy đơn hàng!", 400));
       }
-      if (req.body.status === "Đã xác nhận") {
+      if (req.body.status === "Giao hàng thành công") {
         order.cart.forEach(async (o) => {
-          await updateOrder(o._id, o.qty);
+          await updateOrder(o.productId, o.qty);
         });
       }
 
       order.status = req.body.status;
 
-      if (req.body.status === "Đã giao hàng") {
+      if (req.body.status === "Giao hàng thành công") {
         order.deliveredAt = Date.now();
         order.paymentInfo.status = "Đã thanh toán";
-        const serviceCharge = order.totalPrice * 0.01;
-        await updateSellerInfo(order.totalPrice - serviceCharge);
+        //const serviceCharge = order.totalPrice * 0.01;
+        // await updateSellerInfo(order.totalPrice - serviceCharge);
       }
 
       await order.save({ validateBeforeSave: false });
@@ -131,13 +131,13 @@ router.put(
         await product.save({ validateBeforeSave: false });
       }
 
-      async function updateSellerInfo(amount) {
-        const seller = await Shop.findById(req.seller.id);
+      // async function updateSellerInfo(amount) {
+      //   const seller = await Shop.findById(req.seller.id);
 
-        seller.availableBalance = amount;
+      //   seller.availableBalance = amount;
 
-        await seller.save();
-      }
+      //   await seller.save();
+      // }
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }

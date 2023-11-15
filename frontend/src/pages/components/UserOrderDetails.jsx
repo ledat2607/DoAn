@@ -26,7 +26,6 @@ const UserOrderDetails = () => {
   }, [dispatch, user._id]);
 
   const data = orders && orders?.find((item) => item?._id === id);
-
   const reviewHandler = async (e) => {
     await axios
       .put(
@@ -44,7 +43,7 @@ const UserOrderDetails = () => {
         toast.success(res.data.message);
         dispatch(getAllOrdersOfUser(user._id));
         setComment("");
-        setRating(null);
+        setRating(1);
         setOpen(false);
       })
       .catch((error) => {
@@ -119,7 +118,7 @@ const UserOrderDetails = () => {
                 {formatVietnameseCurrency(i.product?.discountPrice)} x {i.qty}
               </h5>
             </div>
-            {data?.status === "Đã giao hàng" ? (
+            {!i.isReviewed && data?.status === "Giao hàng thành công" ? (
               <div
                 className={`${styles.button} w-[120px] h-[40px]`}
                 onClick={() => setOpen(true) || setSelectedItem(i)}
