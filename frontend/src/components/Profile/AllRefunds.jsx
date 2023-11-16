@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { backend_url } from "../../server";
 import { TbListDetails } from "react-icons/tb";
 import { MdDeleteForever } from "react-icons/md";
+import { Link } from "react-router-dom";
 const AllRefunds = () => {
   const { user, error, successMessage } = useSelector((state) => state.user);
   const { orders } = useSelector((state) => state.order);
@@ -77,10 +78,15 @@ const AllRefunds = () => {
           </div>
         </div>
         <div className="p-2 w-[35%] flex justify-center">
-          <TbListDetails
-            className="cursor-pointer hover:text-green-500"
-            size={25}
-          />
+          {data &&
+            data.map((i, index) => (
+              <Link to={`/user/order/${i?._id}`}>
+                <TbListDetails
+                  className="hover:text-green-500 cursor-pointer"
+                  size={25}
+                />
+              </Link>
+            ))}
           <MdDeleteForever
             className="cursor-pointer hover:text-red-500 ml-4"
             size={25}

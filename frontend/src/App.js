@@ -36,6 +36,7 @@ import {
   ShopPreviewPage,
   ShopAllOrders,
   ShopOrderDetails,
+  ShopAllRefunds,
 } from "./ShopRoutes.js";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -45,30 +46,17 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import SellerProtectedRoute from "./routes/SellerProtectedRoute";
 import { getAllProducts } from "./redux/actions/product";
 import { getAllEvents } from "./redux/actions/event";
-import { getAllCartItemsUser } from "./redux/actions/cart";
 import { useSelector } from "react-redux";
-import { getAllWishlistItemsUser } from "./redux/actions/wishlist";
 import axios from "axios";
 import { server } from "./server.js";
 
 const App = () => {
-  const { user } = useSelector((state) => state.user);
-  const [stripeApikey, setStripeApiKey] = useState("");
-  async function getStripeApiKey() {
-    const { data } = await axios.get(`${server}/payment/stripeapikey`);
-    setStripeApiKey(data.stripeApikey);
-  }
   useEffect(() => {
     Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
     Store.dispatch(getAllProducts());
     Store.dispatch(getAllEvents());
-    getStripeApiKey();
   }, []);
-
-  // Store.dispatch(getAllWishlistItemsUser(user?._id));
-  // Store.dispatch(getAllCartItemsUser(user?._id));
-
   return (
     <BrowserRouter>
       <Routes>
@@ -170,6 +158,14 @@ const App = () => {
           element={
             <SellerProtectedRoute>
               <ShopAllOrders />
+            </SellerProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard-refunds"
+          element={
+            <SellerProtectedRoute>
+              <ShopAllRefunds />
             </SellerProtectedRoute>
           }
         />

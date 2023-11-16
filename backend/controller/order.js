@@ -152,7 +152,7 @@ router.put(
       const order = await Order.findById(req.params.id);
 
       if (!order) {
-        return next(new ErrorHandler("Order not found with this id", 400));
+        return next(new ErrorHandler("Không tìm thấy đơn hàng", 400));
       }
 
       order.status = req.body.status;
@@ -162,7 +162,7 @@ router.put(
       res.status(200).json({
         success: true,
         order,
-        message: "Order Refund Request successfully!",
+        message: "Yêu cầu trả hàng đã gửi thành công!",
       });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));

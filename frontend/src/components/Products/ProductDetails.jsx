@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllProductsShop } from "../../redux/actions/product";
 import { addToCart, getAllCartItemsUser } from "../../redux/actions/cart";
 import { toast } from "react-toastify";
+import Ratings from "./Ratings";
 const ProductDetails = ({ data }) => {
   const { products } = useSelector((state) => state.products);
   const { user } = useSelector((state) => state.user);
@@ -45,10 +46,36 @@ const ProductDetails = ({ data }) => {
       currency: "VND",
     }).format(value);
   }
-  const addToCartHandler = () => {
-    dispatch(addToCart(user?._id, data.shop?._id, data?._id, count));
-    toast.success("Thêm vào giỏ hàng thành công !");
+  const addToCartHandler = (id) => {
+    const isItemExists = cartItems && cartItems.find((i) => i._id === id);
+    if (isItemExists) {
+      dispatch(addToCart(user?._id, data.shop?._id, data?._id, 1));
+      toast.success("Thêm vào giỏ hàng thành công !");
+    } else {
+      if (data.stock < 1) {
+        toast.error("Vượt quá số lượng sản phẩm trong kho !");
+      } else {
+        const cartData = { ...data, qty: count };
+        dispatch(addToCart(user?._id, data.shop?._id, data?._id, count));
+        toast.success("Thêm vào giỏ hàng thành công !");
+      }
+    }
   };
+  const totalReviewsLength =
+    products &&
+    products.reduce((acc, product) => acc + product.reviews.length, 0);
+
+  const totalRatings =
+    products &&
+    products.reduce(
+      (acc, product) =>
+        acc + product.reviews.reduce((sum, review) => sum + review.rating, 0),
+      0
+    );
+
+  const avg = totalRatings / totalReviewsLength || 0;
+
+  const averageRating = avg.toFixed(1);
   return (
     <div className="bg-white">
       {data ? (
@@ -170,14 +197,25 @@ const ProductDetails = ({ data }) => {
               </div>
             </div>
           </div>
-          <ProductDetailsInfo data={data} products={products} />
+          <ProductDetailsInfo
+            data={data}
+            products={products}
+            totalReviewsLength={totalReviewsLength}
+            averageRating={averageRating}
+          />
           <br />
         </div>
       ) : null}
     </div>
   );
 };
-const ProductDetailsInfo = ({ data, products }) => {
+
+const ProductDetailsInfo = ({
+  data,
+  products,
+  totalReviewsLength,
+  averageRating,
+}) => {
   const [active, setActive] = useState(1);
   return (
     <div className="bg-[#f5f6fb] px-3 800px:px-10 py-2 rounded 800px:h-[60vh]">
@@ -197,15 +235,15 @@ const ProductDetailsInfo = ({ data, products }) => {
         </div>
         <div className="relative">
           <h5
-            onClick={() => setActive(2)}
             className={
               "text-[#000] text-[18px] px-1 leading-5 font-[600] cursor-pointer 800px:text-[20px]"
             }
+            onClick={() => setActive(2)}
           >
-            Đánh giá
+            Đánh giá sản phẩm
           </h5>
           {active === 2 ? (
-            <div className={`${styles.active_indicator}`}></div>
+            <div className={`${styles.active_indicator}`} />
           ) : null}
         </div>
         <div className="relative">
@@ -233,11 +271,34 @@ const ProductDetailsInfo = ({ data, products }) => {
         </>
       ) : null}
       {active === 2 ? (
-        <>
-          <div className="w-full justify-center min-h-[40vh] flex items-center">
-            <p>Chưa có đánh giá nào</p>
+        <div className="w-full min-h-[40vh] flex flex-col items-center py-3 overflow-y-scroll">
+          {data &&
+            data.reviews.map((item, index) => (
+              <div className="w-full flex my-2">
+                <img
+                  src={`${backend_url}${item?.user?.avatar}`}
+                  alt=""
+                  className="w-[50px] h-[50px] rounded-full"
+                />
+                <div className="pl-2 ">
+                  <div className="w-full flex items-center">
+                    <h1 className="font-[500] mr-3">{item.user.name}</h1>
+                    <Ratings rating={data?.ratings} />
+                  </div>
+                  <p>{item.comment}</p>
+                  <i className="text-[12px] text-blue-700">
+                    {item?.createdAt?.slice(0, 10)}
+                  </i>
+                </div>
+              </div>
+            ))}
+
+          <div className="w-full flex justify-center">
+            {data && data.reviews.length === 0 && (
+              <h5>Sản phẩm chưa có đánh giá nào !</h5>
+            )}
           </div>
-        </>
+        </div>
       ) : null}
       {active === 3 ? (
         <div className="w-full min-h-[40vh] block 800px:flex p-5">
@@ -254,7 +315,9 @@ const ProductDetailsInfo = ({ data, products }) => {
                 <h3 className={`${styles.shop_name} ml-3`}>
                   {data.shop.shopName}
                 </h3>
-                <h5 className="pb-3 text-[15px] ml-3">4.6/5</h5>
+                <h5 className="pb-3 text-[15px] ml-3">
+                  <h5 className="pb-2 text-[15px]">({averageRating}/5.0)</h5>
+                </h5>
               </div>
             </div>
             <p className="pt-2">
@@ -273,7 +336,7 @@ const ProductDetailsInfo = ({ data, products }) => {
                 Tổng sản phẩm: <span> {products && products.length}</span>
               </h5>
               <h5 className="font-[600]">
-                Tổng lượt thích: <span>12456</span>
+                Tổng lượt bình luận sản phẩm: <span>{totalReviewsLength}</span>
               </h5>
               <Link to={`/shop/preview/${data?.shop._id}`}>
                 <div

@@ -236,15 +236,22 @@ const UserOrderDetails = () => {
         </div>
         <div className="w-full 800px:w-[40%]">
           <h4 className="pt-3 text-[20px]">Thanh toán:</h4>
-          <h4>
-            Trạng thái:
-            {data?.paymentInfo?.status
-              ? data?.paymentInfo?.status
-              : " Chưa thanh toán"}
-          </h4>
-
+          <div className="w-full flex">
+            <h4>Trạng thái:</h4>
+            <i
+              className={`ml-2 ${
+                data?.paymentInfo?.status === "Đã thanh toán"
+                  ? "text-green-500"
+                  : "rext-red-500"
+              }`}
+            >
+              {data?.paymentInfo?.status
+                ? data?.paymentInfo?.status
+                : " Chưa thanh toán"}
+            </i>
+          </div>
           <br />
-          {data?.status === "Đã giao hàng" && (
+          {data?.status === "Giao hàng thành công" && (
             <div
               className={`${styles.button} w-[150px] h-[40px] mx-auto`}
               onClick={refundHandler}
