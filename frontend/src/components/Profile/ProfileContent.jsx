@@ -9,9 +9,7 @@ import {
 } from "react-icons/ai";
 import { RxCross1 } from "react-icons/rx";
 import styles from "../../styles/styles";
-import { MdOutlineTrackChanges } from "react-icons/md";
-import { Link } from "react-router-dom";
-import { DataGrid } from "@material-ui/data-grid";
+
 import {
   deleteUserAddress,
   updatUserAddress,
@@ -20,9 +18,9 @@ import {
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Country, State } from "country-state-city";
-import { getAllOrdersOfUser } from "../../redux/actions/order";
 import AllOrder from "../Profile/AllOrder";
 import AllRefunds from "./AllRefunds";
+import TrackOrder from "./TrackOrder.jsx";
 const ProfileContent = ({ active }) => {
   const dispatch = useDispatch();
   const { user, error, successMessage } = useSelector((state) => state.user);
@@ -175,102 +173,7 @@ const ProfileContent = ({ active }) => {
     </div>
   );
 };
-const TrackOrder = () => {
-  const orders = [
-    {
-      _id: "189298A61267hbnzxb",
-      orderItems: [
-        {
-          name: "Iphone 14 pro max",
-        },
-      ],
-      totalPrice: 24990000,
-      orderStatus: "Delived",
-    },
-  ];
-  const columns = [
-    { field: "id", headerName: "Mã đơn hàng", minWidth: 250, flex: 0.7 },
-    {
-      field: "productName",
-      headerName: "Tên sản phẩm",
-      minWidth: 250,
-      flex: 0.7,
-    },
-    {
-      field: "status",
-      headerName: "Trạng thái",
-      minWidth: 150,
-      flex: 0.7,
-      cellClassName: (params) => {
-        return params.getValue(params.id, "status") === "Delivered"
-          ? "greenColor"
-          : "redColor";
-      },
-    },
-    {
-      field: "itemsQty",
-      headerName: "Số lượng",
-      type: "number",
-      minWidth: 150,
-      flex: 0.7,
-    },
 
-    {
-      field: "total",
-      headerName: "Tổng tiền",
-      type: "number",
-      minWidth: 170,
-      flex: 0.8,
-    },
-
-    {
-      field: " ",
-      flex: 1,
-      minWidth: 150,
-      headerName: "",
-      type: "number",
-      sortable: false,
-      renderCell: (params) => {
-        return (
-          <>
-            <Link
-              to={`/user/order/${params.id}`}
-              className="relative inline-block"
-            >
-              <MdOutlineTrackChanges
-                size={30}
-                className="hover:scale-[1.1] hover:text-green-500"
-              />
-            </Link>
-          </>
-        );
-      },
-    },
-  ];
-
-  const row = [];
-  orders &&
-    orders.forEach((item) => {
-      row.push({
-        id: item._id,
-        productName: item.orderItems[0].name,
-        itemsQty: item.orderItems.length,
-        total: item.totalPrice,
-        status: item.orderStatus,
-      });
-    });
-  return (
-    <div className="pl-8 pt-1">
-      <DataGrid
-        rows={row}
-        columns={columns}
-        pageSize={10}
-        disableSelectionOnClick
-        autoHeight
-      />
-    </div>
-  );
-};
 const PaymentMethod = () => {
   const [isPopupVisible, setPopupVisible] = useState(false);
   const handleClick = () => {

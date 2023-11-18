@@ -21,6 +21,7 @@ import {
   CheckOutPage,
   PaymentPage,
   OrderDetailPage,
+  TrackOrderPage,
 } from "./Routes.js";
 import {
   ShopCreate,
@@ -101,6 +102,22 @@ const App = () => {
           }
         />
         <Route
+          path="/user/refunds/:id"
+          element={
+            <ProtectedRoute>
+              <OrderDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/user/track/order/:id"
+          element={
+            <ProtectedRoute>
+              <TrackOrderPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/order/:id"
           element={
             <ProtectedRoute>
@@ -116,7 +133,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         {/*shop create */}
         <Route path="/shop-create" element={<ShopCreate />} />
         <Route path="/shop-login" element={<ShopLoginPage />} />

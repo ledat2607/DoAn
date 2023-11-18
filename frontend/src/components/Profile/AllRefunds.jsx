@@ -80,7 +80,7 @@ const AllRefunds = () => {
         <div className="p-2 w-[35%] flex justify-center">
           {data &&
             data.map((i, index) => (
-              <Link to={`/user/order/${i?._id}`}>
+              <Link to={`/user/refunds/${i?._id}`}>
                 <TbListDetails
                   className="hover:text-green-500 cursor-pointer"
                   size={25}

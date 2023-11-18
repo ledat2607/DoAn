@@ -161,7 +161,7 @@ const OrderDetails = () => {
       <br />
       <br />
       <h4 className="pt-3 text-[20px] font-[600]">Trạng thái đơn hàng:</h4>
-      {data?.status !== "Đang hoàn trả" &&
+      {data?.status !== "Chờ xác nhận hoàn trả đơn hàng" &&
         data?.status !== "Hoàn trả thành công" && (
           <select
             value={status}
@@ -171,8 +171,7 @@ const OrderDetails = () => {
             {[
               "Chờ duyệt",
               "Chuyển đến đơn vị vận chuyển",
-              "Đang giao hàng",
-              "Đã nhận hàng",
+              "Đơn vị vận chuyển đã nhận hàng",
               "Đang trên đường vận chuyển",
               "Giao hàng thành công",
             ]
@@ -180,8 +179,7 @@ const OrderDetails = () => {
                 [
                   "Chờ duyệt",
                   "Chuyển đến đơn vị vận chuyển",
-                  "Đang giao hàng",
-                  "Đã nhận hàng",
+                  "Đơn vị vận chuyển đã nhận hàng",
                   "Đang trên đường vận chuyển",
                   "Giao hàng thành công",
                 ].indexOf(data?.status)
@@ -193,16 +191,18 @@ const OrderDetails = () => {
               ))}
           </select>
         )}
-      {data?.status === "Đang hoàn trả" ||
+      {data?.status === "Chờ xác nhận hoàn trả đơn hàng" ||
       data?.status === "Hoàn trả thành công" ? (
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value)}
           className="w-[300px] mt-2 border h-[35px] rounded-[5px]"
         >
-          {["Đang hoàn trả", "Hoàn trả thành công"]
+          {["Chờ xác nhận hoàn trả đơn hàng", "Hoàn trả thành công"]
             .slice(
-              ["Đang hoàn trả", "Hoàn trả thành công"].indexOf(data?.status)
+              ["Chờ xác nhận hoàn trả đơn hàng", "Hoàn trả thành công"].indexOf(
+                data?.status
+              )
             )
             .map((option, index) => (
               <option value={option} key={index} className="w-[300px]">
@@ -215,7 +215,7 @@ const OrderDetails = () => {
       <div
         className={`${styles.button} mt-5 !w-[200px] !rounded-[4px]  font-[600] !h-[45px] text-[18px]`}
         onClick={
-          data?.status !== "Đang hoàn trả"
+          data?.status !== "Chờ xác nhận hoàn trả đơn hàng"
             ? orderUpdateHandler
             : refundOrderUpdateHandler
         }

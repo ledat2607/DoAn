@@ -11,6 +11,7 @@ import ProfilePage from "../src/pages/User/ProfilePage";
 import CheckOutPage from "../src/pages/User/CheckOutPage";
 import PaymentPage from "./pages/User/PaymentPage";
 import OrderDetailPage from "./pages/User/OrderDetailPage";
+import TrackOrderPage from "./pages/User/TrackOrderPage";
 export {
   LoginPage,
   SignupPage,
@@ -25,4 +26,5 @@ export {
   CheckOutPage,
   PaymentPage,
   OrderDetailPage,
+  TrackOrderPage,
 };

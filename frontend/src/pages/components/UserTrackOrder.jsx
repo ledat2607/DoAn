@@ -15,7 +15,7 @@ import { toast } from "react-toastify";
 import { backend_url, server } from "../../server";
 import { getAllOrdersOfUser } from "../../redux/actions/order";
 
-const UserOrderDetails = () => {
+const UserTrackOrder = () => {
   const { orders } = useSelector((state) => state.order);
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -319,11 +319,11 @@ const UserOrderDetails = () => {
         <div
           className={`${styles.button} w-[150px] h-[40px] !bg-gray-400 mx-auto`}
         >
-          Gửi tin nhắn
+          Quay lại trang chủ
         </div>
       </Link>
     </div>
   );
 };
 
-export default UserOrderDetails;
+export default UserTrackOrder;

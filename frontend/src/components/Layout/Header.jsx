@@ -65,7 +65,7 @@ const Header = ({ activeHeading }) => {
       <div className="ml-4 hidden 800px:h-[50px] 800px:my-[20px] 800px:flex items-center justify-between">
         <div className="mt-5">
           <Link to="/">
-            <img src="../../img/logo.png" alt="logo" width={"100px"} />
+            <img src="../../../img/logo.png" alt="logo" width={"100px"} />
           </Link>
         </div>
         {/*Search box*/}

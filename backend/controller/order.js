@@ -6,7 +6,7 @@ const { isAuthenticated, isSeller, isAdmin } = require("../middleware/auth");
 const Order = require("../model/order");
 const Shop = require("../model/shop");
 const Product = require("../model/product");
-
+const { upload } = require("../multer");
 // create new order
 router.post(
   "/create-order",
@@ -150,13 +150,12 @@ router.put(
   catchAsyncErrors(async (req, res, next) => {
     try {
       const order = await Order.findById(req.params.id);
-
       if (!order) {
         return next(new ErrorHandler("Không tìm thấy đơn hàng", 400));
       }
 
       order.status = req.body.status;
-
+      order.reason = req.body.reason;
       await order.save({ validateBeforeSave: false });
 
       res.status(200).json({
@@ -179,7 +178,7 @@ router.put(
       const order = await Order.findById(req.params.id);
 
       if (!order) {
-        return next(new ErrorHandler("Order not found with this id", 400));
+        return next(new ErrorHandler("Không tìm thấy đơn hàng", 400));
       }
 
       order.status = req.body.status;
@@ -188,12 +187,12 @@ router.put(
 
       res.status(200).json({
         success: true,
-        message: "Order Refund successfull!",
+        message: "Đơn hàng hoàn trả thành công!",
       });
 
-      if (req.body.status === "Refund Success") {
+      if (req.body.status === "Hoàn trả thành công") {
         order.cart.forEach(async (o) => {
-          await updateOrder(o._id, o.qty);
+          await updateOrder(o.productId, o.qty);
         });
       }
 

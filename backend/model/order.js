@@ -43,6 +43,14 @@ const orderSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
+  // images: [
+  //   {
+  //     type: String,
+  //   },
+  // ],
+  reason: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("Order", orderSchema);

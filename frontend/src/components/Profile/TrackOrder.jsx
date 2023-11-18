@@ -1,18 +1,11 @@
 import React, { useEffect, useState } from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 import { getAllOrdersOfUser } from "../../redux/actions/order";
 import { useDispatch, useSelector } from "react-redux";
 import { backend_url } from "../../server";
-import { TbListDetails } from "react-icons/tb";
-import { MdDeleteForever } from "react-icons/md";
+import { MdTrackChanges } from "react-icons/md";
 import { Link } from "react-router-dom";
-const AllOrder = () => {
+
+const TrackOrder = () => {
   const { user, error, successMessage } = useSelector((state) => state.user);
   const { orders } = useSelector((state) => state.order);
   const [data, setData] = useState([]);
@@ -21,15 +14,15 @@ const AllOrder = () => {
     dispatch(getAllOrdersOfUser(user?._id));
     setData(orders);
   }, [user?._id, dispatch]);
+  //định dạng tiền tệ
   function formatVietnameseCurrency(value) {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
     }).format(value);
   }
-
   return (
-    <>
+    <div>
       <div className="overflow-y-scroll max-h-[80vh]">
         <div className="w-[150vw] 800px:w-[95%] mx-auto bg-gray-300 rounded-[10px] flex items-center justify-between">
           <div className="ml-2 w-[35%]">Hình ảnh</div>
@@ -70,22 +63,17 @@ const AllOrder = () => {
             {formatVietnameseCurrency(i?.totalPrice)}
           </div>
           <div className="p-2 w-[35%] flex">
-            <Link to={`/user/order/${i?._id}`}>
-              <TbListDetails
+            <Link to={`/user/track/order/${i?._id}`}>
+              <MdTrackChanges
                 className="hover:text-green-500 cursor-pointer"
                 size={25}
               />
             </Link>
-
-            <MdDeleteForever
-              className="hover:text-red-500 cursor-pointer ml-4"
-              size={25}
-            />
           </div>
         </div>
       ))}
-    </>
+    </div>
   );
 };
 
-export default AllOrder;
+export default TrackOrder;
