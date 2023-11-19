@@ -18,10 +18,10 @@ const ProductDetails = ({ data }) => {
   const { user } = useSelector((state) => state.user);
   const { cartItems } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(getAllProductsShop(data && data?.shop?._id));
-    dispatch(getAllCartItemsUser(user?._id));
-  }, [dispatch, cartItems?.length, cartItems]);
+  }, [dispatch]);
 
   const [count, setCount] = useState(1);
   const [click, setClick] = useState(false);

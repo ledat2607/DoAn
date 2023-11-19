@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { backend_url, server } from "../../server";
 import styles from "../../styles/styles";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getAllProductsShop } from "../../redux/actions/product";
 const ShopInfo = ({ isOwner }) => {
   const { products } = useSelector((state) => state.products);
@@ -67,7 +67,9 @@ const ShopInfo = ({ isOwner }) => {
           <div
             className={`${styles.button} mx-auto w-[120px] h-[40px] !rounded-[10px]`}
           >
-            <span className="font-Roboto text-[18px]">Chỉnh sửa</span>
+            <Link to="/settings">
+              <span className="font-Roboto text-[18px]">Chỉnh sửa</span>
+            </Link>
           </div>
           <div
             className={`${styles.button} mx-auto w-[120px] h-[40px] !rounded-[10px]`}

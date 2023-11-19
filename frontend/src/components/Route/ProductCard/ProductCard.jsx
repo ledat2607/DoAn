@@ -23,13 +23,11 @@ const ProductCard = ({ data }) => {
   const dispatch = useDispatch();
   const { isAuthenticated, user } = useSelector((state) => state.user);
   const { wishlistItems } = useSelector((state) => state.wishlist);
-  const { cartItems } = useSelector((state) => state.cart);
   const [click, setClick] = useState(false);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const [dataCart, setData] = useState();
   const handleClick = () => {
-    navigate(`/product/${data.name}`);
+    navigate(`/product/${data?.name}`);
     window.location.reload(true);
   };
 
@@ -43,11 +41,6 @@ const ProductCard = ({ data }) => {
       setClick(false);
     }
   }, [wishlistItems, data]);
-  // useEffect(() => {
-  //   dispatch(getAllCartItemsUser(user?._id));
-  //   dispatch(getAllWishlistItemsUser(user?._id));
-  // }, [isAuthenticated, user, wishlistItems?.length, cartItems?.length]);
-
   //hiển thị định dạng tiền tệ
   function formatVietnameseCurrency(value) {
     return new Intl.NumberFormat("vi-VN", {
@@ -116,12 +109,14 @@ const ProductCard = ({ data }) => {
 
         <Link to={`/shop/preview/${data?.shop._id}`}>
           <p className="text-[16px] font-normal mt-3 cursor-pointer hover:text-blue-600">
-            {data?.shop.shopName}
+            {data?.shop?.shopName}
           </p>
         </Link>
-        <Link to={`/product/${data._id}`}>
+        <Link to={`/product/${data?.name}`}>
           <h4 className="text-[16px] text-gray-700 hover:text-blue-500 transition-all duration-100 font-extrabold cursor-pointer ">
-            {data.name.length > 40 ? data.name.slice(0, 40) + "..." : data.name}
+            {data?.name.length > 40
+              ? data?.name.slice(0, 40) + "..."
+              : data?.name}
           </h4>
           <div className="mt-1 flex">
             <AiFillStar
@@ -152,18 +147,18 @@ const ProductCard = ({ data }) => {
           </div>
           <div className="py-2 flex items-center justify-between">
             <span className={`${styles.productDiscountPrice}`}>
-              {data.discountPrice === 0
+              {data?.discountPrice === 0
                 ? 0
-                : formatVietnameseCurrency(data.discountPrice)}
+                : formatVietnameseCurrency(data?.discountPrice)}
             </span>
             <span className={`${styles.price}`}>
-              {data.originalPrice === 0
+              {data?.originalPrice === 0
                 ? 0
-                : formatVietnameseCurrency(data.originalPrice)}
+                : formatVietnameseCurrency(data?.originalPrice)}
             </span>
           </div>
           <div className="font-[400] text-[13px] text-[#68d284]">
-            {data.sold_out} Đã bán
+            {data?.sold_out} Đã bán
           </div>
         </Link>
         {/*side options */}

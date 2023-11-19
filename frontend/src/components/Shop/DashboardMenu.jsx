@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { AiOutlineFolderAdd, AiOutlineGift } from "react-icons/ai";
 import { FiPackage, FiShoppingBag } from "react-icons/fi";
 import { MdOutlineLocalOffer } from "react-icons/md";
@@ -8,8 +8,20 @@ import { CiMoneyBill, CiSettings } from "react-icons/ci";
 import { Link } from "react-router-dom";
 import { BiMessageSquareDetail } from "react-icons/bi";
 import { HiOutlineReceiptRefund } from "react-icons/hi";
+import { getAllOrdersOfShop } from "../../redux/actions/order";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllEventsShop } from "../../redux/actions/event";
+import { getAllProductsShop } from "../../redux/actions/product";
 
 const DashboardMenu = ({ active }) => {
+  const dispatch = useDispatch();
+  const { seller } = useSelector((state) => state.seller);
+  useEffect(() => {
+    dispatch(getAllOrdersOfShop(seller?._id));
+    dispatch(getAllEventsShop(seller?._id));
+    dispatch(getAllProductsShop(seller?._id));
+  }, [seller?._id]);
+
   return (
     <>
       <div className="overflow-y-scroll h-[85vh]">
@@ -143,9 +155,9 @@ const DashboardMenu = ({ active }) => {
               title="Trò chuyện"
             />
             <h5
-             className={`pl-2 text-[18px] font-[400] ${
-              active === 8 ? "text-[#0000FF]" : "text-[#555]"
-            } 800px:block hidden`}
+              className={`pl-2 text-[18px] font-[400] ${
+                active === 8 ? "text-[#0000FF]" : "text-[#555]"
+              } 800px:block hidden`}
             >
               Trò chuyện
             </h5>

@@ -11,27 +11,10 @@ const ProductDetailsPage = () => {
   const [data, setData] = useState(null);
   const productName = name.replace(/-/g, " ");
   useEffect(() => {
-    let intervalId;
-    let count = 0;
-    const fetchData = () => {
-      const data =
-        allProducts && allProducts.find((i) => i.name === productName);
-      setData(data);
-      count++;
-
-      if (count === 10) {
-        clearInterval(intervalId); // Dừng vòng lặp sau 10 lần
-      }
-    };
-
-    fetchData();
-
-    intervalId = setInterval(fetchData, 1000); // Gửi dữ liệu mỗi giây
-
-    return () => {
-      clearInterval(intervalId); // Dừng vòng lặp khi component unmount
-    };
-  }, [data, allProducts]);
+    const data =
+      allProducts && allProducts.find((i) => i?.name === productName);
+    setData(data);
+  }, [allProducts]);
 
   return (
     <div>

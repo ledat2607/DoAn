@@ -39,7 +39,7 @@ const AllProducts = () => {
               <span className="800px:text-lg text-[12px]">Hình ảnh</span>
               <img
                 src={`${backend_url}${i.images[0]}`}
-                className="800px:w-[120px] w-[80px] hover:cursor-pointer pt-2"
+                className="800px:w-[80px] 800px:h-[80px] h-[60px] w-[60px] hover:cursor-pointer pt-2 my-auto"
               />
               <div className="absolute top-0 left-0 right-0 bottom-0 bg-gray-900 bg-opacity-50 opacity-0 group-hover:opacity-100 flex justify-center items-center transition-opacity duration-300">
                 <AiOutlineDelete

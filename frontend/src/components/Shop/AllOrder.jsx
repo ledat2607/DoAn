@@ -13,7 +13,7 @@ const AllOrder = () => {
   const { seller } = useSelector((state) => state.seller);
   const dispatch = useDispatch();
   const [filterStatus, setFilterStatus] = useState("all"); // Lọc theo trạng thái
-  const [priceRange, setPriceRange] = useState([0, 99999999]); // Lọc theo giá tiền
+  const [priceRange, setPriceRange] = useState([0, 20000000]); // Lọc theo giá tiền
 
   const handleFilterStatusChange = (newFilterStatus) => {
     setFilterStatus(newFilterStatus);
@@ -54,7 +54,7 @@ const AllOrder = () => {
 
     // Chọn nội dung của input
     tempInput.select();
-    tempInput.setSelectionRange(0, 99999); // For mobile devices
+    tempInput.setSelectionRange(0, 20000000); // For mobile devices
 
     // Sao chép nội dung vào clipboard
     document.execCommand("copy");
@@ -65,7 +65,7 @@ const AllOrder = () => {
 
   return (
     <div className="w-full">
-      <div className="flex items-center">
+      <div className="800px:flex items-center">
         <div>
           <span className="mr-2">Lọc sản phẩm:</span>
           <select
@@ -92,12 +92,12 @@ const AllOrder = () => {
           </select>
         </div>
 
-        <div className="ml-5">
+        <div className="800px:ml-5 w-[250px] mt-2 800px:mt-0">
           <span className="mr-2">Lọc theo giá trị đơn hàng:</span>
           <Slider
             range
             min={0}
-            max={99999999}
+            max={20000000}
             defaultValue={priceRange}
             onChange={handlePriceRangeChange}
           />
@@ -119,16 +119,17 @@ const AllOrder = () => {
             {filteredData &&
               filteredData.map((i, index) => (
                 <>
-                  <div className="flex mx-auto w-[95%] bg-white shadow-2xl p-4 rounded-md mt-6 800px:h-[150px] h-[120px]">
-                    <div className="w-[120px] relative">
-                      <span className="800px:text-lg text-[12px]">
-                        Hình ảnh
-                      </span>
+                  <div
+                    className="flex mx-auto w-[95%] bg-white shadow-2xl p-4 rounded-md mt-6 800px:h-[150px]"
+                    key={index}
+                  >
+                    <div className="relative">
+                      <span className="800px:text-lg text-[8px]">Hình ảnh</span>
                       {i?.cart.map((item, inde) => (
                         <img
                           src={`${backend_url}${item?.product?.images[0]}`}
                           key={index}
-                          className="800px:w-[120px] w-[80px] hover:cursor-pointer pt-2"
+                          className="800px:w-[110px] w-[50px] 800px:h-[100px] hover:cursor-pointer pt-2"
                           alt=""
                         />
                       ))}
@@ -145,21 +146,25 @@ const AllOrder = () => {
                         />
                       </div>
                     </div>
-                    <div className="w-[200px] ml-[10%]">
-                      <span className="800px:text-lg text-[12px]">
+                    <div className="800px:ml-[10%] ml-4 800px:w-[200px]">
+                      <span className="800px:text-lg text-[8px]">
                         Tên sản phẩm
                       </span>
                       <div className="800px:text-lg text-[12px] text-blue-500 mt-6">
                         {i?.cart.map((item, inde) => (
-                          <label key={inde}>{item?.product?.name}</label>
+                          <label key={inde}>
+                            {item?.product?.name.length > 15
+                              ? item?.product?.name.slice(0, 15) + "..."
+                              : item?.product?.name}
+                          </label>
                         ))}
                       </div>
                     </div>
-                    <div className="ml-8">
-                      <span className="800px:text-lg text-[12px]">
+                    <div className="ml-2 800px:w-[200px]">
+                      <span className="800px:text-lg text-[8px]">
                         Trạng thái
                       </span>
-                      <div className="800px:text-lg text-[12px] text-green-500 mt-6">
+                      <div className="800px:text-lg text-[8px] text-green-500 mt-6">
                         <label
                           className={`${
                             i.status === "Chờ duyệt"
@@ -167,12 +172,16 @@ const AllOrder = () => {
                               : "text-green-500"
                           }`}
                         >
-                          {i?.status}
+                          {i?.status.length > 15
+                            ? i?.status.slice(0, 15) + "..."
+                            : i?.status}
                         </label>
                       </div>
                     </div>
-                    <div className="ml-[10%]">
-                      <span className="800px:text-lg text-[12px]">Tổng đơn hàng</span>
+                    <div className="800px:ml-[10%] ml-2 w-[100px] 800px:w-[200px]">
+                      <span className="800px:text-lg text-[8px]">
+                        Tổng đơn hàng
+                      </span>
                       <div className="800px:text-lg text-[12px] text-green-500 mt-6">
                         {formatVietnameseCurrency(i.totalPrice)}
                       </div>

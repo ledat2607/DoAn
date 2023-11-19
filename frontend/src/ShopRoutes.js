@@ -12,6 +12,7 @@ import ShopPreviewPage from "./pages/Shop/ShopPreviewPage";
 import ShopAllOrders from "./pages/Shop/ShopAllOrders.jsx";
 import ShopOrderDetails from "./pages/Shop/ShopOrderDetails";
 import ShopAllRefunds from "./pages/Shop/ShopAllRefunds";
+import ShopSettingsPage from "./pages/Shop/ShopSettingsPage";
 export {
   ShopCreate,
   SellerActivationPage,
@@ -27,4 +28,5 @@ export {
   ShopAllOrders,
   ShopOrderDetails,
   ShopAllRefunds,
+  ShopSettingsPage,
 };
