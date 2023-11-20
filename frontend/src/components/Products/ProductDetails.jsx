@@ -21,7 +21,7 @@ const ProductDetails = ({ data }) => {
 
   useEffect(() => {
     dispatch(getAllProductsShop(data && data?.shop?._id));
-  }, [dispatch]);
+  }, [dispatch,data]);
 
   const [count, setCount] = useState(1);
   const [click, setClick] = useState(false);
@@ -182,7 +182,7 @@ const ProductDetails = ({ data }) => {
                     <h3 className={`${styles.shop_name} ml-3`}>
                       {data.shop.shopName}
                     </h3>
-                    <h5 className="pb-3 text-[15px] ml-3">4.6 / 5</h5>
+                    <h5 className="pb-3 text-[15px] ml-3">{averageRating}/5.0</h5>
                   </div>
 
                   <div

@@ -3,6 +3,7 @@ const path = require("path");
 const router = express.Router();
 const { upload } = require("../multer");
 const User = require("../model/user");
+const Product = require("../model/product");
 const ErrorHandler = require("../utils/ErrorHandler");
 const fs = require("fs");
 const jwt = require("jsonwebtoken");
@@ -201,22 +202,37 @@ router.put(
   upload.single("image"),
   catchAsyncErrors(async (req, res, next) => {
     try {
+      // Xóa avatar cũ của người dùng
       const existsUser = await User.findById(req.user.id);
       const existsAvatarPath = `uploads/${existsUser.avatar}`;
       fs.unlinkSync(existsAvatarPath);
+
+      // Cập nhật avatar mới của người dùng
       const fileUrl = path.join(req.file.filename);
-      const user = await User.findByIdAndUpdate(req.user.id, {
+      const updatedUser = await User.findByIdAndUpdate(req.user.id, {
         avatar: fileUrl,
       });
+
+      // Cập nhật avatar của người dùng trong tất cả các sản phẩm
+      await Product.updateMany(
+        { "reviews.user._id": req.user.id },
+        {
+          $set: {
+            "reviews.$[].user.avatar": fileUrl,
+          },
+        }
+      );
+
       res.status(200).json({
         success: true,
-        user,
+        updatedUser,
       });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
   })
 );
+
 //update user addresses
 router.put(
   "/update-user-addresses",

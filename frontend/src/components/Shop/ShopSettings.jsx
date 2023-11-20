@@ -15,36 +15,30 @@ const ShopSettings = () => {
     seller && seller.description ? seller.description : ""
   );
   const [address, setAddress] = useState(seller && seller.address);
-  const [phoneNumber, setPhoneNumber] = useState(seller && seller.phoneNumber);
-  const [zipCode, setZipcode] = useState(seller && seller.zipCode);
+  const [phoneNumber, setPhoneNumber] = useState(
+    seller && "0" + seller.phoneNumber
+  );
 
   const dispatch = useDispatch();
 
   const handleImage = async (e) => {
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      if (reader.readyState === 2) {
-        setAvatar(reader.result);
-        axios
-          .put(
-            `${server}/shop/update-shop-avatar`,
-            { avatar: reader.result },
-            {
-              withCredentials: true,
-            }
-          )
-          .then((res) => {
-            dispatch(loadSeller());
-            toast.success("Avatar updated successfully!");
-          })
-          .catch((error) => {
-            toast.error(error.response.data.message);
-          });
-      }
-    };
-
-    reader.readAsDataURL(e.target.files[0]);
+    e.preventDefault();
+    const file = e.target.files[0];
+    setAvatar(file);
+    const formData = new FormData();
+    formData.append("image", e.target.files[0]);
+    axios
+      .put(`${server}/shop/update-shop-avatar`, formData, {
+        headers: { "Content-type": "multipath/form-data" },
+        withCredentials: true,
+      })
+      .then((res) => {
+        dispatch(loadSeller());
+        toast.success("Cập nhật thành công!");
+      })
+      .catch((error) => {
+        toast.error(error.response.data?.message);
+      });
   };
 
   const updateHandler = async (e) => {
@@ -56,14 +50,13 @@ const ShopSettings = () => {
         {
           name,
           address,
-          zipCode,
           phoneNumber,
           description,
         },
         { withCredentials: true }
       )
       .then((res) => {
-        toast.success("Shop info updated succesfully!");
+        toast.success("Cập nhật thành công!");
         dispatch(loadSeller());
       })
       .catch((error) => {
@@ -150,7 +143,7 @@ const ShopSettings = () => {
             </div>
             <input
               type="number"
-              placeholder={0 + seller?.phoneNumber}
+              placeholder={"0" + seller?.phoneNumber}
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
               className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}

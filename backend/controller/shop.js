@@ -10,6 +10,7 @@ const ErrorHandler = require("../utils/ErrorHandler");
 const sendShopToken = require("../utils/shopToken");
 const { upload } = require("../multer");
 const fs = require("fs");
+const Product = require("../model/product");
 //create-shop
 router.post("/create-shop", upload.single("file"), async (req, res, next) => {
   try {
@@ -197,4 +198,74 @@ router.get(
     }
   })
 );
+//update shop avatar
+router.put(
+  "/update-shop-avatar",
+  isSeller,
+  upload.single("image"),
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      // Xóa avatar cũ của cửa hàng
+      const existsShop = await Shop.findById(req.seller.id);
+      const existsAvatarPath = `uploads/${existsShop.avatar.url}`;
+      fs.unlinkSync(existsAvatarPath);
+
+      // Cập nhật avatar mới của cửa hàng
+      const fileUrl = path.join(req.file.filename);
+      const updatedShop = await Shop.findByIdAndUpdate(req.seller.id, {
+        avatar: { public_id: fileUrl, url: fileUrl },
+      });
+
+      // Cập nhật avatar của cửa hàng cho tất cả sản phẩm thuộc cửa hàng
+      await Product.updateMany(
+        { shopId: req.seller.id },
+        {
+          $set: {
+            "shop.avatar.public_id": fileUrl,
+            "shop.avatar.url": fileUrl,
+          },
+        }
+      );
+
+      res.status(200).json({
+        success: true,
+        updatedShop,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+//update seller info
+router.put(
+  "/update-seller-info",
+  isSeller,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const { name, description, address, phoneNumber } = req.body;
+
+      const shop = await Shop.findOne(req.seller._id);
+
+      if (!shop) {
+        return next(new ErrorHandler("Không tìm thấy người dùng", 400));
+      }
+
+      shop.name = name;
+      shop.description = description;
+      shop.address = address;
+      shop.phoneNumber = phoneNumber;
+
+      await shop.save();
+
+      res.status(201).json({
+        success: true,
+        shop,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
 module.exports = router;
