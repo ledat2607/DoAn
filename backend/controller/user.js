@@ -218,8 +218,11 @@ router.put(
         { "reviews.user._id": req.user.id },
         {
           $set: {
-            "reviews.$[].user.avatar": fileUrl,
+            "reviews.$[elem].user.avatar": fileUrl,
           },
+        },
+        {
+          arrayFilters: [{ "elem.user._id": req.user.id }],
         }
       );
 

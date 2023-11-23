@@ -21,7 +21,7 @@ const BestSellingPage = () => {
     <div>
       <Header activeHeading={2} />
       <div className={`${styles.section} mt-5`}>
-        <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-4 lg:gap-[25px] xl:grid-cols-5 xl:gap-[30px] mb-12">
+        <div className="grid grid-cols-2 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-4 lg:gap-[25px] xl:grid-cols-5 xl:gap-[30px] mb-12">
           {data &&
             data?.map((i, index) => <ProductCard key={index} data={i} />)}
         </div>

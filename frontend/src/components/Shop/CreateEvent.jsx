@@ -15,8 +15,7 @@ const CreateEvent = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
-  const [minAmount, setMinAmount] = useState("");
-  const [maxAmount, setMaxAmount] = useState("");
+  const [discountPercent, setDiscountPercent] = useState("");
   const [stock, setStock] = useState();
   const [isPercentage, setIsPercentage] = useState(true);
   const [isTrue, setIsTrue] = useState(true);
@@ -30,7 +29,6 @@ const CreateEvent = () => {
     if (success === true) {
       toast.success("Tạo mới thành công !");
       navigate("/dashboard");
-      window.location.reload(true);
     }
   }, [dispatch, error, success]);
 
@@ -41,21 +39,10 @@ const CreateEvent = () => {
       currency: "VND",
     }).format(value);
   }
-  //Thay đổi và hiển thị phần maxAmount
-  const handleMaxAmountChange = (e) => {
-    const value = e.target.value;
-    setMaxAmount(value);
-
-    if (value <= 100) {
-      setIsPercentage(true);
-    } else {
-      setIsPercentage(false);
-    }
-  };
-  ///Thay đổi span tại minAmount
+  ///Thay đổi
   const handleMinAmountChange = (e) => {
     const value = e.target.value;
-    setMinAmount(value);
+    setDiscountPercent(value);
 
     if (value <= 100) {
       setIsTrue(true);
@@ -93,8 +80,7 @@ const CreateEvent = () => {
     newForm.append("name", name);
     newForm.append("description", description);
     newForm.append("category", category);
-    newForm.append("minAmount", minAmount);
-    newForm.append("maxAmount", maxAmount);
+    newForm.append("discountPercent", discountPercent);
     newForm.append("stock", stock);
     newForm.append("shopId", seller._id);
     newForm.append("start_Date", startDate.toISOString());
@@ -168,38 +154,20 @@ const CreateEvent = () => {
         <div className="flex">
           <div className="mt-5 w-[40%] flex">
             <label className="pb-2 ml-12 text-[18px] font-Poppins font-[400] mt-5">
-              Giảm giá từ
+              Khuyến mãi
               <div className="mt-1 text-[12px] text-red-600 relative">
                 {isTrue
-                  ? `${minAmount}%`
-                  : `${formatVietnameseCurrency(minAmount)}`}
+                  ? `${discountPercent}%`
+                  : `${formatVietnameseCurrency(discountPercent)}`}
               </div>
             </label>
             <input
               type="number"
-              name="minAmount"
-              placeholder="Giảm giá từ..."
-              value={minAmount}
+              name="discountPercent"
+              placeholder="Khuyến mãi..."
+              value={discountPercent}
               className="mt-2 ml-10 mx-auto appearance-none block w-[30%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
               onChange={handleMinAmountChange}
-            />
-          </div>
-          <div className="ml-2 mt-5 w-[30%] flex ">
-            <label className="pb-2 ml-3 text-[18px] font-Poppins font-[400] mt-5">
-              đến
-              <div className="mt-1 text-[12px] text-green-600">
-                {isPercentage
-                  ? `${maxAmount}%`
-                  : `${formatVietnameseCurrency(maxAmount)}`}
-              </div>
-            </label>
-            <input
-              type="number"
-              name="maxAmount"
-              placeholder="Khuyến mãi..."
-              value={maxAmount}
-              className="mt-2 ml-4 mx-auto appearance-none block w-[90%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
-              onChange={handleMaxAmountChange}
             />
           </div>
         </div>

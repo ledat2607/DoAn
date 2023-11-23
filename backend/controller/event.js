@@ -94,4 +94,25 @@ router.get("/get-all-events", async (req, res, next) => {
     return next(new ErrorHandler(error, 400));
   }
 });
+//stop event
+router.post(
+  "/stop-event/:id",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const eventId = req.params.id;
+      const eventIsexist = await Event.findById(eventId);
+      if (!eventIsexist) {
+        return next(new ErrorHandler("Sự kiện không tồn tại", 400));
+      }
+      eventIsexist.status = "Dừng sự kiện";
+      await eventIsexist.save();
+      res.status(200).json({
+        success: true,
+        message: "Cập nhật trạng thái thành công",
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error, 400));
+    }
+  })
+);
 module.exports = router;

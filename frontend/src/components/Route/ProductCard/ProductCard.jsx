@@ -91,14 +91,14 @@ const ProductCard = ({ data }) => {
   };
   return (
     <>
-      <div className="border bg-white hover:border-2 hover:border-blue-300 border-gray-800 h-[350px] rounded-lg shadow-md p-3 relative cursor-pointer">
+      <div className="mt-4 800px:mt-1 border bg-white hover:border-2 hover:border-blue-300 border-gray-800 800px:h-[350px] rounded-lg shadow-md p-3 relative cursor-pointer">
         <div className="flex justify-end"></div>
 
         <div className="relative group" onClick={handleClick}>
           <img
             src={`${backend_url}${data?.images && data?.images[0]}`}
             alt="product-img"
-            className="w-full h-[150px] object-contain"
+            className="w-[100px] h-[100px] 800px:w-[150px] 800px:h-[150px] object-contain mx-auto"
           />
           <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out">
             <p className="text-white text-lg font-semibold transform translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-1000 ease-in-out">
@@ -108,12 +108,12 @@ const ProductCard = ({ data }) => {
         </div>
 
         <Link to={`/shop/preview/${data?.shop._id}`}>
-          <p className="text-[16px] font-normal mt-3 cursor-pointer hover:text-blue-600">
+          <p className="text-[12px] 800px:text-[16px] font-normal mt-3 cursor-pointer hover:text-blue-600">
             {data?.shop?.shopName}
           </p>
         </Link>
         <Link to={`/product/${data?.name}`}>
-          <h4 className="text-[16px] text-gray-700 hover:text-blue-500 transition-all duration-100 font-extrabold cursor-pointer ">
+          <h4 className="text-[12px] 800px:text-[16px] text-gray-700 hover:text-blue-500 transition-all duration-100 font-extrabold cursor-pointer ">
             {data?.name.length > 40
               ? data?.name.slice(0, 40) + "..."
               : data?.name}
@@ -146,12 +146,14 @@ const ProductCard = ({ data }) => {
             />
           </div>
           <div className="py-2 flex items-center justify-between">
-            <span className={`${styles.productDiscountPrice}`}>
+            <span
+              className={`${styles.productDiscountPrice} !text-[12px] 800px:!text-[16px]`}
+            >
               {data?.discountPrice === 0
                 ? 0
                 : formatVietnameseCurrency(data?.discountPrice)}
             </span>
-            <span className={`${styles.price}`}>
+            <span className={`${styles.price} !text-[12px] 800px:!text-[16px]`}>
               {data?.originalPrice === 0
                 ? 0
                 : formatVietnameseCurrency(data?.originalPrice)}

@@ -23,15 +23,11 @@ const eventSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    default: "Running",
+    default: "Chưa diễn ra",
   },
- 
-  minAmount: {
+
+  discountPercent: {
     type: Number,
-    required: true,
-  },
-  maxAmount: {
-    type: String,
     required: true,
   },
   stock: {
@@ -67,6 +63,24 @@ const eventSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
+});
+// Sử dụng hook pre để kiểm tra và cập nhật status trước khi lưu
+eventSchema.pre("save", function (next) {
+  const currentDate = new Date();
+  const startDate = new Date(this.start_Date);
+
+  // Kiểm tra xem start_Date có bằng ngày hiện tại hay không
+  if (
+    startDate.getDate() === currentDate.getDate() &&
+    startDate.getMonth() === currentDate.getMonth() &&
+    startDate.getFullYear() === currentDate.getFullYear()
+  ) {
+    // Nếu có, cập nhật status thành "Đang diễn ra"
+    this.status = "Đang diễn ra";
+  }
+
+  // Tiếp tục quá trình lưu
+  next();
 });
 
 module.exports = mongoose.model("Event", eventSchema);

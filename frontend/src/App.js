@@ -39,6 +39,7 @@ import {
   ShopOrderDetails,
   ShopAllRefunds,
   ShopSettingsPage,
+  ShopWithdrawMoney,
 } from "./ShopRoutes.js";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -172,6 +173,14 @@ const App = () => {
           element={
             <SellerProtectedRoute>
               <ShopAllProduct />
+            </SellerProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard-withdraw-money"
+          element={
+            <SellerProtectedRoute>
+              <ShopWithdrawMoney />
             </SellerProtectedRoute>
           }
         />

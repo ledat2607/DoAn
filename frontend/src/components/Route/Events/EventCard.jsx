@@ -18,11 +18,7 @@ const EventCard = ({ active, data }) => {
       currency: "VND",
     }).format(value);
   }
-
-  const addToCartHandler = () => {
-    dispatch(addToCart(user?._id, data.shop?._id, data?._id, 1));
-    toast.success("Thêm vào giỏ hàng thành công !");
-  };
+  const isEventStarted = new Date(data?.start_Date) <= new Date();
   return (
     <div
       className={`w-full block bg-white rounded-lg lg:flex ${
@@ -43,33 +39,28 @@ const EventCard = ({ active, data }) => {
         <p>{data?.description}</p>
         <div className="w-full flex py-2 items-center justify-between">
           <div className="flex">
-            Giảm từ
-            {data?.minAmount <= 100 ? (
+            Giảm giá
+            {data?.discountPercent <= 100 ? (
               <h5 className="font-[500] text-[18px] text-[#d55b45] pr-3 line-through ml-2">
-                {data?.minAmount}%
+                {data?.discountPercent}%
               </h5>
             ) : (
               <h5 className="font-bold text-[20px] text-red-500 font-Roboto ml-4 pr-4">
-                {formatVietnameseCurrency(data?.minAmount)}
+                {formatVietnameseCurrency(data?.discountPercent)}
               </h5>
             )}
-            <AiOutlineArrowRight className="mt-2" />
-            {data?.maxAmount <= 100 ? (
-              <h5 className="font-[500] text-[18px] text-[#d55b45] pr-3 line-through ml-3">
-                {data?.maxAmount}%
-              </h5>
-            ) : (
-              <h5 className="font-bold text-[20px] text-green-500 font-Roboto ml-4">
-                {formatVietnameseCurrency(data?.maxAmount)}
-              </h5>
-            )}
+            cho tất cả sản phẩm thuộc danh mục khuyến mãi
           </div>
         </div>
 
         <span className="pr-3 font-[400] text-[17px] text-[#44a55e]">
           Số lượng sản phẩm đã bán {data?.sold_out}
         </span>
-        <CountDown data={data} />
+        {isEventStarted ? (
+          <CountDown data={data} />
+        ) : (
+          <p>Sự kiện chưa bắt đầu</p>
+        )}
         <div className="flex">
           <Link to={`/shop/preview/${data?.shop._id}`}>
             <div className={`${styles.button} w-[150px] h-[40px]`}>
