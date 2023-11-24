@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { RxCross1 } from "react-icons/rx";
 import styles from "../../../styles/styles";
 import {
@@ -7,18 +7,15 @@ import {
   AiOutlinePlus,
   AiOutlineShoppingCart,
 } from "react-icons/ai";
-import { backend_url, server } from "../../../server";
-import { Link, useParams } from "react-router-dom";
+import { backend_url } from "../../../server";
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { addToCart, getAllCartItemsUser } from "../../../redux/actions/cart";
-import axios from "axios";
 
 const ProductDetailsCard = ({ setOpen, open, data }) => {
   const { isAuthenticated, user } = useSelector((state) => state.user);
-  const [dataCart, setData] = useState([]);
   const [count, setCount] = useState(1);
-  const [select, setSelect] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const dispatch = useDispatch();
   const toggleDescription = () => {
@@ -134,7 +131,9 @@ const ProductDetailsCard = ({ setOpen, open, data }) => {
                 </div>
                 <div className="flex pt-3">
                   <h4 className={`${styles.productDiscountPrice}`}>
-                    {formatVietnameseCurrency(data.discountPrice)}
+                    {formatVietnameseCurrency(
+                      Math.floor(data?.discountPrice / 1000) * 1000
+                    )}
                   </h4>
                   <h3 className={`${styles.price}`}>
                     {formatVietnameseCurrency(data.originalPrice)}

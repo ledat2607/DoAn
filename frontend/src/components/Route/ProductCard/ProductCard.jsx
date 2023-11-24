@@ -23,13 +23,20 @@ const ProductCard = ({ data }) => {
   const dispatch = useDispatch();
   const { isAuthenticated, user } = useSelector((state) => state.user);
   const { wishlistItems } = useSelector((state) => state.wishlist);
+  const { allEvents } = useSelector((state) => state.events);
   const [click, setClick] = useState(false);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const [dataEvent, setDataEvent] = useState();
   const handleClick = () => {
     navigate(`/product/${data?.name}`);
     window.location.reload(true);
   };
+  useEffect(() => {
+    const data =
+      allEvents && allEvents?.find((item) => item.status === "Đang diễn ra");
+    setDataEvent(data);
+  }, [allEvents]);
 
   useEffect(() => {
     if (
@@ -41,6 +48,7 @@ const ProductCard = ({ data }) => {
       setClick(false);
     }
   }, [wishlistItems, data]);
+
   //hiển thị định dạng tiền tệ
   function formatVietnameseCurrency(value) {
     return new Intl.NumberFormat("vi-VN", {
@@ -48,7 +56,6 @@ const ProductCard = ({ data }) => {
       currency: "VND",
     }).format(value);
   }
-
   //Thêm vào giỏ hàng
   const addToCartHandler = () => {
     dispatch(addToCart(user?._id, data.shop?._id, data?._id, 1));
@@ -89,6 +96,25 @@ const ProductCard = ({ data }) => {
       console.error("Lỗi xóa mục khỏi giỏ hàng:", error);
     }
   };
+  function applyDiscount(price, shopId, category) {
+    if (!Array.isArray(dataEvent)) {
+      // Xử lý trường hợp dataEvent không phải là mảng
+      return price;
+    }
+
+    const matchingEvent = dataEvent.find(
+      (event) => event.shopId === shopId && event.category === category
+    );
+
+    if (matchingEvent) {
+      const discountedPrice =
+        (price * (100 - matchingEvent.discountPercent)) / 100;
+      return Math.floor(discountedPrice / 1000) * 1000;
+    }
+
+    // Nếu không có sự trùng khớp, trả về giá không thay đổi
+    return price;
+  }
   return (
     <>
       <div className="mt-4 800px:mt-1 border bg-white hover:border-2 hover:border-blue-300 border-gray-800 800px:h-[350px] rounded-lg shadow-md p-3 relative cursor-pointer">
@@ -149,14 +175,19 @@ const ProductCard = ({ data }) => {
             <span
               className={`${styles.productDiscountPrice} !text-[12px] 800px:!text-[16px]`}
             >
-              {data?.discountPrice === 0
-                ? 0
-                : formatVietnameseCurrency(data?.discountPrice)}
+              {formatVietnameseCurrency(
+                applyDiscount(
+                  data?.discountPrice,
+                  data?.shopId,
+                  data?.category
+                ),
+                true
+              )}
             </span>
             <span className={`${styles.price} !text-[12px] 800px:!text-[16px]`}>
-              {data?.originalPrice === 0
-                ? 0
-                : formatVietnameseCurrency(data?.originalPrice)}
+              {formatVietnameseCurrency(
+                Math.floor(data?.originalPrice / 1000) * 1000
+              )}
             </span>
           </div>
           <div className="font-[400] text-[13px] text-[#68d284]">

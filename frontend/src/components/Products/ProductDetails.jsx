@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styles from "../../styles/styles";
 import {
   AiOutlineMinus,
@@ -10,7 +10,7 @@ import {
 import { backend_url } from "../../server";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProductsShop } from "../../redux/actions/product";
-import { addToCart, getAllCartItemsUser } from "../../redux/actions/cart";
+import { addToCart } from "../../redux/actions/cart";
 import { toast } from "react-toastify";
 import Ratings from "./Ratings";
 const ProductDetails = ({ data }) => {
@@ -21,12 +21,10 @@ const ProductDetails = ({ data }) => {
 
   useEffect(() => {
     dispatch(getAllProductsShop(data && data?.shop?._id));
-  }, [dispatch,data]);
+  }, [dispatch, data]);
 
   const [count, setCount] = useState(1);
-  const [click, setClick] = useState(false);
   const [select, setSelect] = useState(0);
-  const navigate = useNavigate();
   const decrementCount = () => {
     if (count > 1) {
       setCount(count - 1);
@@ -55,7 +53,6 @@ const ProductDetails = ({ data }) => {
       if (data.stock < 1) {
         toast.error("Vượt quá số lượng sản phẩm trong kho !");
       } else {
-        const cartData = { ...data, qty: count };
         dispatch(addToCart(user?._id, data.shop?._id, data?._id, count));
         toast.success("Thêm vào giỏ hàng thành công !");
       }
@@ -127,7 +124,9 @@ const ProductDetails = ({ data }) => {
                 </p>
                 <div className="flex pt-3">
                   <h4 className={`${styles.productDiscountPrice} mt-2`}>
-                    {formatVietnameseCurrency(data.discountPrice)}
+                    {formatVietnameseCurrency(
+                      Math.floor(data?.discountPrice / 1000) * 1000
+                    )}
                   </h4>
                   <h3 className={`${styles.price} mt-2 ml-3`}>
                     {data.originalPrice
@@ -182,7 +181,9 @@ const ProductDetails = ({ data }) => {
                     <h3 className={`${styles.shop_name} ml-3`}>
                       {data.shop.shopName}
                     </h3>
-                    <h5 className="pb-3 text-[15px] ml-3">{averageRating}/5.0</h5>
+                    <h5 className="pb-3 text-[15px] ml-3">
+                      {averageRating}/5.0
+                    </h5>
                   </div>
 
                   <div

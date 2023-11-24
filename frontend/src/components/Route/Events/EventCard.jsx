@@ -2,16 +2,9 @@ import React, { useState } from "react";
 import styles from "../../../styles/styles";
 import CountDown from "./CountDown";
 import { backend_url } from "../../../server";
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { AiOutlineArrowRight } from "react-icons/ai";
-import { toast } from "react-toastify";
-import { addToCart } from "../../../redux/actions/cart";
+import { Link } from "react-router-dom";
+
 const EventCard = ({ active, data }) => {
-  const navigate = useNavigate();
-  const { seller } = useSelector((state) => state.seller);
-  const { user } = useSelector((state) => state.user);
-  const dispatch = useDispatch();
   function formatVietnameseCurrency(value) {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",

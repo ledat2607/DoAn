@@ -14,6 +14,7 @@ import ShopOrderDetails from "./pages/Shop/ShopOrderDetails";
 import ShopAllRefunds from "./pages/Shop/ShopAllRefunds";
 import ShopSettingsPage from "./pages/Shop/ShopSettingsPage";
 import ShopWithdrawMoney from "./pages/Shop/ShopWithdrawMoney";
+import ShopInboxPage from "./pages/Shop/ShopInboxPage";
 export {
   ShopCreate,
   SellerActivationPage,
@@ -31,4 +32,5 @@ export {
   ShopAllRefunds,
   ShopSettingsPage,
   ShopWithdrawMoney,
+  ShopInboxPage,
 };
