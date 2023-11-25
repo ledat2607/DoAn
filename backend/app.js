@@ -32,6 +32,7 @@ const cart = require("./controller/cart");
 const wishlist = require("./controller/wishlist");
 const payment = require("./controller/payment");
 const order = require("./controller/order");
+const conversation = require("./controller/conversation");
 app.use("/api/v2/user", user);
 app.use("/api/v2/shop", shop);
 app.use("/api/v2/product", product);
@@ -41,6 +42,7 @@ app.use("/api/v2/cart", cart);
 app.use("/api/v2/wishlist", wishlist);
 app.use("/api/v2/payment", payment);
 app.use("/api/v2/order", order);
+app.use("/api/v2/conversation", conversation);
 
 //if handling
 app.use(ErrorHandler);

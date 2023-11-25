@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "../../styles/styles";
 import {
   AiOutlineMinus,
@@ -7,15 +7,16 @@ import {
   AiOutlineShoppingCart,
   AiOutlineMessage,
 } from "react-icons/ai";
-import { backend_url } from "../../server";
+import { backend_url, server } from "../../server";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProductsShop } from "../../redux/actions/product";
 import { addToCart } from "../../redux/actions/cart";
 import { toast } from "react-toastify";
 import Ratings from "./Ratings";
+import axios from "axios";
 const ProductDetails = ({ data }) => {
   const { products } = useSelector((state) => state.products);
-  const { user } = useSelector((state) => state.user);
+  const { user, isAuthenticated } = useSelector((state) => state.user);
   const { cartItems } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
 
@@ -25,6 +26,7 @@ const ProductDetails = ({ data }) => {
 
   const [count, setCount] = useState(1);
   const [select, setSelect] = useState(0);
+  const navigate = useNavigate();
   const decrementCount = () => {
     if (count > 1) {
       setCount(count - 1);
@@ -34,9 +36,28 @@ const ProductDetails = ({ data }) => {
   const incrementCount = () => {
     setCount(count + 1);
   };
-  const handleMessageSubmit = () => {
-    console.log(`check`);
+  const handleMessageSubmit = async () => {
+    if (isAuthenticated) {
+      const groupTitle = data._id + user._id;
+      const userId = user._id;
+      const sellerId = data.shop._id;
+      await axios
+        .post(`${server}/conversation/create-new-conversation`, {
+          groupTitle,
+          userId,
+          sellerId,
+        })
+        .then((res) => {
+          navigate(`/inbox?${res.data.conversation._id}`);
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+        });
+    } else {
+      toast.error("Please login to create a conversation");
+    }
   };
+  console.log(isAuthenticated);
   //hàm định dạng tiền tệ
   function formatVietnameseCurrency(value) {
     return new Intl.NumberFormat("vi-VN", {
@@ -73,6 +94,7 @@ const ProductDetails = ({ data }) => {
   const avg = totalRatings / totalReviewsLength || 0;
 
   const averageRating = avg.toFixed(1);
+  console.log(data);
   return (
     <div className="bg-white">
       {data ? (

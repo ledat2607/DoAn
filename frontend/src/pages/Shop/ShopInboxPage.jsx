@@ -11,7 +11,7 @@ const ShopInboxPage = () => {
         <div className="800px:w-[17%] w-[12%]">
           <DashboardSideBar active={8} />
         </div>
-        <div className="w-[83%] flex justify-center mt-10">
+        <div className="w-[83%] flex justify-center 800px:mt-0 mt-10">
           <DashboardMessage />
         </div>
       </div>
