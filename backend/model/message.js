@@ -7,6 +7,7 @@ const messageShema = new mongoose.Schema(
     sender: {
       type: String,
     },
+    text: { type: String },
     image: [
       {
         type: String,

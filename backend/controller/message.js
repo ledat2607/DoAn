@@ -1,8 +1,8 @@
-const Messages = require("../model/messages");
+const Messages = require("../model/message");
 const ErrorHandler = require("../utils/ErrorHandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const express = require("express");
-const cloudinary = require("cloudinary");
+// const cloudinary = require("cloudinary");
 const router = express.Router();
 
 // create new message
@@ -11,36 +11,27 @@ router.post(
   catchAsyncErrors(async (req, res, next) => {
     try {
       const messageData = req.body;
-
-      if (req.body.images) {
-        const myCloud = await cloudinary.v2.uploader.upload(req.body.images, {
-          folder: "messages",
-        });
-        messageData.images = {
-          public_id: myCloud.public_id,
-          url: myCloud.url,
-        };
+      if (req.files) {
+        const files = req.files;
+        const imageUrls = files.map((file) => `${file.filename}`);
+        messageData.images = imageUrls;
       }
-
       messageData.conversationId = req.body.conversationId;
       messageData.sender = req.body.sender;
       messageData.text = req.body.text;
-
       const message = new Messages({
         conversationId: messageData.conversationId,
-        text: messageData.text,
         sender: messageData.sender,
+        text: messageData.text,
         images: messageData.images ? messageData.images : undefined,
       });
-
       await message.save();
-
-      res.status(201).json({
+      res.status(200).json({
         success: true,
         message,
       });
-    } catch (error) {
-      return next(new ErrorHandler(error.message), 500);
+    } catch (err) {
+      return next(new ErrorHandler(err.response.message), 500);
     }
   })
 );

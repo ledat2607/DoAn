@@ -22,6 +22,7 @@ import {
   PaymentPage,
   OrderDetailPage,
   TrackOrderPage,
+  UserInbox,
 } from "./Routes.js";
 import {
   ShopCreate,
@@ -106,6 +107,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <OrderDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/inbox"
+          element={
+            <ProtectedRoute>
+              <UserInbox />
             </ProtectedRoute>
           }
         />

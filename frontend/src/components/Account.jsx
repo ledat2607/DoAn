@@ -54,7 +54,7 @@ const Account = () => {
           >
             <Avatar sx={{ width: 45, height: 45 }}>
               <img
-                src={`${backend_url}${user.avatar}`}
+                src={`${backend_url}${user?.avatar}`}
                 alt="useavt"
                 className="w-[45px] h-[45px] rounded-full"
               />
