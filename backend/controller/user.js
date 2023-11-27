@@ -9,6 +9,7 @@ const fs = require("fs");
 const jwt = require("jsonwebtoken");
 const sendMail = require("../utils/sendMail");
 const sendToken = require("../utils/jwtToken");
+const adminToken = require("../utils/adminToken");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const { isAuthenticated } = require("../middleware/auth");
 //new user
@@ -129,6 +130,32 @@ router.post(
     }
   })
 );
+//login admin
+router.post(
+  "/login-admin",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const { email, password } = req.body;
+      if (!email || !password.trim()) {
+        return next(new ErrorHandler("Vui lòng nhập đầy đủ thông tin!", 400));
+      }
+      const user = await User.findOne({ email }).select("+password");
+      if (!user) {
+        return next(new ErrorHandler("Người dùng không tồn tại", 400));
+      }
+      const isPasswordValid = await user.comparePassword(password);
+      if (!isPasswordValid) {
+        return next(new ErrorHandler("Mật khẩu không chính xác", 400));
+      }
+      if (user.role !== "admin") {
+        return next(new ErrorHandler("Không có quyền truy cập", 400));
+      }
+      adminToken(user, 201, res);
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
 //load user
 router.get(
   "/get-user",
@@ -148,6 +175,35 @@ router.get(
     }
   })
 );
+//load admin
+router.get("/get-admin", async (req, res, next) => {
+  try {
+    // Sử dụng phương thức find với điều kiện là role là "admin"
+    const admin = await User.find({ role: "admin" });
+
+    // Kiểm tra nếu không có admin nào được tìm thấy
+    if (!admin || admin.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy người dùng với vai trò admin",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      admin,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Lỗi server",
+    });
+  }
+});
+
+module.exports = router;
+
 //Logout user
 router.get(
   "/logout",
@@ -335,5 +391,21 @@ router.get(
     }
   })
 );
-
+//all user
+router.get(
+  "/admin-all-users",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const users = await User.find({ role: "user" }).sort({
+        createdAt: -1,
+      });
+      res.status(201).json({
+        success: true,
+        users,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
 module.exports = router;

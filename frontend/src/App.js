@@ -43,10 +43,12 @@ import {
   ShopWithdrawMoney,
   ShopInboxPage,
 } from "./ShopRoutes.js";
+import { AdminLoginPage, AdminDashboardPage } from "./AdminRoutes.js";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Store from "./redux/store";
 import { loadSeller, loadUser } from "./redux/actions/user";
+import { loadAdmin } from "./redux/actions/admin";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import SellerProtectedRoute from "./routes/SellerProtectedRoute";
 import { getAllProducts } from "./redux/actions/product";
@@ -250,6 +252,9 @@ const App = () => {
             </SellerProtectedRoute>
           }
         />
+        {/*Admin*/}
+        <Route path="/admin/login" element={<AdminLoginPage />} />
+        <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
       </Routes>
       <ToastContainer
         position="bottom-right"

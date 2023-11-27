@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { BsFillBagFill } from "react-icons/bs";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import styles from "../../styles/styles";
+import styles from "../styles/styles";
 import { RxCross1 } from "react-icons/rx";
 import {
   AiFillStar,
@@ -12,10 +12,10 @@ import {
 } from "react-icons/ai";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { backend_url, server } from "../../server";
-import { getAllOrdersOfUser } from "../../redux/actions/order";
+import { backend_url, server } from "../server";
+import { getAllOrdersOfUser } from "../redux/actions/order";
 
-const UserTrackOrder = () => {
+const UserOrderDetails = () => {
   const { orders } = useSelector((state) => state.order);
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -319,11 +319,11 @@ const UserTrackOrder = () => {
         <div
           className={`${styles.button} w-[150px] h-[40px] !bg-gray-400 mx-auto`}
         >
-          Quay lại trang chủ
+          Gửi tin nhắn
         </div>
       </Link>
     </div>
   );
 };
 
-export default UserTrackOrder;
+export default UserOrderDetails;

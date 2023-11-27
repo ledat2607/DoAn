@@ -6,9 +6,11 @@ import { eventReducer } from "./reducers/event";
 import { cartReducer } from "./reducers/cart";
 import { wishlistReducer } from "./reducers/wishlist";
 import { orderReducer } from "./reducers/order";
+import { adminReducer } from "./reducers/admin";
 const Store = configureStore({
   reducer: {
     user: userReducer,
+    admin: adminReducer,
     seller: sellerReducer,
     products: productReducer,
     events: eventReducer,
