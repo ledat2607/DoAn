@@ -12,8 +12,8 @@ const AllOrder = () => {
   const { orders } = useSelector((state) => state.order);
   const { seller } = useSelector((state) => state.seller);
   const dispatch = useDispatch();
-  const [filterStatus, setFilterStatus] = useState("all"); // Lọc theo trạng thái
-  const [priceRange, setPriceRange] = useState([0, 20000000]); // Lọc theo giá tiền
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [priceRange, setPriceRange] = useState([0, 80000000]);
 
   const handleFilterStatusChange = (newFilterStatus) => {
     setFilterStatus(newFilterStatus);
@@ -37,11 +37,17 @@ const AllOrder = () => {
   }, [dispatch]);
 
   //format đơn vị tiền tệ
-  function formatVietnameseCurrency(value) {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(value);
+  function formatVietnameseCurrency(number) {
+    // Chia cho 1000 và làm tròn xuống để lấy phần nguyên
+    let formattedNumber = Math.floor(number / 1000);
+
+    // Nhân lại cho 1000 để có giá trị mong muốn
+    formattedNumber *= 1000;
+
+    // Sử dụng hàm toLocaleString để định dạng số theo ngôn ngữ và định dạng của Việt Nam
+    let result = formattedNumber.toLocaleString("vi-VN");
+
+    return result;
   }
   const handleCopyClick = (id) => {
     // Lấy nội dung mã đơn hàng
@@ -54,7 +60,7 @@ const AllOrder = () => {
 
     // Chọn nội dung của input
     tempInput.select();
-    tempInput.setSelectionRange(0, 20000000); // For mobile devices
+    tempInput.setSelectionRange(0, 80000000); // For mobile devices
 
     // Sao chép nội dung vào clipboard
     document.execCommand("copy");
@@ -97,7 +103,7 @@ const AllOrder = () => {
           <Slider
             range
             min={0}
-            max={20000000}
+            max={80000000}
             defaultValue={priceRange}
             onChange={handlePriceRangeChange}
           />

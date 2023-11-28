@@ -13,6 +13,10 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: [true, "Chọn danh mục sản phẩm !"],
   },
+  brand: {
+    type: String,
+    required: [true, "Chọn thương hiệu sản phẩm !"],
+  },
   tags: {
     type: String,
   },

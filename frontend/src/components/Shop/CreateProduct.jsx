@@ -25,7 +25,9 @@ const CreateProduct = () => {
   const [stock, setStock] = useState();
   const [discount, setDiscount] = useState("");
   const [isPercentage, setIsPercentage] = useState(true);
-
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedBrand, setSelectedBrand] = useState("");
+  const [brands, setBrands] = useState([]);
   useEffect(() => {
     if (error) {
       toast.error(error);
@@ -37,11 +39,17 @@ const CreateProduct = () => {
   }, [dispatch, error, success]);
 
   //Format dữ liệu theo dạng tiền tệ Việt Nam
-  function formatVietnameseCurrency(value) {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(value);
+  function formatVietnameseCurrency(number) {
+    // Chia cho 1000 và làm tròn xuống để lấy phần nguyên
+    let formattedNumber = Math.floor(number / 1000);
+
+    // Nhân lại cho 1000 để có giá trị mong muốn
+    formattedNumber *= 1000;
+
+    // Sử dụng hàm toLocaleString để định dạng số theo ngôn ngữ và định dạng của Việt Nam
+    let result = formattedNumber.toLocaleString("vi-VN");
+
+    return result;
   }
   //Thay đổi và hiển thị phần discount
   const handleDiscountChange = (e) => {
@@ -75,7 +83,8 @@ const CreateProduct = () => {
     });
     newForm.append("name", name);
     newForm.append("description", description);
-    newForm.append("category", category);
+    newForm.append("category", selectedCategory);
+    newForm.append("brand", selectedBrand);
     newForm.append("tags", tags);
     newForm.append("originalPrice", originalPrice);
     newForm.append("discountPrice", discountPrice);
@@ -84,6 +93,17 @@ const CreateProduct = () => {
     newForm.append("shopId", seller._id);
     dispatch(createProduct(newForm));
   };
+  useEffect(() => {
+    // Set brands based on the selected category
+    if (
+      selectedCategory === "Điện thoại và máy tính bảng" ||
+      selectedCategory === "Máy tính và Laptop"
+    ) {
+      setBrands(["Apple", "Xiaomi", "Opple", "Vivo", "Samsung", "Oneplus"]); // Add your actual brands here
+    } else {
+      setBrands([]); // Clear brands for other categories
+    }
+  }, [selectedCategory]);
   //Hàm thay đổi mảng chứa ảnh sản phẩm
   const handleChangeImage = (e) => {
     e.preventDefault();
@@ -132,8 +152,8 @@ const CreateProduct = () => {
           <select
             className="w-[90%] ml-12 border h-[35px] rounded-[5px]"
             id=""
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
           >
             <option value="Chọn danh mục sản phẩm của bạn">
               Chọn danh mục sản phẩm
@@ -145,6 +165,45 @@ const CreateProduct = () => {
                 </option>
               ))}
           </select>
+
+          {selectedCategory === "Điện thoại và máy tính bảng" && (
+            <div className="mt-5">
+              <label className="pb-2 ml-12 text-[18px] font-Poppins font-[400] mt-5">
+                Thương hiệu <i className="text-[12px] ml-2">*</i>
+              </label>
+              <select
+                className="w-[90%] ml-12 border h-[35px] rounded-[5px]"
+                value={selectedBrand}
+                onChange={(e) => setSelectedBrand(e.target.value)}
+              >
+                <option value="">Chọn thương hiệu</option>
+                {brands.map((brand) => (
+                  <option key={brand} value={brand}>
+                    {brand}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+          {selectedCategory === "Máy tính và Laptop" && (
+            <div className="mt-5">
+              <label className="pb-2 ml-12 text-[18px] font-Poppins font-[400] mt-5">
+                Thương hiệu <i className="text-[12px] ml-2">*</i>
+              </label>
+              <select
+                className="w-[90%] ml-12 border h-[35px] rounded-[5px]"
+                value={selectedBrand}
+                onChange={(e) => setSelectedBrand(e.target.value)}
+              >
+                <option value="">Chọn thương hiệu</option>
+                {brands.map((brand) => (
+                  <option key={brand} value={brand}>
+                    {brand}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
         <div className="mt-5">
           <label className="pb-2 ml-12 text-[18px] font-Poppins font-[400] mt-5">

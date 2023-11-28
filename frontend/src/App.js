@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  useNavigate,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import {
   LoginPage,
   SignupPage,
@@ -43,12 +37,19 @@ import {
   ShopWithdrawMoney,
   ShopInboxPage,
 } from "./ShopRoutes.js";
-import { AdminLoginPage, AdminDashboardPage } from "./AdminRoutes.js";
+import {
+  AdminLoginPage,
+  AdminDashboardPage,
+  AdminDashboardOrders,
+  AdminDashboardUsers,
+  AdminDashboardSellers,
+  AdminDashboardProducts,
+  AdminDashboardEvents,
+} from "./AdminRoutes.js";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Store from "./redux/store";
 import { loadSeller, loadUser } from "./redux/actions/user";
-import { loadAdmin } from "./redux/actions/admin";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import SellerProtectedRoute from "./routes/SellerProtectedRoute";
 import { getAllProducts } from "./redux/actions/product";
@@ -255,6 +256,11 @@ const App = () => {
         {/*Admin*/}
         <Route path="/admin/login" element={<AdminLoginPage />} />
         <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+        <Route path="/admin-orders" element={<AdminDashboardOrders />} />
+        <Route path="/admin-users" element={<AdminDashboardUsers />} />
+        <Route path="/admin-sellers" element={<AdminDashboardSellers />} />
+        <Route path="/admin-products" element={<AdminDashboardProducts />} />
+        <Route path="/admin-events" element={<AdminDashboardEvents />} />
       </Routes>
       <ToastContainer
         position="bottom-right"

@@ -9,9 +9,8 @@ import { getAllSellers } from "../../../redux/actions/selles";
 import { HiOutlineUserGroup } from "react-icons/hi";
 import { getAllOrdersOfAdmin } from "../../../redux/actions/order";
 import { getAllUsers } from "../../../redux/actions/user";
-import { Bar } from "react-chartjs-2";
-import moment from "moment";
-
+import { Line } from "react-chartjs-2";
+import { format, startOfMonth, addMonths } from "date-fns";
 const AdminDashboardMain = () => {
   const dispatch = useDispatch();
 
@@ -34,61 +33,82 @@ const AdminDashboardMain = () => {
 
   const adminBalance = adminEarning?.toFixed(0);
 
-  function formatVietnameseCurrency(value) {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(value);
-  }
+  function formatVietnameseCurrency(number) {
+    // Chia cho 1000 và làm tròn xuống để lấy phần nguyên
+    let formattedNumber = Math.floor(number / 1000);
 
-  const [chartData, setChartData] = useState({
-    labels: [],
+    // Nhân lại cho 1000 để có giá trị mong muốn
+    formattedNumber *= 1000;
+
+    // Sử dụng hàm toLocaleString để định dạng số theo ngôn ngữ và định dạng của Việt Nam
+    let result = formattedNumber.toLocaleString("vi-VN");
+
+    return result;
+  }
+  //biểu đồ
+  const getLastSixMonths = () => {
+    const currentMonth = startOfMonth(new Date());
+    return Array.from({ length: 4 }, (_, index) =>
+      format(addMonths(currentMonth, -index), "yyyy-MM")
+    ).reverse(); // Reverse the array to have the months in ascending order
+  };
+
+  const allMonths = getLastSixMonths();
+
+  const productsByMonth = allProducts
+    ? allMonths.reduce((acc, month) => {
+        const productsInMonth = allProducts.filter(
+          (product) => format(new Date(product.createdAt), "yyyy-MM") === month
+        );
+        acc[month] = productsInMonth.length;
+        return acc;
+      }, {})
+    : {};
+  const chartData = {
+    labels: allMonths,
     datasets: [
       {
-        label: "Số lượng sản phẩm",
-        data: [],
-        backgroundColor: "rgba(75,192,192,0.2)",
-        borderColor: "rgba(75,192,192,1)",
+        label: "Thống kê sản phẩm mới",
+        data: Object.values(productsByMonth),
+        fill: false,
+        borderColor: "rgb(75, 192, 192)",
+        tension: 0.1,
         borderWidth: 1,
+        max: 100,
       },
     ],
-  });
-
-  useEffect(() => {
-    const productDataByMonth = calculateProductDataByMonth();
-    setChartData({
-      labels: productDataByMonth.labels,
-      datasets: [
-        {
-          label: "Số lượng sản phẩm",
-          data: productDataByMonth.data,
-          backgroundColor: "rgba(75,192,192,0.2)",
-          borderColor: "rgba(75,192,192,1)",
-          borderWidth: 1,
+  };
+  const maxDataValue = Math.max(...Object.values(productsByMonth));
+  const maxYAxisValue = Math.ceil(maxDataValue / 10) * 10;
+  const chartOptions = {
+    scales: {
+      x: {
+        type: "time",
+        time: {
+          unit: "month",
+          displayFormats: {
+            month: "MMM YYYY",
+          },
         },
-      ],
-    });
-  }, [allProducts]);
-
-  const calculateProductDataByMonth = () => {
-    const dataByMonth = {};
-
-    // Lặp qua danh sách sản phẩm và tính toán số lượng theo tháng
-    allProducts?.forEach((product) => {
-      const monthYear = moment(product.createdAt).format("MM/YYYY");
-
-      if (dataByMonth[monthYear]) {
-        dataByMonth[monthYear]++;
-      } else {
-        dataByMonth[monthYear] = 1;
-      }
-    });
-
-    // Chuyển đổi đối tượng thành mảng để sử dụng trong biểu đồ
-    const labels = Object.keys(dataByMonth).sort(); // Sắp xếp theo thứ tự thời gian
-    const data = labels.map((monthYear) => dataByMonth[monthYear]);
-
-    return { labels, data };
+        title: {
+          display: true,
+          text: "Month",
+        },
+      },
+      y: {
+        beginAtZero: true,
+        max: maxYAxisValue,
+        title: {
+          display: true,
+          text: "Number of Products",
+        },
+        ticks: {
+          stepSize: 10,
+          min: 0,
+          max: maxYAxisValue,
+        },
+      },
+    },
   };
 
   return (
@@ -176,25 +196,7 @@ const AdminDashboardMain = () => {
             </div>
           </div>
           <div>
-            <Bar
-              data={chartData}
-              options={{
-                indexAxis: "y",
-                scales: {
-                  x: {
-                    beginAtZero: true,
-                    stepSize: 1,
-                    max:
-                      Math.ceil(
-                        (Math.max(10, ...chartData.datasets[0].data) + 10) / 10
-                      ) * 10,
-                  },
-                  y: {
-                    beginAtZero: true,
-                  },
-                },
-              }}
-            />
+            <Line data={chartData} options={chartOptions} />
           </div>
           <br />
         </div>

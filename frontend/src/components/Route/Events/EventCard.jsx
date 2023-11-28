@@ -5,11 +5,17 @@ import { backend_url } from "../../../server";
 import { Link } from "react-router-dom";
 
 const EventCard = ({ active, data }) => {
-  function formatVietnameseCurrency(value) {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(value);
+  function formatVietnameseCurrency(number) {
+    // Chia cho 1000 và làm tròn xuống để lấy phần nguyên
+    let formattedNumber = Math.floor(number / 1000);
+
+    // Nhân lại cho 1000 để có giá trị mong muốn
+    formattedNumber *= 1000;
+
+    // Sử dụng hàm toLocaleString để định dạng số theo ngôn ngữ và định dạng của Việt Nam
+    let result = formattedNumber.toLocaleString("vi-VN");
+
+    return result;
   }
   const isEventStarted = new Date(data?.start_Date) <= new Date();
   return (
