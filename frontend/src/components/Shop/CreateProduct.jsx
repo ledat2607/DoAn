@@ -93,17 +93,7 @@ const CreateProduct = () => {
     newForm.append("shopId", seller._id);
     dispatch(createProduct(newForm));
   };
-  useEffect(() => {
-    // Set brands based on the selected category
-    if (
-      selectedCategory === "Điện thoại và máy tính bảng" ||
-      selectedCategory === "Máy tính và Laptop"
-    ) {
-      setBrands(["Apple", "Xiaomi", "Opple", "Vivo", "Samsung", "Oneplus"]); // Add your actual brands here
-    } else {
-      setBrands([]); // Clear brands for other categories
-    }
-  }, [selectedCategory]);
+
   //Hàm thay đổi mảng chứa ảnh sản phẩm
   const handleChangeImage = (e) => {
     e.preventDefault();
@@ -111,237 +101,222 @@ const CreateProduct = () => {
     setImage((prevImgaes) => [...prevImgaes, ...files]);
   };
   return (
-    <div className="800px:w-[80%] mx-auto w-[90%] rounded-md bg-white shadow-lg h-[80vh] overflow-y-scroll">
-      <h5 className="text-[30px] font-Poppins text-center font-[600] mt-5">
+    <div className="800px:w-[65%] 800px:mx-auto w-[95%] rounded-md bg-white shadow-lg h-[80vh] overflow-y-scroll">
+      <h5 className="800px:text-[30px] text-[25px] font-Poppins text-center font-[600] mt-5">
         Thêm mới sản phẩm
       </h5>
       {/*create product*/}
-      <form onSubmit={handleSubmit}>
-        <div className="mt-5">
-          <label className="pb-2 ml-12 text-[18px] font-Poppins font-[400] mt-5">
-            Tên sản phẩm <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            name="name"
-            placeholder="Vui lòng điền tên sản phẩm..."
-            value={name}
-            className="mt-2 mx-auto appearance-none block w-[90%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-        <div className="mt-5">
-          <label className="pb-2 ml-12 text-[18px] font-Poppins font-[400] mt-5">
-            Mô tả về sản phẩm
-            <i className="text-[12px] ml-2">(Dùng \n để xuống hàng)</i>
-          </label>
-          <textarea
-            type="text"
-            name="name"
-            placeholder="Vui lòng điền mô tả sản phẩm..."
-            value={description}
-            className="mt-2 mx-auto appearance-none block w-[90%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
-        <div className="mt-5">
-          <label className="pb-2 ml-12 text-[18px] font-Poppins font-[400] mt-5">
-            Danh mục sản phẩm
-            <i className="text-[12px] ml-2">*</i>
-          </label>
-          <select
-            className="w-[90%] ml-12 border h-[35px] rounded-[5px]"
-            id=""
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-          >
-            <option value="Chọn danh mục sản phẩm của bạn">
-              Chọn danh mục sản phẩm
-            </option>
-            {categoriesData &&
-              categoriesData.map((i, index) => (
-                <option value={i.title} key={i.title}>
-                  {i.title}
-                </option>
-              ))}
-          </select>
-
-          {selectedCategory === "Điện thoại và máy tính bảng" && (
-            <div className="mt-5">
-              <label className="pb-2 ml-12 text-[18px] font-Poppins font-[400] mt-5">
-                Thương hiệu <i className="text-[12px] ml-2">*</i>
-              </label>
-              <select
-                className="w-[90%] ml-12 border h-[35px] rounded-[5px]"
-                value={selectedBrand}
-                onChange={(e) => setSelectedBrand(e.target.value)}
-              >
-                <option value="">Chọn thương hiệu</option>
-                {brands.map((brand) => (
-                  <option key={brand} value={brand}>
-                    {brand}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-          {selectedCategory === "Máy tính và Laptop" && (
-            <div className="mt-5">
-              <label className="pb-2 ml-12 text-[18px] font-Poppins font-[400] mt-5">
-                Thương hiệu <i className="text-[12px] ml-2">*</i>
-              </label>
-              <select
-                className="w-[90%] ml-12 border h-[35px] rounded-[5px]"
-                value={selectedBrand}
-                onChange={(e) => setSelectedBrand(e.target.value)}
-              >
-                <option value="">Chọn thương hiệu</option>
-                {brands.map((brand) => (
-                  <option key={brand} value={brand}>
-                    {brand}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-        </div>
-        <div className="mt-5">
-          <label className="pb-2 ml-12 text-[18px] font-Poppins font-[400] mt-5">
-            Sản phẩm liên quan
-            <i className="text-[12px] ml-2">*</i>
-          </label>
-          <input
-            type="text"
-            name="tags"
-            placeholder="Vui lòng điền các danh mục liên quan..."
-            value={tags}
-            className="mt-2 mx-auto appearance-none block w-[90%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
-            onChange={(e) => setTags(e.target.value)}
-          />
-        </div>
-        <div className="flex items-center">
-          <div className="mt-5 w-[30%]">
-            <label className="pb-2 ml-12 text-[18px] font-Poppins font-[400] mt-5">
-              Giá gốc
-              <i className="ml-2 text-[12px] text-red-500">
-                {formatVietnameseCurrency(originalPrice)}
-              </i>
-            </label>
-            <input
-              type="number"
-              name="originalPrice"
-              placeholder="Vui lòng nhập giá gốc..."
-              value={originalPrice}
-              className="mt-2 ml-12 mx-auto appearance-none block w-[70%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
-              onChange={(e) => setOriginalPrice(e.target.value)}
-            />
-          </div>
-          <span className="text-redd-500 mt-12 ">
-            <AiOutlineArrowRight />
-          </span>
-          <div className="ml-2 mt-5 w-[30%]">
-            <label className="pb-2 ml-3 text-[18px] font-Poppins font-[400] mt-5">
-              Khuyến mãi
-              <span className="ml-2 text-[12px] text-blue-400">
-                {isPercentage
-                  ? `${discount}%`
-                  : `${formatVietnameseCurrency(discount)}`}
-              </span>
-            </label>
-            <input
-              type="number"
-              name="originalPrice"
-              placeholder="Khuyến mãi..."
-              value={discount}
-              className="mt-2 mx-auto appearance-none block w-[90%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
-              onChange={handleDiscountChange}
-              onBlur={calculateDiscountPrice}
-            />
-          </div>
-          <span>
-            <AiOutlineArrowRight className="mt-12" color="red" />
-          </span>
+      <div className="800px:ml-6 ml-2 w-full">
+        <form onSubmit={handleSubmit}>
           <div className="mt-5">
-            <label className="pb-2 ml-3 text-[18px] font-Poppins font-[400] mt-5">
-              Giá khuyến mãi
-              <i className="text-[12px] ml-2 text-green-500">
-                {formatVietnameseCurrency(discountPrice)}
-              </i>
+            <label className="pb-2 800px:text-[18px] text-[13px] font-Poppins font-[600] mt-5">
+              Tên sản phẩm <span className="text-red-500">*</span>
             </label>
             <input
-              disabled
-              type="number"
-              name="discountPrice"
-              placeholder="Giá khuyến mãi..."
-              value={discountPrice}
-              className="mt-2 mx-auto appearance-none block w-[90%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
-              onChange={(e) => setDiscountPrice(e.target.value)}
+              type="text"
+              name="name"
+              placeholder="Vui lòng điền tên sản phẩm..."
+              value={name}
+              className="mt-2 text-[14px] appearance-none block w-[87%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
+              onChange={(e) => setName(e.target.value)}
             />
           </div>
-        </div>
-        <div className="mt-5">
-          <label className="pb-2 ml-12 text-[18px] font-Poppins font-[400] mt-5">
-            Số lượng nhập kho
-            <i className="text-[12px] ml-2">*</i>
-          </label>
-          <input
-            type="number"
-            name="tags"
-            placeholder="Vui lòng điền số lượng nhập kho..."
-            value={stock}
-            className="mt-2 mx-auto appearance-none block w-[90%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
-            onChange={(e) => setStock(e.target.value)}
-          />
-        </div>
-        <div className="mt-5">
-          <label className="pb-2 ml-10 text-[18px] font-Poppins font-[400] mt-5">
-            Hình ảnh sản phẩm
-            <i className="text-[12px] ml-2">*</i>
-          </label>
-          <input
-            type="file"
-            name=""
-            id="upload"
-            className="hidden"
-            onChange={handleChangeImage}
-          />
-          <div className="w-full items-center justify-between flex ">
-            <div className="w-full items-center flex flex-wrap">
-              <label htmlFor="upload">
-                <AiOutlinePlusCircle
-                  size={30}
-                  className="mt-3 ml-4"
-                  color="#555"
-                />
-              </label>
-              {images &&
-                images.map((i) => (
-                  <img
-                    src={URL.createObjectURL(i)}
-                    key={i}
-                    alt="img-p"
-                    className="w-[120px] h-[120px] object-cover m-2"
-                  />
-                ))}
-            </div>
-            <div
-              className="w-[50px] h-[50px] rounded-full cursor-pointer"
-              onClick={(e) => setImage("")}
+          <div className="mt-5">
+            <label className="pb-2 800px:text-[18px] text-[13px] font-Poppins font-[600] mt-5">
+              Mô tả về sản phẩm
+              <i className="800px:text-[12px]  text-[10px] ml-2">
+                (Dùng \n để xuống hàng)
+              </i>
+            </label>
+            <textarea
+              type="text"
+              name="name"
+              placeholder="Vui lòng điền mô tả sản phẩm..."
+              value={description}
+              className="mt-2  appearance-none block w-[87%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
+          <div className="mt-5">
+            <label className="pb-2  800px:text-[18px] text-[13px] font-Poppins font-[600] mt-5">
+              Danh mục sản phẩm
+              <i className="800px:text-[12px] text-[10px] ml-2">*</i>
+            </label>
+            <select
+              className="w-[87%]  border h-[35px] rounded-[5px]"
+              id=""
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
             >
-              {images.length >= 1 ? (
-                <AiOutlineDelete className="hover:scale-[1.2] hover:text-red-500" />
-              ) : null}
+              <option value="Chọn danh mục sản phẩm của bạn">
+                Chọn danh mục sản phẩm
+              </option>
+              {categoriesData &&
+                categoriesData.map((i, index) => (
+                  <option value={i.title} key={i.title}>
+                    {i.title}
+                  </option>
+                ))}
+            </select>
+
+            {selectedCategory !== "Chọn danh mục sản phẩm của bạn" ? (
+              <div className="mt-5">
+                <label className="pb-2  800px:text-[18px] text-[13px] font-Poppins font-[600] mt-5">
+                  Thương hiệu{" "}
+                  <i className="800px:text-[12px] text-[10px] ml-2">*</i>
+                </label>
+                <input
+                  type="text"
+                  name="brand"
+                  placeholder="Vui lòng nhập thương hiệu..."
+                  value={selectedBrand}
+                  className="mt-2   appearance-none block w-[87%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
+                  onChange={(e) => setSelectedBrand(e.target.value)}
+                />
+              </div>
+            ) : null}
+          </div>
+          <div className="mt-5">
+            <label className="pb-2 800px:text-[18px] text-[13px] font-Poppins font-[600] mt-5">
+              Danh mục liên quan
+              <i className="800px:text-[12px] text-[10px] ml-2">*</i>
+            </label>
+            <input
+              type="text"
+              name="tags"
+              placeholder="Danh mục liên quan..."
+              value={tags}
+              className="mt-2  appearance-none block w-[87%]  px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
+              onChange={(e) => setTags(e.target.value)}
+            />
+          </div>
+          <div className="800px:flex items-center w-full">
+            <div className="mt-5 800px:w-[30%]">
+              <label className="pb-2  800px:text-[18px] text-[13px] font-Poppins font-[600] mt-5">
+                Giá gốc
+                <i className="ml-2 800px:text-[12px] text-[10px] text-red-500">
+                  {formatVietnameseCurrency(originalPrice)}
+                </i>
+              </label>
+              <input
+                type="number"
+                name="originalPrice"
+                placeholder="Vui lòng nhập giá gốc..."
+                value={originalPrice}
+                className="mt-2   appearance-none block w-[87%]  px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
+                onChange={(e) => setOriginalPrice(e.target.value)}
+              />
+            </div>
+            <span className="text-redd-500 mt-12 ">
+              <AiOutlineArrowRight className="hidden 800px:block" />
+            </span>
+            <div className="mt-5 800px:w-[30%]">
+              <label className="pb-2 ml-3 800px:text-[18px] text-[13px] font-Poppins font-[600] mt-5">
+                Khuyến mãi
+                <span className="ml-2 800px:text-[12px] text-[10px] text-blue-400">
+                  {isPercentage
+                    ? `${discount}%`
+                    : `${formatVietnameseCurrency(discount)}`}
+                </span>
+              </label>
+              <input
+                type="number"
+                name="originalPrice"
+                placeholder="Khuyến mãi..."
+                value={discount}
+                className="mt-2  appearance-none block w-[87%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
+                onChange={handleDiscountChange}
+                onBlur={calculateDiscountPrice}
+              />
+            </div>
+            <span>
+              <AiOutlineArrowRight
+                className="mt-12 hidden 800px:block"
+                color="red"
+              />
+            </span>
+            <div className="mt-5">
+              <label className="pb-2 ml-3 800px:text-[18px] text-[13px] font-Poppins font-[600] mt-5">
+                Giá khuyến mãi
+                <i className="800px:text-[12px] text-[10px] ml-2 text-green-500">
+                  {formatVietnameseCurrency(discountPrice)}
+                </i>
+              </label>
+              <input
+                disabled
+                type="number"
+                name="discountPrice"
+                placeholder="Giá khuyến mãi..."
+                value={discountPrice}
+                className="mt-2  appearance-none block w-[87%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
+                onChange={(e) => setDiscountPrice(e.target.value)}
+              />
             </div>
           </div>
-        </div>
-        <div className="mb-4 mt-10">
-          <input
-            type="submit"
-            value="Tạo mới"
-            className="mt-2 text-md hover:text-white bg-gray-200 cursor-pointer hover:bg-gray-600 mx-auto appearance-none block w-[20%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
-          />
-        </div>
-      </form>
+          <div className="mt-5">
+            <label className="pb-2  800px:text-[18px] text-[13px] font-Poppins font-[600] mt-5">
+              Số lượng nhập kho
+              <i className="800px:text-[12px] text-[10px] ml-2">*</i>
+            </label>
+            <input
+              type="number"
+              name="tags"
+              placeholder="Vui lòng điền số lượng nhập kho..."
+              value={stock}
+              className="mt-2  appearance-none block w-[87%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
+              onChange={(e) => setStock(e.target.value)}
+            />
+          </div>
+          <div className="mt-5">
+            <label className="pb-2 800px:text-[18px] text-[13px] font-Poppins font-[600] mt-5">
+              Hình ảnh sản phẩm
+              <i className="800px:text-[12px] text-[10px] ml-2">*</i>
+            </label>
+            <input
+              type="file"
+              name=""
+              id="upload"
+              className="hidden"
+              onChange={handleChangeImage}
+            />
+            <div className="w-full items-center justify-between flex ">
+              <div className="w-full items-center flex flex-wrap">
+                <label htmlFor="upload">
+                  <AiOutlinePlusCircle
+                    size={30}
+                    className="mt-3"
+                    color="#555"
+                  />
+                </label>
+                {images &&
+                  images.map((i) => (
+                    <img
+                      src={URL.createObjectURL(i)}
+                      key={i}
+                      alt="img-p"
+                      className="w-[120px] h-[120px] object-cover m-2"
+                    />
+                  ))}
+              </div>
+              <div
+                className="w-[50px] h-[50px] rounded-full cursor-pointer"
+                onClick={(e) => setImage("")}
+              >
+                {images.length >= 1 ? (
+                  <AiOutlineDelete className="hover:scale-[1.2] hover:text-red-500" />
+                ) : null}
+              </div>
+            </div>
+          </div>
+          <div className="mb-4 mt-10">
+            <input
+              type="submit"
+              value="Tạo mới"
+              className="mt-2 text-md hover:text-white bg-gray-200 cursor-pointer hover:bg-gray-600 mx-auto appearance-none block 800px:w-[20%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
+            />
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

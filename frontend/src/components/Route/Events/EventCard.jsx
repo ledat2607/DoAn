@@ -3,6 +3,7 @@ import styles from "../../../styles/styles";
 import CountDown from "./CountDown";
 import { backend_url } from "../../../server";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const EventCard = ({ active, data }) => {
   function formatVietnameseCurrency(number) {
@@ -24,17 +25,30 @@ const EventCard = ({ active, data }) => {
         active ? "unset" : "mb-12"
       }`}
     >
-      <div className="w-full lg:-w-[10%] flex justify-center items-center">
-        <img
-          src={`${backend_url}${data?.images}`}
-          alt="img-event"
-          className="800px:ml-[5%] ml-0 mt-2 w-[200px]"
-        />
-        <h2 className={`${styles.productTitle} !text-[20px] 800px:text-[20px]`}>
-          {data?.name}
-        </h2>
+      <div className="800px:flex 800px:w-[60%] justify-center items-center">
+        <div className="800px:w-[30%] w-full flex 800px:flex justify-center items-center">
+          <img
+            src={`${backend_url}${data?.shop?.avatar?.url}`}
+            className="w-[50px] h-[50px] rounded-full"
+            alt=""
+          />
+          <h1 className="ml-4">{data?.shop?.shopName}</h1>
+        </div>
+        <div className="p-2 800px:w-[70%] w-full lg:-w-[10%] flex justify-center items-center ">
+          <img
+            src={`${backend_url}${data?.images}`}
+            alt="img-event"
+            className="800px:ml-[5%] ml-0 mt-2 w-[200px]"
+          />
+          <h2
+            className={`${styles.productTitle} !text-[20px] 800px:text-[20px]`}
+          >
+            {data?.name}
+          </h2>
+        </div>
       </div>
-      <div className="w-full lg:w-[90%] flex flex-col justify-center">
+
+      <div className="800px:w-[60%] w-full flex flex-col justify-center">
         <p>{data?.description}</p>
         <div className="w-full flex py-2 items-center justify-between">
           <div className="flex">
@@ -48,7 +62,7 @@ const EventCard = ({ active, data }) => {
                 {formatVietnameseCurrency(data?.discountPercent)}
               </h5>
             )}
-            cho tất cả sản phẩm thuộc danh mục khuyến mãi
+            cho tất cả sản phẩm thuộc danh mục '<i>{data?.category}</i>'.
           </div>
         </div>
 

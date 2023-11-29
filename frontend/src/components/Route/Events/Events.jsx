@@ -8,13 +8,22 @@ const Events = () => {
 
   useEffect(() => {
     if (allEvents) {
-      // Sắp xếp allEvents theo thuộc tính sold_out (giảm dần)
-      const sortedEvents = allEvents
-        .slice()
-        .sort((a, b) => b.sold_out - a.sold_out);
-      setSortedEvents(sortedEvents);
+      const currentDate = new Date();
+
+      // Filter events based on status is "Đang diễn ra"
+      const filteredEvents = allEvents.filter(
+        (event) =>
+          event.status === "Đang diễn ra" &&
+          new Date(event.Finish_Date) > currentDate
+      );
+
+      // Sort filteredEvents by sold_out in descending order
+      filteredEvents.sort((a, b) => b.sold_out - a.sold_out);
+
+      setSortedEvents(filteredEvents);
     }
   }, [allEvents]);
+
   return (
     <div>
       <div className={`${styles.section}`}>

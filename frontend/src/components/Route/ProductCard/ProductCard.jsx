@@ -28,13 +28,42 @@ const ProductCard = ({ data }) => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const [dataEvent, setDataEvent] = useState();
+  const [sortedEvents, setSortedEvents] = useState([]);
+  const [isDiscounted, setIsDiscounted] = useState(false);
+
+  useEffect(() => {
+    if (allEvents) {
+      const currentDate = new Date();
+
+      // Filter events based on status is "Đang diễn ra"
+      const filteredEvents = allEvents.filter(
+        (event) =>
+          event.status === "Đang diễn ra" &&
+          new Date(event.Finish_Date) > currentDate
+      );
+
+      // Sort filteredEvents by sold_out in descending order
+      filteredEvents.sort((a, b) => b.sold_out - a.sold_out);
+
+      setSortedEvents(filteredEvents);
+
+      // Check if the current product is discounted in any ongoing event
+      const discounted = filteredEvents.some(
+        (event) =>
+          event.shopId === data?.shopId && event?.category === data?.category
+      );
+
+      setIsDiscounted(discounted);
+    }
+  }, [allEvents, data]);
+
   const handleClick = () => {
     navigate(`/product/${data?.name}`);
     window.location.reload(true);
   };
   useEffect(() => {
     const data =
-      allEvents && allEvents?.find((item) => item.status === "Đang diễn ra");
+      allEvents && allEvents?.find((item) => item?.status === "Đang diễn ra");
     setDataEvent(data);
   }, [allEvents]);
 
@@ -103,28 +132,40 @@ const ProductCard = ({ data }) => {
     }
   };
   function applyDiscount(price, shopId, category) {
-    if (!Array.isArray(dataEvent)) {
-      // Xử lý trường hợp dataEvent không phải là mảng
-      return price;
+    if (Array.isArray(sortedEvents) && sortedEvents.length > 0) {
+      const matchingEvent = sortedEvents?.find(
+        (event) => event.shopId === shopId && event?.category === category
+      );
+
+      if (matchingEvent) {
+        const discountedPrice =
+          (price * (100 - matchingEvent.discountPercent)) / 100;
+        return Math.floor(discountedPrice / 1000) * 1000;
+      }
     }
 
-    const matchingEvent = dataEvent.find(
-      (event) => event.shopId === shopId && event.category === category
-    );
-
-    if (matchingEvent) {
-      const discountedPrice =
-        (price * (100 - matchingEvent.discountPercent)) / 100;
-      return Math.floor(discountedPrice / 1000) * 1000;
-    }
-
-    // Nếu không có sự trùng khớp, trả về giá không thay đổi
+    // Nếu không có sự kiện khuyến mãi, trả về giá không thay đổi
     return price;
   }
+  console.log(isDiscounted);
   return (
     <>
       <div className="mt-4 800px:mt-1 border bg-white hover:border-2 hover:border-blue-300 border-gray-800 800px:h-[350px] rounded-lg shadow-md p-3 relative cursor-pointer">
         <div className="flex justify-end"></div>
+        {isDiscounted && (
+          <div className="absolute top-0 left-0 mt-2 ml-2 flex items-center">
+            <div className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs mr-1">
+              {/* Display the discount percentage */}
+              {sortedEvents.map(
+                (event) =>
+                  event.shopId === data?.shopId &&
+                  event?.category === data?.category && (
+                    <span key={event._id}>-{event.discountPercent}%</span>
+                  )
+              )}
+            </div>
+          </div>
+        )}
 
         <div className="relative group" onClick={handleClick}>
           <img
@@ -190,9 +231,20 @@ const ProductCard = ({ data }) => {
                 true
               )}
             </span>
+
             <span className={`${styles.price} !text-[12px] 800px:!text-[16px]`}>
-              {formatVietnameseCurrency(
-                Math.floor(data?.originalPrice / 1000) * 1000
+              {isDiscounted ? (
+                <>
+                  {formatVietnameseCurrency(
+                    Math.floor(data?.discountPrice / 1000) * 1000
+                  )}
+                </>
+              ) : (
+                <div>
+                  {formatVietnameseCurrency(
+                    Math.floor(data?.originalPrice / 1000) * 1000
+                  )}
+                </div>
               )}
             </span>
           </div>
