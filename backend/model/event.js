@@ -68,6 +68,7 @@ const eventSchema = new mongoose.Schema({
 eventSchema.pre("save", function (next) {
   const currentDate = new Date();
   const startDate = new Date(this.start_Date);
+  const finishDate = new Date(this.Finish_Date);
 
   // Kiểm tra xem start_Date có bằng ngày hiện tại hay không
   if (
@@ -77,6 +78,12 @@ eventSchema.pre("save", function (next) {
   ) {
     // Nếu có, cập nhật status thành "Đang diễn ra"
     this.status = "Đang diễn ra";
+  }
+
+  // Kiểm tra xem Finish_Date có nhỏ hơn ngày hiện tại hay không
+  if (finishDate < currentDate) {
+    // Nếu có, cập nhật status thành "Đã kết thúc"
+    this.status = "Đã kết thúc";
   }
 
   // Tiếp tục quá trình lưu

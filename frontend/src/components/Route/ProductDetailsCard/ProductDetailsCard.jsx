@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RxCross1 } from "react-icons/rx";
 import styles from "../../../styles/styles";
 import {
@@ -16,8 +16,12 @@ import { addToCart, getAllCartItemsUser } from "../../../redux/actions/cart";
 const ProductDetailsCard = ({ setOpen, open, data }) => {
   const { isAuthenticated, user } = useSelector((state) => state.user);
   const [count, setCount] = useState(1);
+  const { allEvents } = useSelector((state) => state.events);
   const [expanded, setExpanded] = useState(false);
   const dispatch = useDispatch();
+  const [sortedEvents, setSortedEvents] = useState([]);
+  const [isDiscounted, setIsDiscounted] = useState(false);
+  const [dataEvent, setDataEvent] = useState();
   const toggleDescription = () => {
     setExpanded(!expanded);
   };
@@ -30,7 +34,52 @@ const ProductDetailsCard = ({ setOpen, open, data }) => {
       setCount(count - 1);
     }
   };
+  useEffect(() => {
+    const data =
+      allEvents && allEvents?.find((item) => item?.status === "Đang diễn ra");
+    setDataEvent(data);
+  }, [allEvents]);
+  useEffect(() => {
+    if (allEvents) {
+      const currentDate = new Date();
 
+      // Filter events based on status is "Đang diễn ra"
+      const filteredEvents = allEvents.filter(
+        (event) =>
+          event.status === "Đang diễn ra" &&
+          new Date(event.Finish_Date) > currentDate
+      );
+
+      // Sort filteredEvents by sold_out in descending order
+      filteredEvents.sort((a, b) => b.sold_out - a.sold_out);
+
+      setSortedEvents(filteredEvents);
+
+      // Check if the current product is discounted in any ongoing event
+      const discounted = filteredEvents.some(
+        (event) =>
+          event.shopId === data?.shopId && event?.category === data?.category
+      );
+
+      setIsDiscounted(discounted);
+    }
+  }, [allEvents, data]);
+  function applyDiscount(price, shopId, category) {
+    if (Array.isArray(sortedEvents) && sortedEvents.length > 0) {
+      const matchingEvent = sortedEvents?.find(
+        (event) => event.shopId === shopId && event?.category === category
+      );
+
+      if (matchingEvent) {
+        const discountedPrice =
+          (price * (100 - matchingEvent.discountPercent)) / 100;
+        return Math.floor(discountedPrice / 1000) * 1000;
+      }
+    }
+
+    // Nếu không có sự kiện khuyến mãi, trả về giá không thay đổi
+    return price;
+  }
   const incrementCount = () => {
     setCount(count + 1);
   };
@@ -138,12 +187,47 @@ const ProductDetailsCard = ({ setOpen, open, data }) => {
                 <div className="flex pt-3">
                   <h4 className={`${styles.productDiscountPrice}`}>
                     {formatVietnameseCurrency(
-                      Math.floor(data?.discountPrice / 1000) * 1000
+                      applyDiscount(
+                        data?.discountPrice,
+                        data?.shopId,
+                        data?.category
+                      ),
+                      true
                     )}
                   </h4>
                   <h3 className={`${styles.price}`}>
-                    {formatVietnameseCurrency(data.originalPrice)}
+                    {isDiscounted ? (
+                      <>
+                        {formatVietnameseCurrency(
+                          Math.floor(data?.discountPrice / 1000) * 1000
+                        )}
+                      </>
+                    ) : (
+                      <div>
+                        {formatVietnameseCurrency(
+                          Math.floor(data?.originalPrice / 1000) * 1000
+                        )}
+                      </div>
+                    )}
                   </h3>
+                  <h2>
+                    {isDiscounted && (
+                      <div className="ml-4 flex items-center">
+                        <div className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs mr-1">
+                          {/* Display the discount percentage */}
+                          {sortedEvents.map(
+                            (event) =>
+                              event.shopId === data?.shopId &&
+                              event?.category === data?.category && (
+                                <span key={event._id}>
+                                  -{event.discountPercent}%
+                                </span>
+                              )
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </h2>
                 </div>
                 <div className="h-8 mt-12">
                   <div className="flex">

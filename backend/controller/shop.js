@@ -11,6 +11,7 @@ const sendShopToken = require("../utils/shopToken");
 const { upload } = require("../multer");
 const fs = require("fs");
 const Product = require("../model/product");
+const User = require("./user");
 //create-shop
 router.post("/create-shop", upload.single("file"), async (req, res, next) => {
   try {
@@ -136,6 +137,10 @@ router.post(
       if (!seller) {
         return next(new ErrorHandler("Người dùng không tồn tại", 400));
       }
+      if (seller.activeAccount === "Chờ duyệt") {
+        return next(new ErrorHandler("Tài khoản chưa được duyệt", 400));
+      }
+
       const isPasswordValid = await seller.comparePassword(password);
       if (!isPasswordValid) {
         return next(new ErrorHandler("Mật khẩu không chính xác", 400));
@@ -143,6 +148,27 @@ router.post(
       sendShopToken(seller, 201, res);
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+//active account seller
+router.post(
+  "/update-status/:id",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const sellerId = req.params.id;
+      const isExists = await Shop.findById(sellerId);
+      if (!isExists) {
+        return next(new ErrorHandler("Người dùng không tồn tại", 400));
+      }
+      isExists.activeAccount = "Đã duyệt";
+      await isExists.save();
+      res.status(200).json({
+        success: true,
+        message: "Cập nhật thành công!",
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error, 400));
     }
   })
 );
@@ -267,7 +293,7 @@ router.put(
     }
   })
 );
-
+//all seller - admin
 router.get(
   "/admin-all-sellers",
   catchAsyncErrors(async (req, res, next) => {
@@ -278,6 +304,33 @@ router.get(
       res.status(201).json({
         success: true,
         sellers,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+// delete seller ---admin
+router.delete(
+  "/delete-seller/:id",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const seller = await Shop.findById(req.params.id);
+
+      if (!seller) {
+        return next(new ErrorHandler("Không tìm thấy người dùng", 400));
+      }
+
+      await Shop.findByIdAndDelete(req.params.id);
+      const deletedProducts = await Product.deleteMany({
+        shopId: req.params.id,
+      });
+      const deletedEvent = await Event.deleteMany({
+        shopId: req.params.id,
+      });
+      res.status(201).json({
+        success: true,
+        message: "Xóa thành công!",
       });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));

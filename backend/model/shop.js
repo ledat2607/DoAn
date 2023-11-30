@@ -46,6 +46,7 @@ const shopSchema = new mongoose.Schema({
       required: true,
     },
   },
+  activeAccount: { type: String, default: "Chờ duyệt" },
   //   withdrawMethod: {
   //     type: Object,
   //   },

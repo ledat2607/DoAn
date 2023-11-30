@@ -147,7 +147,6 @@ const ProductCard = ({ data }) => {
     // Nếu không có sự kiện khuyến mãi, trả về giá không thay đổi
     return price;
   }
-  console.log(isDiscounted);
   return (
     <>
       <div className="mt-4 800px:mt-1 border bg-white hover:border-2 hover:border-blue-300 border-gray-800 800px:h-[350px] rounded-lg shadow-md p-3 relative cursor-pointer">
