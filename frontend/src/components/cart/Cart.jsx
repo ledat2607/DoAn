@@ -67,7 +67,7 @@ const Cart = ({ setOpenCart, data }) => {
 const CartSignle = ({ data }) => {
   const [value, setValue] = useState(data && data?.qty);
   const { cartItems } = useSelector((state) => state.cart);
-  const total_price = data.product.discountPrice * value;
+  const total_price = data.priceToAdd * value;
   const dispatch = useDispatch();
 
   const handleDelete = async (id) => {
@@ -146,8 +146,7 @@ const CartSignle = ({ data }) => {
           <div>
             <h1>{data.product.name}</h1>
             <h4 className="font-[400] text-[15px] text-[#00000082]">
-              {formatVietnameseCurrency(data.product.discountPrice)} x
-              {data?.qty}
+              {formatVietnameseCurrency(data.priceToAdd)} x{data?.qty}
             </h4>
             <h4 className="font-[600] text-[17px] pt-[3px] text-[#d02222] font-Roboto">
               {formatVietnameseCurrency(total_price)}

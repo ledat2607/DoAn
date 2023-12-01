@@ -93,15 +93,28 @@ const ProductCard = ({ data }) => {
   }
   //Thêm vào giỏ hàng
   const addToCartHandler = () => {
-    dispatch(addToCart(user?._id, data.shop?._id, data?._id, 1));
-    {
-      isAuthenticated
-        ? toast.success("Thêm vào giỏ hàng thành công !", {
-            onClose: () => {
-              dispatch(getAllCartItemsUser(user?._id));
-            },
-          })
-        : toast.warning("Vui lòng đăng nhập để tiếp tục !");
+    // Kiểm tra xem sản phẩm có nằm trong danh mục được khuyến mãi không
+    const isDiscountedProduct = sortedEvents.some(
+      (event) =>
+        event.shopId === data?.shopId && event?.category === data?.category
+    );
+
+    // Áp dụng giá trị tương ứng
+    const priceToAdd = isDiscountedProduct
+      ? (data?.discountPrice * (100 - dataEvent?.discountPercent)) / 100
+      : data?.discountPrice;
+
+    dispatch(addToCart(user?._id, data.shop?._id, data?._id, 1, priceToAdd));
+
+    // Hiển thị thông báo tương ứng
+    if (isAuthenticated) {
+      toast.success("Thêm vào giỏ hàng thành công !", {
+        onClose: () => {
+          dispatch(getAllCartItemsUser(user?._id));
+        },
+      });
+    } else {
+      toast.warning("Vui lòng đăng nhập để tiếp tục !");
     }
   };
 
@@ -251,6 +264,7 @@ const ProductCard = ({ data }) => {
             {data?.sold_out} Đã bán
           </div>
         </Link>
+        <div>code</div>
         {/*side options */}
         <div>
           {click ? (

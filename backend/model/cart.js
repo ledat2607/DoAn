@@ -23,7 +23,7 @@ const cartSchema = new mongoose.Schema({
     type: Object,
   },
   qty: { type: Number, required: true },
-  priceToUse: {
+  priceToAdd: {
     type: Number,
     // required: true,
   },

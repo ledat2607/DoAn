@@ -30,10 +30,17 @@ const CheckoutSteps = ({ active }) => {
         <div className={`${styles.noramlFlex}`}>
           <div
             className={`${
+              active === 2
+                ? "w-[30px] 800px:w-[70px] h-[4px] !bg-[#f63b60]"
+                : "w-[30px] 800px:w-[70px] h-[4px] !bg-[#FDE1E6]"
+            }`}
+          />
+          <div
+            className={`${
               active > 1
                 ? `${styles.cart_button}`
                 : `${styles.cart_button} !bg-[#FDE1E6]`
-            } flex`}
+            }`}
           >
             <span
               className={`${
@@ -46,9 +53,9 @@ const CheckoutSteps = ({ active }) => {
             </span>
             <span
               className={`${
-                active > 2
-                  ? "800px:block hidden text-[#fff] font-[500]"
-                  : "800px:block  text-[#fff] font-[500]"
+                active === 2
+                  ? "800px:block text-[#fff] font-[500]"
+                  : "800px:block hidden text-[#f63b60] font-[500]"
               } flex`}
             >
               Thanh toán

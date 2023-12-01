@@ -2,7 +2,7 @@ import axios from "axios";
 import { server } from "../../server";
 
 export const addToCart =
-  (userId, shopId, productId, qty) => async (dispatch) => {
+  (userId, shopId, productId, qty, priceToAdd) => async (dispatch) => {
     try {
       dispatch({
         type: "cartCreateRequest",
@@ -13,6 +13,7 @@ export const addToCart =
         shopId,
         productId,
         qty,
+        priceToAdd,
       });
 
       dispatch({

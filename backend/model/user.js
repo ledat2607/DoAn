@@ -63,6 +63,12 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
+  discountCode: [
+    {
+      code: { type: String },
+      value: { type: Number },
+    },
+  ],
   resetPasswordToken: String,
   resetPasswordTime: Date,
 });

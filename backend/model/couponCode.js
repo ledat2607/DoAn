@@ -10,18 +10,17 @@ const coupounCodeSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  minAmount: {
-    type: Number,
-  },
-  maxAmount: {
-    type: Number,
-  },
+  typeCode: { type: String, required: true },
+  valueDiscount: { type: Number, required: true },
   shopId: {
     type: String,
     required: true,
   },
   selectedProduct: {
     type: String,
+  },
+  sum: {
+    type: Number,
   },
   createdAt: {
     type: Date,

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ProductCard from "../Route/ProductCard/ProductCard";
 import { deleteProduct, getAllProductsShop } from "../../redux/actions/product";
 import { backend_url, server } from "../../server";
-import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
+import { AiFillCopy, AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import { toast } from "react-toastify";
 import styles from "../../styles/styles";
 import { RxCross1 } from "react-icons/rx";
@@ -12,43 +12,21 @@ import axios from "axios";
 
 const AllCoupounCode = () => {
   const { seller } = useSelector((state) => state.seller);
-  const { products, success, error } = useSelector((state) => state.products);
+  const { products } = useSelector((state) => state.products);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const [coupouns, setCoupouns] = useState([]);
   const [name, setName] = useState("");
-  const [minAmount, setMinAmount] = useState("");
-  const [maxAmount, setMaxAmount] = useState("");
   const [code, setCode] = useState();
   const [selectedProduct, setSelectedProduct] = useState("");
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [open, setOpen] = useState(false);
-  const [isPercentage, setIsPercentage] = useState(true);
-  const [isTrue, setIsTrue] = useState(true);
-  //Chuyển đổi hiển thị
-  const handleMaxAmountChange = (e) => {
-    const value = e.target.value;
-    setMaxAmount(value);
+  const [sum, setSum] = useState();
+  const [typeCode, setTypeCode] = useState("select");
+  const [valueDiscount, setvalueDiscount] = useState("");
 
-    if (value <= 100) {
-      setIsPercentage(true);
-    } else {
-      setIsPercentage(false);
-    }
-    if (maxAmount <= minAmount) {
-      toast.error("Giảm tối đa phải lớn hơn");
-    }
-  };
-  ///Thay đổi span tại minAmount
-  const handleMinAmountChange = (e) => {
-    const value = e.target.value;
-    setMinAmount(value);
-
-    if (value <= 100) {
-      setIsTrue(true);
-    } else {
-      setIsTrue(false);
-    }
+  const handleInputChange = (e) => {
+    setvalueDiscount(e.target.value);
   };
   useEffect(() => {
     dispatch(getAllProductsShop(seller._id));
@@ -78,6 +56,13 @@ const AllCoupounCode = () => {
 
     return result;
   }
+  const formatDiscountValue = (value) => {
+    if (value <= 100) {
+      return `${value}%`;
+    } else {
+      return `${formatVietnameseCurrency(value)}đ`;
+    }
+  };
   const handleClick = () => {
     setIsPopupVisible(!isPopupVisible);
   };
@@ -92,21 +77,23 @@ const AllCoupounCode = () => {
         `${server}/coupon/create-coupon-code`,
         {
           name,
-          minAmount,
-          maxAmount,
           code,
           selectedProduct,
+          typeCode,
+          valueDiscount,
           shopId: seller._id,
+          sum,
         },
         { withCredentials: true }
       )
       .then((res) => {
         if (res.data.success === true) {
           setName("");
-          setMinAmount("");
-          setMaxAmount("");
           setCode("");
           setSelectedProduct("");
+          setvalueDiscount("");
+          setTypeCode("select");
+          setSum("");
           setOpen(false);
           toast.success("Thêm mã giảm giá thành công !");
           window.location.reload(true);
@@ -140,7 +127,18 @@ const AllCoupounCode = () => {
         }, 1000);
       });
   };
-
+  const copyCodeToClipboard = (code) => {
+    const el = document.createElement("textarea");
+    el.value = code;
+    document.body.appendChild(el);
+    const range = document.createRange();
+    range.selectNode(el);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand("copy");
+    document.body.removeChild(el);
+    toast.success("Mã code đã được sao chép!");
+  };
   return (
     <div className="w-full">
       <div className="w-[95%] mx-auto mt-5" onClick={handleClickOpen}>
@@ -154,7 +152,7 @@ const AllCoupounCode = () => {
         <div className="fixed top-0 left-0 w-full h-screen flex items-center justify-center bg-[#00000062]  z-[20000]">
           <div className="w-[90%] 800px:w-[40%] h-[90vh] bg-white rounded-md shadow-sm p-4">
             <div className="w-full flex justify-between items-center pb-2 border-b-2">
-              <span className="800px:text-[18px] text-[12px] font-Roboto font-[500]">
+              <span className="800px:text-[18px] text-[16px] uppercase font-Roboto font-[500]">
                 Thêm mới mã khuyến mãi
               </span>
               <RxCross1
@@ -177,46 +175,47 @@ const AllCoupounCode = () => {
                   onChange={(e) => setName(e.target.value)}
                 />
               </div>
-              <div className="flex justify-between w-[95%]">
+              <div>
                 <div className="mt-5">
                   <label className="pb-2 text-[18px] font-Poppins font-[400] mt-5">
-                    Tối thiểu
-                    <i className="mt-1 text-[12px] text-red-600 ml-2">
-                      {isTrue
-                        ? `${minAmount}%`
-                        : `${formatVietnameseCurrency(minAmount)}`}
-                    </i>
+                    Loại khuyến mãi
+                    <i className="text-[12px] ml-2">*</i>
                   </label>
-                  <input
-                    type="text"
-                    name="minAmount"
-                    placeholder="Tối đa giảm..."
-                    value={minAmount}
-                    className="mt-2 appearance-none block w-[95%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
-                    onChange={handleMinAmountChange}
-                  />
+                  <select
+                    className="w-[95%] border h-[35px] rounded-[5px]"
+                    value={typeCode}
+                    onChange={(e) => setTypeCode(e.target.value)}
+                  >
+                    <option value="select">Chọn</option>
+                    <option value="ship">Vận chuyển</option>
+                    <option value="total">Tổng sản phẩm</option>
+                    <option value="all">Tất cả</option>
+                  </select>
                 </div>
-                <div className="mt-5">
-                  <label className="pb-2 text-[18px] font-Poppins font-[400] mt-5">
-                    Tối đa
-                    <i className="ml-2 text-[12px] text-green-600">
-                      {isPercentage
-                        ? `${maxAmount}%`
-                        : `${formatVietnameseCurrency(maxAmount)}`}
-                    </i>
-                  </label>
+                <div>
+                  <div className="flex">
+                    <label className="text-[18px] font-Poppins font-[400] mt-5">
+                      {typeCode === "ship" ? "Phí ship" : "Tổng sản phẩm"}
+                      <span className="ml-3 text-[14px] font-Poppins">
+                        {formatDiscountValue(valueDiscount)}
+                      </span>
+                    </label>
+                  </div>
                   <input
-                    type="text"
-                    name="maxAmount"
-                    placeholder="Tối đa giảm..."
-                    value={maxAmount}
+                    type="number"
+                    name="valueDiscount"
+                    placeholder={`Nhập giảm ${
+                      typeCode === "ship" ? "vận chuyển" : "tổng đơn hàng"
+                    }...`}
+                    value={valueDiscount}
                     className="mt-2 appearance-none block w-[95%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
-                    onChange={handleMaxAmountChange}
+                    onChange={handleInputChange}
                   />
                 </div>
               </div>
+
               <div className="mt-5">
-                <label className="pb-2 text-[18px] font-Poppins font-[400] mt-5">
+                <label className="text-[18px] font-Poppins font-[400]">
                   Mã giảm giá
                 </label>
                 <div className="flex justify-between w-[95%] items-center">
@@ -257,11 +256,24 @@ const AllCoupounCode = () => {
                     ))}
                 </select>
               </div>
+              <div className="mt-5">
+                <label className="pb-2 text-[18px] font-Poppins font-[400] mt-5">
+                  Số lượng
+                </label>
+                <input
+                  type="number"
+                  name="sum"
+                  placeholder="Số lượng..."
+                  value={sum}
+                  className="mt-2 appearance-none block w-[95%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
+                  onChange={(e) => setSum(e.target.value)}
+                />
+              </div>
               <div className="mb-4 mt-10">
                 <input
                   type="submit"
                   value="Tạo mới"
-                  className="mt-2 text-md hover:text-white bg-gray-200 cursor-pointer hover:bg-gray-600 mx-auto appearance-none block w-[20%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
+                  className="mt-2 text-md hover:text-white bg-gray-200 cursor-pointer hover:bg-gray-600 mx-auto appearance-none block 800px:w-[20%] px-3 h-[35px] border border-gray-300 rounded-[5px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 text-md"
                 />
               </div>
             </form>
@@ -271,33 +283,47 @@ const AllCoupounCode = () => {
       <div className="w-full">
         {coupouns &&
           coupouns.map((i, index) => (
-            <div className="flex justify-between mx-auto w-[95%] bg-white shadow-2xl p-4 rounded-md mt-6 800px:h-[150px] h-[120px]">
-              <div className="w-[150px]">
-                <span className="800px:text-lg text-[12px]">
+            <div className="flex justify-between mx-auto w-[80%] bg-white shadow-2xl p-4 rounded-md mt-6 800px:h-[150px] h-[120px]">
+              <div className="w-[300px]">
+                <h1 className="800px:text-lg text-[12px] text-center">
                   Tên mã giảm giá
-                </span>
+                </h1>
                 <div className="800px:text-lg text-[12px] text-blue-500 mt-6">
-                  {i.name}
+                  {i.name.length > 30
+                    ? `${i.name.substring(0, 30)}...`
+                    : i.name}
                 </div>
               </div>
-              <div>
-                <span className="hidden 800px:block 800px:text-md">
-                  Tối thiểu
-                </span>
-                <div className="text-md text-red-500 800px:block hidden mt-6">
-                  {i.minAmount <= 100
-                    ? i.minAmount + " %"
-                    : formatVietnameseCurrency(i.minAmount)}
+              <div className="w-[150px]">
+                <h1 className="800px:text-lg text-[12px] text-center">
+                  Mã code
+                </h1>
+                <div className="800px:text-lg text-[12px] text-blue-500 mt-6 flex justify-center items-center">
+                  {i.code}
+                  <i>
+                    <AiFillCopy
+                      className="ml-4 cursor-pointer hover:scale-[1.2]"
+                      color="#333"
+                      onClick={() => copyCodeToClipboard(i.code)}
+                    />
+                  </i>
                 </div>
               </div>
-              <div>
-                <span className="800px:text-lg text-[12px]">Tối đa</span>
-                <div className="800px:text-lg text-[12px] text-green-500 mt-6">
-                  {i.maxAmount
-                    ? i.maxAmount + " %"
-                    : formatVietnameseCurrency(i.maxAmount)}
+              <div className="w-[40px]">
+                <h1 className="800px:text-lg text-[12px] text-center">Giảm</h1>
+                <div className="800px:text-lg text-[12px] text-blue-500 mt-6 flex justify-center items-center">
+                  {i.valueDiscount}
                 </div>
               </div>
+              <div className="w-[100px]">
+                <h1 className="800px:text-lg text-[12px] text-center">
+                  Số lượng
+                </h1>
+                <div className="800px:text-lg text-[12px] text-blue-500 mt-6 flex justify-center items-center">
+                  {i.sum}
+                </div>
+              </div>
+
               <div className="hidden 800px:block">
                 <span>Chức năng</span>
                 <div className="flex justify-between mt-6">

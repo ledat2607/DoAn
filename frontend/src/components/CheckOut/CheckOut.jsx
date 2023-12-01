@@ -76,11 +76,16 @@ const CheckOut = () => {
       }
     });
   };
-  const subTotalPrice = cartItems.reduce(
-    (acc, item) => acc + item.qty * item.product?.discountPrice,
+  const subTotalPrice = cartItems?.reduce(
+    (acc, item) => acc + item.qty * item?.priceToAdd,
     0
   );
-  const shipping = subTotalPrice * 0.001;
+  let shipping;
+  if (subTotalPrice < 5000000) {
+    shipping = 10000 + subTotalPrice * 0.01;
+  } else {
+    shipping = 30000 + subTotalPrice * 0.03;
+  }
   const discountPercentenge = couponCodeData ? discountPrice : "";
 
   const totalPrice = couponCodeData

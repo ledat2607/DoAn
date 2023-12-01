@@ -15,7 +15,7 @@ router.post(
   "/add-to-cart",
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const { userId, productId, shopId, qty } = req.body;
+      const { userId, productId, shopId, qty, priceToAdd } = req.body;
       const shop = await Shop.findById(shopId);
       const user = await User.findById(userId);
       const product = await Product.findById(productId);
@@ -45,6 +45,7 @@ router.post(
           shopId,
           productId,
           qty,
+          priceToAdd,
           user,
           shop,
           product,
