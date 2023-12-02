@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   AiFillHeart,
+  AiFillSave,
   AiFillStar,
   AiOutlineEye,
   AiOutlineHeart,
@@ -19,6 +20,9 @@ import {
   getAllWishlistItemsUser,
 } from "../../../redux/actions/wishlist";
 import axios from "axios";
+import { BiSolidDiscount } from "react-icons/bi";
+import { MdSell } from "react-icons/md";
+import { loadUser } from "../../../redux/actions/user";
 const ProductCard = ({ data }) => {
   const dispatch = useDispatch();
   const { isAuthenticated, user } = useSelector((state) => state.user);
@@ -30,7 +34,9 @@ const ProductCard = ({ data }) => {
   const [dataEvent, setDataEvent] = useState();
   const [sortedEvents, setSortedEvents] = useState([]);
   const [isDiscounted, setIsDiscounted] = useState(false);
-
+  const [openPopUp, setOpenPopUp] = useState(false);
+  const [couponCodes, setCouponCodes] = useState([]);
+  const [dataUser, setDataUser] = useState();
   useEffect(() => {
     if (allEvents) {
       const currentDate = new Date();
@@ -160,10 +166,66 @@ const ProductCard = ({ data }) => {
     // Nếu không có sự kiện khuyến mãi, trả về giá không thay đổi
     return price;
   }
+  const handleDiscountIconClick = async (id, name) => {
+    try {
+      const response = await axios.get(
+        `${server}/coupon/get-all-coupon/${id}/${name}`,
+        { withCredentials: true }
+      );
+      setCouponCodes(response.data.couponCodes);
+      setOpenPopUp(true);
+    } catch (error) {
+      console.error("Error fetching coupon codes:", error);
+    }
+  };
+  const handleLoadUser = async () => {
+    try {
+      const response = await axios.get(`${server}/user/get-user`, {
+        withCredentials: true,
+      });
+      setDataUser(response.data.user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+    }
+  };
+  const handleAddDiscountCode = async (id, selectedIndex, shopId) => {
+    // Kiểm tra xem couponCodes có tồn tại không
+    if (
+      couponCodes &&
+      Array.isArray(couponCodes) &&
+      couponCodes.length > selectedIndex
+    ) {
+      try {
+        // Lấy thông tin của coupon tại selectedIndex
+        const selectedCoupon = couponCodes[selectedIndex];
+
+        // Sử dụng thông tin của coupon để gửi request
+        await axios.post(
+          `${server}/user/add-discount-code/${id}`,
+          {
+            code: selectedCoupon.code,
+            valueDiscount: selectedCoupon.valueDiscount,
+          },
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        handleLoadUser();
+        handleDiscountIconClick(shopId);
+      } catch (error) {
+        console.error("Error adding discount code:", error);
+      }
+    } else {
+      console.error("couponCodes is undefined or not in the correct format");
+    }
+  };
+
   return (
     <>
-      <div className="mt-4 800px:mt-1 border bg-white hover:border-2 hover:border-blue-300 border-gray-800 800px:h-[350px] rounded-lg shadow-md p-3 relative cursor-pointer">
-        <div className="flex justify-end"></div>
+      <div className="mt-4 800px:w-[250px] flex flex-col justify-between 800px:mt-1 border bg-white hover:border-2 hover:border-blue-300 border-gray-800 800px:h-[350px] rounded-lg shadow-md p-3 relative cursor-pointer">
         {isDiscounted && (
           <div className="absolute top-0 left-0 mt-2 ml-2 flex items-center">
             <div className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs mr-1">
@@ -264,7 +326,6 @@ const ProductCard = ({ data }) => {
             {data?.sold_out} Đã bán
           </div>
         </Link>
-        <div>code</div>
         {/*side options */}
         <div>
           {click ? (
@@ -301,6 +362,80 @@ const ProductCard = ({ data }) => {
           {open ? (
             <ProductDetailsCard open={open} data={data} setOpen={setOpen} />
           ) : null}
+        </div>
+        <div className="relative inline-block">
+          <BiSolidDiscount
+            size={25}
+            onClick={() => handleDiscountIconClick(data?.shopId, data?.name)}
+            title="Mã khuyến mãi"
+            className="cursor-pointer hover:text-green-500"
+          />
+          {openPopUp && (
+            <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-800 bg-opacity-50 z-[100]">
+              {/* Your popup content goes here */}
+              <div className="bg-white p-4 rounded-md h-[55vh] 800px:w-[50%]">
+                <p>Danh sách mã giảm giá</p>
+                <div className="h-[35vh] mt-5 ">
+                  {couponCodes &&
+                    couponCodes.map((i, index) => {
+                      // Kiểm tra xem i có trong dataUser.discountCode không
+                      const isCodeInUserDiscount = dataUser?.discountCode?.some(
+                        (userCode) => userCode.code === i.code
+                      );
+
+                      return (
+                        <div
+                          className={`h-[10vh] bg-gray-200 rounded-lg flex justify-center items-center mt-5 ${
+                            isCodeInUserDiscount ? "opacity-50" : ""
+                          }`}
+                          key={index}
+                        >
+                          <MdSell size={25} className="ml-1" />
+                          <div className="w-[85%] flex flex-col">
+                            <i className="text-[12px] 800px:text-[14px] text-center text-gray-800 font-normal font-Poppins ml-2">
+                              {i?.name}
+                            </i>
+                            <i className="text-[12px] 800px:text-[14px] text-center font-Poppins ml-2">
+                              Số lượng còn lại:{" "}
+                              <i className="text-red-500 font-normal">
+                                {i?.sum}
+                              </i>
+                            </i>
+                            <i className="text-[12px] 800px:text-[14px] text-center font-Poppins ml-2">
+                              Giá trị giảm:{" "}
+                              <i className="text-green-500 font-normal">
+                                {i?.valueDiscount <= 100
+                                  ? `${i?.valueDiscount}%`
+                                  : formatVietnameseCurrency(i?.valueDiscount)}
+                              </i>
+                            </i>
+                          </div>
+                          {!isCodeInUserDiscount && (
+                            <AiFillSave
+                              className="mr-1 cursor-pointer"
+                              onClick={() =>
+                                handleAddDiscountCode(
+                                  user?._id,
+                                  index,
+                                  i?.shopId
+                                )
+                              }
+                            />
+                          )}
+                        </div>
+                      );
+                    })}
+                </div>
+
+                <button
+                  className={`${styles.button} w-[100px] h-[40px] text-[15px] mx-auto flex justify-end items-end`}
+                  onClick={() => setOpenPopUp(false)}
+                >
+                  Đóng
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>

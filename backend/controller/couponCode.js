@@ -1,6 +1,6 @@
 const express = require("express");
 const Shop = require("../model/shop");
-const { isSeller } = require("../middleware/auth");
+const { isSeller, isAuthenticated } = require("../middleware/auth");
 const CoupounCode = require("../model/couponCode");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const ErrorHandler = require("../utils/ErrorHandler");
@@ -34,6 +34,27 @@ router.get(
   catchAsyncErrors(async (req, res, next) => {
     try {
       const couponCodes = await CoupounCode.find({ shopId: req.seller.id });
+      res.status(201).json({
+        success: true,
+        couponCodes,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error, 400));
+    }
+  })
+);
+//get all coupon code for user
+router.get(
+  "/get-all-coupon/:id/:name",
+  isAuthenticated,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const shopId = req.params.id;
+      const name = req.params.name;
+      const couponCodes = await CoupounCode.find({
+        shopId,
+        selectedProduct: name,
+      });
       res.status(201).json({
         success: true,
         couponCodes,

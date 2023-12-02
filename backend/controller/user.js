@@ -4,6 +4,7 @@ const router = express.Router();
 const { upload } = require("../multer");
 const User = require("../model/user");
 const Product = require("../model/product");
+const CoupounCode = require("../model/couponCode");
 const ErrorHandler = require("../utils/ErrorHandler");
 const fs = require("fs");
 const jwt = require("jsonwebtoken");
@@ -405,6 +406,47 @@ router.get(
       });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+//add discount code
+router.post(
+  "/add-discount-code/:id",
+  isAuthenticated,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const { code, valueDiscount } = req.body;
+      const user = await User.findById(req.params.id);
+
+      if (!user) {
+        return next(new ErrorHandler("Người dùng không tồn tại", 400));
+      }
+
+      // Tìm mã giảm giá trong CoupounCode dựa trên code
+      const coupon = await CoupounCode.findOne({ code });
+
+      if (!coupon) {
+        return next(new ErrorHandler("Mã giảm giá không tồn tại", 400));
+      }
+
+      // Trừ 1 đơn vị từ trường sum của mã giảm giá
+      coupon.sum -= 1;
+
+      // Lưu thay đổi
+      await coupon.save();
+
+      // Thêm mã giảm giá vào user
+      user.discountCode.push({ code, value: valueDiscount });
+
+      // Lưu thay đổi trong user
+      await user.save();
+
+      res.status(200).json({
+        success: true,
+        message: "Thêm thành công",
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error, 400));
     }
   })
 );
