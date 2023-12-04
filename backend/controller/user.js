@@ -415,7 +415,7 @@ router.post(
   isAuthenticated,
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const { code, valueDiscount } = req.body;
+      const { code, valueDiscount, selectedProduct, shopId, name } = req.body;
       const user = await User.findById(req.params.id);
 
       if (!user) {
@@ -436,7 +436,13 @@ router.post(
       await coupon.save();
 
       // Thêm mã giảm giá vào user
-      user.discountCode.push({ code, value: valueDiscount });
+      user.discountCode.push({
+        code,
+        value: valueDiscount,
+        selectedProduct,
+        shopId,
+        couponName: name,
+      });
 
       // Lưu thay đổi trong user
       await user.save();

@@ -67,6 +67,9 @@ const userSchema = new mongoose.Schema({
     {
       code: { type: String },
       value: { type: Number },
+      shopId: { type: String },
+      selectedProduct: { type: String },
+      couponName: { type: String },
     },
   ],
   resetPasswordToken: String,

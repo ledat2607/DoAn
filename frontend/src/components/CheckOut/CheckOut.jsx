@@ -6,7 +6,9 @@ import { toast } from "react-toastify";
 import { Country, State } from "country-state-city";
 import axios from "axios";
 import { server } from "../../server";
-
+import { BiSolidDiscount } from "react-icons/bi";
+import { BiCopy } from "react-icons/bi";
+import copy from "clipboard-copy";
 const CheckOut = () => {
   const { user } = useSelector((state) => state.user);
   const { cartItems } = useSelector((state) => state.cart);
@@ -18,6 +20,7 @@ const CheckOut = () => {
   const [couponCode, setCouponCode] = useState("");
   const [couponCodeData, setCouponCodeData] = useState(null);
   const [discountPrice, setDiscountPrice] = useState(null);
+  const [shipDiscount, setShipDiscount] = useState();
   const navigate = useNavigate();
   const paymentSubmit = () => {
     navigate("/payment");
@@ -49,8 +52,11 @@ const CheckOut = () => {
 
     await axios.get(`${server}/coupon/get-coupon-value/${code}`).then((res) => {
       const shopId = res.data.coupon?.shopId;
-      const couponCodeValue =
-        (res.data.coupon?.minAmount + res.data.coupon?.maxAmount) / 2;
+      const couponType = res.data.coupon?.typeCode;
+      const couponCodeValue = res.data.coupon?.valueDiscount;
+
+      console.log(res.data.coupon);
+
       if (res.data.couponCode !== null) {
         const isCouponValid =
           cartItems && cartItems.filter((item) => item.shopId === shopId);
@@ -64,14 +70,24 @@ const CheckOut = () => {
             0
           );
           const ship = eligiblePrice * 0.001;
-          const discountPrice = (ship * couponCodeValue) / 100;
-          setDiscountPrice(discountPrice);
+
+          if (couponType === "all" || couponType === "total") {
+            // Calculate discount as a percentage of the total value
+            const totalValue = eligiblePrice + ship;
+            const discountPrice = (totalValue * couponCodeValue) / 100;
+            setDiscountPrice(discountPrice);
+          } else if (couponType === "ship") {
+            // Store the discount value in a separate variable
+            setShipDiscount(couponCodeValue);
+          }
+
           setCouponCodeData(res.data.coupon);
           setCouponCode("");
         }
       }
+
       if (res.data.couponCode === null) {
-        toast.error("Coupon code doesn't exists!");
+        toast.error("Coupon code doesn't exist!");
         setCouponCode("");
       }
     });
@@ -85,6 +101,13 @@ const CheckOut = () => {
     shipping = 10000 + subTotalPrice * 0.01;
   } else {
     shipping = 30000 + subTotalPrice * 0.03;
+  }
+  if (
+    shipDiscount !== null &&
+    shipDiscount !== undefined &&
+    shipDiscount !== ""
+  ) {
+    shipping *= 1 - shipDiscount / 100;
   }
   const discountPercentenge = couponCodeData ? discountPrice : "";
 
@@ -119,6 +142,8 @@ const CheckOut = () => {
             couponCode={couponCode}
             setCouponCode={setCouponCode}
             discountPercentenge={discountPercentenge}
+            cartItems={cartItems}
+            user={user}
           />
         </div>
       </div>
@@ -290,7 +315,10 @@ const CartData = ({
   couponCode,
   setCouponCode,
   discountPercentenge,
+  cartItems,
+  user,
 }) => {
+  const [openPopUp, setOpenPopUp] = useState(false);
   //hàm định dạng tiền tệ
   function formatVietnameseCurrency(number) {
     // Chia cho 1000 và làm tròn xuống để lấy phần nguyên
@@ -304,6 +332,33 @@ const CartData = ({
 
     return result;
   }
+
+  const filterDiscountCodes = () => {
+    const filteredCodes = user.discountCode.filter((code) =>
+      cartItems.some(
+        (cartItem) =>
+          code.shopId === cartItem.shopId &&
+          code.selectedProduct === cartItem.product.name
+      )
+    );
+    return filteredCodes;
+  };
+  const handleCopyClick = async (discountCode) => {
+    try {
+      await copy(discountCode); // Use clipboard-copy to copy the discount code
+      toast.success("Đã sao chép thành công:", discountCode);
+      setTimeout(() => {
+        setOpenPopUp(false);
+      }, 1000);
+      // You can show a success message to the user if needed
+    } catch (error) {
+      console.error("Sao chép thất bại:", error);
+      // Handle the error, show an error message, etc.
+    }
+  };
+  const handleClick = () => {
+    setOpenPopUp(true);
+  };
   return (
     <div className="w-full bg-[#fff] rounded-md p-5 pb-8 shadow-2xl">
       <div className="flex justify-between">
@@ -333,7 +388,47 @@ const CartData = ({
       <h5 className="text-[18px] font-[600] text-end pt-3">
         {formatVietnameseCurrency(totalPrice)}
       </h5>
+
       <br />
+      <div>
+        <BiSolidDiscount size={30} onClick={handleClick} />
+        {openPopUp && (
+          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-white p-6 rounded-md z-50">
+              {/* Render or display the filtered discount codes within the popup */}
+              {filterDiscountCodes().map((code) => (
+                <div
+                  key={code._id}
+                  className="p-2 bg-slate-300 mt-2 text-center rounded-md"
+                >
+                  <h4>{code.couponName}</h4>
+                  <p>
+                    Giá trị giảm:
+                    {code.value > 100
+                      ? formatVietnameseCurrency(code.value)
+                      : code.value + "%"}
+                  </p>
+                  <div className="flex justify-center items-center">
+                    <p>Code: {code.code}</p>
+                    <BiCopy
+                      className="cursor-pointer ml-2"
+                      onClick={() => handleCopyClick(code.code)}
+                    />
+                  </div>
+                </div>
+              ))}
+
+              {/* Close button or any other controls to close the popup */}
+              <button
+                onClick={() => setOpenPopUp(false)}
+                className="bg-gray-500 text-white px-4 py-2 rounded-md mt-4"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
       <form onSubmit={handleSubmit}>
         <input
           type="text"

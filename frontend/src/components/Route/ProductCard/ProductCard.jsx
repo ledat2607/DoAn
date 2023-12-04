@@ -36,7 +36,8 @@ const ProductCard = ({ data }) => {
   const [isDiscounted, setIsDiscounted] = useState(false);
   const [openPopUp, setOpenPopUp] = useState(false);
   const [couponCodes, setCouponCodes] = useState([]);
-  const [dataUser, setDataUser] = useState();
+  const [codeFilter, setCodeFilter] = useState([]);
+
   useEffect(() => {
     if (allEvents) {
       const currentDate = new Date();
@@ -178,33 +179,31 @@ const ProductCard = ({ data }) => {
       console.error("Error fetching coupon codes:", error);
     }
   };
-  const handleLoadUser = async () => {
-    try {
-      const response = await axios.get(`${server}/user/get-user`, {
-        withCredentials: true,
-      });
-      setDataUser(response.data.user);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-    }
-  };
+  //lọc dữ liệu
+  useEffect(() => {
+    // Filter couponCodes based on user's discount codes
+    const filteredCodes = couponCodes.filter(
+      (code) => !user?.discountCodes?.includes(code.code)
+    );
+    setCodeFilter(filteredCodes);
+  }, [user, couponCodes]);
   const handleAddDiscountCode = async (id, selectedIndex, shopId) => {
-    // Kiểm tra xem couponCodes có tồn tại không
     if (
       couponCodes &&
       Array.isArray(couponCodes) &&
       couponCodes.length > selectedIndex
     ) {
       try {
-        // Lấy thông tin của coupon tại selectedIndex
         const selectedCoupon = couponCodes[selectedIndex];
 
-        // Sử dụng thông tin của coupon để gửi request
-        await axios.post(
+        const response = await axios.post(
           `${server}/user/add-discount-code/${id}`,
           {
             code: selectedCoupon.code,
             valueDiscount: selectedCoupon.valueDiscount,
+            shopId: selectedCoupon.shopId,
+            selectedProduct: selectedCoupon.selectedProduct,
+            name: selectedCoupon.name,
           },
           {
             withCredentials: true,
@@ -213,8 +212,17 @@ const ProductCard = ({ data }) => {
             },
           }
         );
-        handleLoadUser();
-        handleDiscountIconClick(shopId);
+
+        if (response.data.success) {
+          toast.success("Mã giảm giá được áp dụng thành công!");
+
+          // Update user's discount codes in the redux store
+          dispatch(loadUser(user?._id));
+
+          // Set addedCoupon to true when the coupon is successfully applied
+        } else {
+          toast.error("Áp dụng mã giảm giá thất bại: " + response.data.message);
+        }
       } catch (error) {
         console.error("Error adding discount code:", error);
       }
@@ -222,7 +230,6 @@ const ProductCard = ({ data }) => {
       console.error("couponCodes is undefined or not in the correct format");
     }
   };
-
   return (
     <>
       <div className="mt-4 800px:w-[250px] flex flex-col justify-between 800px:mt-1 border bg-white hover:border-2 hover:border-blue-300 border-gray-800 800px:h-[350px] rounded-lg shadow-md p-3 relative cursor-pointer">
@@ -363,7 +370,7 @@ const ProductCard = ({ data }) => {
             <ProductDetailsCard open={open} data={data} setOpen={setOpen} />
           ) : null}
         </div>
-        <div className="relative inline-block">
+        <div className="relative group">
           <BiSolidDiscount
             size={25}
             onClick={() => handleDiscountIconClick(data?.shopId, data?.name)}
@@ -372,61 +379,57 @@ const ProductCard = ({ data }) => {
           />
           {openPopUp && (
             <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-800 bg-opacity-50 z-[100]">
-              {/* Your popup content goes here */}
               <div className="bg-white p-4 rounded-md h-[55vh] 800px:w-[50%]">
                 <p>Danh sách mã giảm giá</p>
-                <div className="h-[35vh] mt-5 ">
+                <div className="h-[35vh] mt-5">
                   {couponCodes &&
-                    couponCodes.map((i, index) => {
-                      // Kiểm tra xem i có trong dataUser.discountCode không
-                      const isCodeInUserDiscount = dataUser?.discountCode?.some(
-                        (userCode) => userCode.code === i.code
-                      );
-
-                      return (
+                    couponCodes
+                      .filter(
+                        (code) =>
+                          !user?.discountCode?.some(
+                            (dc) => dc.code === code.code
+                          )
+                      ) // Filter out codes already in user.discountCode
+                      .map((code, index) => (
                         <div
-                          className={`h-[10vh] bg-gray-200 rounded-lg flex justify-center items-center mt-5 ${
-                            isCodeInUserDiscount ? "opacity-50" : ""
-                          }`}
+                          className={`mt-4 w-full !h-[100px] flex justify-center items-center 800px:mt-1 border bg-white hover:border-2 hover:border-blue-300 border-gray-800 800px:h-[350px] rounded-lg shadow-md p-3 relative cursor-pointer`}
                           key={index}
                         >
                           <MdSell size={25} className="ml-1" />
                           <div className="w-[85%] flex flex-col">
                             <i className="text-[12px] 800px:text-[14px] text-center text-gray-800 font-normal font-Poppins ml-2">
-                              {i?.name}
+                              {code?.name}
                             </i>
                             <i className="text-[12px] 800px:text-[14px] text-center font-Poppins ml-2">
                               Số lượng còn lại:{" "}
                               <i className="text-red-500 font-normal">
-                                {i?.sum}
+                                {code?.sum}
                               </i>
                             </i>
                             <i className="text-[12px] 800px:text-[14px] text-center font-Poppins ml-2">
                               Giá trị giảm:{" "}
                               <i className="text-green-500 font-normal">
-                                {i?.valueDiscount <= 100
-                                  ? `${i?.valueDiscount}%`
-                                  : formatVietnameseCurrency(i?.valueDiscount)}
+                                {code?.valueDiscount <= 100
+                                  ? `${code?.valueDiscount}%`
+                                  : formatVietnameseCurrency(
+                                      code?.valueDiscount
+                                    )}
                               </i>
                             </i>
                           </div>
-                          {!isCodeInUserDiscount && (
-                            <AiFillSave
-                              className="mr-1 cursor-pointer"
-                              onClick={() =>
-                                handleAddDiscountCode(
-                                  user?._id,
-                                  index,
-                                  i?.shopId
-                                )
-                              }
-                            />
-                          )}
+                          <AiFillSave
+                            className="mr-1 cursor-pointer"
+                            onClick={() =>
+                              handleAddDiscountCode(
+                                user?._id,
+                                index,
+                                code?.shopId
+                              )
+                            }
+                          />
                         </div>
-                      );
-                    })}
+                      ))}
                 </div>
-
                 <button
                   className={`${styles.button} w-[100px] h-[40px] text-[15px] mx-auto flex justify-end items-end`}
                   onClick={() => setOpenPopUp(false)}
