@@ -114,14 +114,6 @@ const App = () => {
           }
         />
         <Route
-          path="/inbox"
-          element={
-            <ProtectedRoute>
-              <UserInbox />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path="/user/track/order/:id"
           element={
             <ProtectedRoute>
@@ -162,6 +154,14 @@ const App = () => {
             <SellerProtectedRoute>
               <ShopSettingsPage />
             </SellerProtectedRoute>
+          }
+        />
+        <Route
+          path="/inbox"
+          element={
+            <ProtectedRoute>
+              <UserInbox />
+            </ProtectedRoute>
           }
         />
         <Route

@@ -22,8 +22,8 @@ export const navItems = [
 export const brandingData = [
   {
     id: 1,
-    title: "Free Shipping",
-    Description: "From all orders over 100$",
+    title: "Miễn phí vận chuyển",
+    Description: "Cho tất cả các đơn hàng dưới 2 triệu",
     icon: (
       <svg
         width="36"
@@ -72,8 +72,8 @@ export const brandingData = [
   },
   {
     id: 2,
-    title: "Daily Surprise Offers",
-    Description: "Save up to 25% off",
+    title: "Ưu đãi bất ngờ",
+    Description: "Ưu đãi bất ngờ dành cho bạn",
     icon: (
       <svg
         width="32"
@@ -100,8 +100,8 @@ export const brandingData = [
   },
   {
     id: 4,
-    title: "Affortable Prices",
-    Description: "Get Factory direct price",
+    title: "Giá cả cạnh tranh",
+    Description: "Lấy giá phân phối",
     icon: (
       <svg
         width="32"
@@ -147,8 +147,8 @@ export const brandingData = [
   },
   {
     id: 5,
-    title: "Secure Payments",
-    Description: "100% protected payments",
+    title: "Bảo mật thanh toán",
+    Description: "100% bảo mật thanh toán",
     icon: (
       <svg
         width="32"
@@ -588,56 +588,50 @@ export const productData = [
 
 export const footerProductLinks = [
   {
-    name: "About us",
+    name: "Thông tin",
     link: "/about",
   },
   {
-    name: "Careers",
+    name: "Nhân viên",
     link: "/carrers",
   },
   {
-    name: "Store Locations",
+    name: "Vị trí cửa hàng",
   },
   {
-    name: "Our Blog",
+    name: "Blog",
   },
   {
-    name: "Reviews",
+    name: "Đánh giá",
   },
 ];
 
 export const footercompanyLinks = [
   {
-    name: "Game & Video",
+    name: "Giải trí",
   },
   {
-    name: "Phone &Tablets",
+    name: "Điện thoại và máy tính bảng",
   },
   {
-    name: "Computers & Laptop",
+    name: "Máy tính và laptop",
   },
   {
-    name: "Sport Watches",
-  },
-  {
-    name: "Events",
+    name: "Sự kiện",
   },
 ];
 
 export const footerSupportLinks = [
   {
-    name: "FAQ",
+    name: "Đánh giá",
   },
   {
-    name: "Reviews",
+    name: "Liên hệ",
   },
   {
-    name: "Contact Us",
+    name: "Vận chuyển",
   },
   {
-    name: "Shipping",
-  },
-  {
-    name: "Live chat",
+    name: "Livestream",
   },
 ];

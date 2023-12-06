@@ -66,9 +66,6 @@ const EventCard = ({ active, data }) => {
           </div>
         </div>
 
-        <span className="pr-3 font-[400] text-[17px] text-[#44a55e]">
-          Số lượng sản phẩm đã bán {data?.sold_out}
-        </span>
         {isEventStarted ? (
           <CountDown data={data} />
         ) : (

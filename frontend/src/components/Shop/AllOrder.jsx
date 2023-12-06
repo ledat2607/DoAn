@@ -126,7 +126,7 @@ const AllOrder = () => {
               filteredData.map((i, index) => (
                 <>
                   <div
-                    className="flex mx-auto w-[95%] bg-white shadow-2xl p-4 rounded-md mt-6 800px:h-[150px]"
+                    className="flex mx-auto w-[95%] bg-white shadow-2xl p-4 rounded-md mt-6"
                     key={index}
                   >
                     <div className="relative">

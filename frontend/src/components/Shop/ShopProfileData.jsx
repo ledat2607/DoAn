@@ -27,6 +27,7 @@ const ShopProfileData = ({ isOwner }) => {
   const handleClick = () => {
     setIsPopupVisible(!isPopupVisible);
   };
+  console.log(allReviews);
   const handleDelete = (id) => {
     if (isPopupVisible === true) {
       dispatch(deleteEvent(id));
@@ -97,7 +98,7 @@ const ShopProfileData = ({ isOwner }) => {
       </div>
 
       {active === 1 && (
-        <div className="w-[100%] mt-4 800px:mt-2 800px:w-full mx-auto grid grid-cols-2 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-3 lg:gap-[25px] xl:grid-cols-4 xl:gap-[20px] mb-12">
+        <div className="w-full mr-4 grid grid-cols-2 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-4 lg:gap-[25px] xl:grid-cols-5 xl:gap-[30px] mb-12 border-0 z-[10]">
           {products &&
             products.map((i, index) => (
               <ProductCart data={i} key={index} isShop={true} />
@@ -210,6 +211,11 @@ const ShopProfileData = ({ isOwner }) => {
                     </div>
                   </div>
                 ))}
+                {allReviews && allReviews.length === 0 && (
+                  <h5 className="w-full text-center py-5 text-[18px]">
+                    No Reviews have for this shop!
+                  </h5>
+                )}
               </div>
             ))}
         </div>

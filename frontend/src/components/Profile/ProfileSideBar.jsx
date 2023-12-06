@@ -29,7 +29,7 @@ const ProfileSideBar = ({ active, setActive, open }) => {
       </div>
       <div
         className="flex items-center cursor-pointer w-full mb-8 relative"
-        onClick={() => setActive(8)} //|| navigate("/inbox")
+        onClick={() => setActive(2)}
       >
         <RiLockPasswordLine size={30} color={active === 8 ? "red" : ""} />
         <span
@@ -68,7 +68,7 @@ const ProfileSideBar = ({ active, setActive, open }) => {
       </div>
       <div
         className="flex items-center cursor-pointer w-full mb-8 relative"
-        onClick={() => setActive(4)} //|| navigate("/inbox")
+        onClick={() => setActive(5) || navigate("/inbox")} //|| navigate("/inbox")
         title="Trò chuyện"
       >
         <AiOutlineMessage size={30} color={active === 4 ? "red" : ""} />

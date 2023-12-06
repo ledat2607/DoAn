@@ -53,7 +53,7 @@ const AllOrder = () => {
                 <img
                   src={`${backend_url}${items?.product?.images[0]}`}
                   key={ind}
-                  className="mt-2"
+                  className="mt-2 w-[80%] cursor-pointer"
                 />
               </div>
             ))}
