@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import ProductDetails from "../../components/Products/ProductDetails";
 import SuggestedProduct from "../../components/Products/SuggestedProduct.jsx";
 import { useSelector } from "react-redux";
-const ProductDetailsPage = () => {
+const ProductDetailsPage = ({ headerState }) => {
   const { allProducts } = useSelector((state) => state.products);
   const { name } = useParams();
   const [data, setData] = useState(null);

@@ -7,6 +7,8 @@ import {
   AiOutlineHeart,
   AiOutlineShoppingCart,
 } from "react-icons/ai";
+import { MdSunny } from "react-icons/md";
+import { FaMoon } from "react-icons/fa";
 import Navbar from "./Navbar";
 import DropDown from "./DropDown";
 import { BiMenuAltLeft } from "react-icons/bi";
@@ -21,7 +23,7 @@ import { RxCross1 } from "react-icons/rx";
 import { getAllWishlistItemsUser } from "../../redux/actions/wishlist";
 import { getAllCartItemsUser } from "../../redux/actions/cart";
 
-const Header = ({ activeHeading }) => {
+const Header = ({ activeHeading, onHeaderChange }) => {
   const { isAuthenticated, user } = useSelector((state) => state.user);
   const { cartItems } = useSelector((state) => state.cart);
   const { wishlistItems } = useSelector((state) => state.wishlist);
@@ -36,6 +38,16 @@ const Header = ({ activeHeading }) => {
   const [open, setOpen] = useState(false);
   const data = user?._id;
   const dispatch = useDispatch();
+  const [theme, setTheme] = useState("light"); // "light" or "dark"
+
+  const handleClick = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+
+    // Notify the parent component (HomePage) about the theme change
+    onHeaderChange(newTheme);
+  };
 
   useEffect(() => {
     dispatch(getAllCartItemsUser(data));
@@ -61,8 +73,8 @@ const Header = ({ activeHeading }) => {
   });
 
   return (
-    <div className={`w-full`}>
-      <div className="ml-4 hidden 800px:h-[50px] 800px:my-[20px] 800px:flex items-center justify-between">
+    <div className={`w-full ${theme === "dark" ? "bg-[#1a1a1a]" : ""}`}>
+      <div className="ml-4 hidden 800px:h-[80px] 800px:flex items-center justify-between">
         <div className="mt-5">
           <Link to="/">
             <img src="../../../img/logo.png" alt="logo" width={"100px"} />
@@ -163,7 +175,7 @@ const Header = ({ activeHeading }) => {
           </div>
           <div className={`${styles.noramlFlex}`}>
             <div
-              className="relative cursor-pointer mr-[15px]"
+              className="relative cursor-pointer"
               onClick={() => setOpenCart(true)}
             >
               <AiOutlineShoppingCart size={30} color="rgb(255 255 255 / 83%)" />
@@ -173,7 +185,7 @@ const Header = ({ activeHeading }) => {
             </div>
           </div>
           <div className={`${styles.noramlFlex}`}>
-            <div className="relative cursor-pointer mr-[15px]">
+            <div className="relative cursor-pointer mr-[10px]">
               {isAuthenticated ? (
                 <Account />
               ) : (
@@ -182,6 +194,23 @@ const Header = ({ activeHeading }) => {
                 </Link>
               )}
             </div>
+          </div>
+          <div className={`${styles.noramlFlex} mr-3`}>
+            {theme === "light" ? (
+              <MdSunny
+                size={20}
+                fill="#fff"
+                onClick={handleClick}
+                className="cursor-pointer hover:fill-[#000]"
+              />
+            ) : (
+              <FaMoon
+                size={20}
+                fill="#000"
+                onClick={handleClick}
+                className="cursor-pointer hover:fill-white"
+              />
+            )}
           </div>
           {/*cart popup */}
           {openCart ? (

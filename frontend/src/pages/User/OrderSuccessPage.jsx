@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Footer from "../../components/Layout/Footer";
 import Header from "../../components/Layout/Header";
 import Lottie from "react-lottie";
@@ -8,18 +8,25 @@ import { server } from "../../server";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-
+import { useLocation } from "react-router-dom";
 const OrderSuccessPage = () => {
+  const appliedCodes = JSON.parse(localStorage.getItem("appliedCodes")) || [];
+  const { user } = useSelector((state) => state.user);
+  useEffect(() => {
+    console.log("Applied Codes:", appliedCodes);
+    // localStorage.removeItem("appliedCodes");
+  }, [appliedCodes]);
+
   return (
     <div>
       <Header />
-      <Success />
+      <Success appliedCodes={appliedCodes} user={user} />
       <Footer />
     </div>
   );
 };
 
-const Success = () => {
+const Success = ({ appliedCodes, user }) => {
   const defaultOptions = {
     loop: true,
     autoplay: true,
@@ -28,23 +35,36 @@ const Success = () => {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
-  const { user } = useSelector((state) => state.user);
+
   const navigate = useNavigate();
-  const handleDeleteCart = async (e) => {
+  const handleDelete = async (e) => {
     e.preventDefault();
-    await axios
-      .delete(`${server}/cart/delete-cartItems-in-cart/${user?._id}`)
-      .then((res) => {
-        toast.success(res.data.message);
-        navigate("/");
-        window.location.reload(true);
-      })
-      .catch((err) => {
-        toast.error(err);
-        navigate("/");
-        window.location.reload(true);
+
+    try {
+      // Delete cart items
+      await axios.delete(
+        `${server}/cart/delete-cartItems-in-cart/${user?._id}`
+      );
+
+      // Ensure appliedCodes is an array of valid codes
+      const validAppliedCodes = appliedCodes.filter((code) => code);
+
+      // Delete discount codes
+      const response = await axios.post(`${server}/user/delete-code`, {
+        userId: user?._id,
+        appliedCodes: validAppliedCodes,
       });
+
+      // Common logic after deletions
+      navigate("/");
+      // window.location.reload(true);
+    } catch (error) {
+      toast.error(error.message);
+      navigate("/");
+      // window.location.reload(true);
+    }
   };
+
   return (
     <div>
       <Lottie options={defaultOptions} width={300} height={300} />
@@ -52,7 +72,7 @@ const Success = () => {
         Đặt hàng thành công ! 😍
       </h5>
       <h4 className="text-center">
-        <u onClick={handleDeleteCart} className="cursor-pointer">
+        <u onClick={handleDelete} className="cursor-pointer">
           Quay về trang chủ
         </u>
       </h4>

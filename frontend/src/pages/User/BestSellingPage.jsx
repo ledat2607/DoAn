@@ -5,7 +5,7 @@ import styles from "../../styles/styles";
 import ProductCard from "../../components/Route/ProductCard/ProductCard";
 import { useSelector } from "react-redux";
 
-const BestSellingPage = () => {
+const BestSellingPage = ({ headerState }) => {
   const { allProducts } = useSelector((state) => state.products);
   const [data, setData] = useState([]);
   useEffect(() => {

@@ -74,9 +74,10 @@ const Payment = () => {
       .then((res) => {
         setOpen(false);
         navigate("/order/success");
-        toast.success("Order successful!");
-        localStorage.setItem("latestOrder", JSON.stringify([]));
-        window.location.reload();
+        toast.success("Đặt hàng thành công");
+        setTimeout(() => {
+          localStorage.setItem("latestOrder", JSON.stringify([]));
+        }, 500);
       });
   };
 
@@ -91,8 +92,9 @@ const Payment = () => {
       setOpen(false);
       navigate("/order/success");
       toast.success("Đặt hàng thành công!");
-      localStorage.setItem("latestOrder", JSON.stringify([]));
-      window.location.reload();
+      setTimeout(() => {
+        localStorage.setItem("latestOrder", JSON.stringify([]));
+      }, 500);
     });
   };
 
@@ -245,7 +247,7 @@ const CartData = ({ orderData }) => {
           Phí vận chuyển:
         </h3>
         <h5 className="text-[18px] font-[600]">
-          {formatVietnameseCurrency(orderData?.shipping.toFixed(2))}
+          {formatVietnameseCurrency(orderData?.shipping?.toFixed(2))}
         </h5>
       </div>
       <br />

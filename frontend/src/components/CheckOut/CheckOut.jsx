@@ -21,6 +21,7 @@ const CheckOut = () => {
   const [couponCodeData, setCouponCodeData] = useState(null);
   const [discountPrice, setDiscountPrice] = useState(null);
   const [shipDiscount, setShipDiscount] = useState();
+  const [appliedCodes, setAppliedCodes] = useState([]);
   const navigate = useNavigate();
   const paymentSubmit = () => {
     navigate("/payment");
@@ -54,9 +55,6 @@ const CheckOut = () => {
       const shopId = res.data.coupon?.shopId;
       const couponType = res.data.coupon?.typeCode;
       const couponCodeValue = res.data.coupon?.valueDiscount;
-
-      console.log(res.data.coupon);
-
       if (res.data.couponCode !== null) {
         const isCouponValid =
           cartItems && cartItems.filter((item) => item.shopId === shopId);
@@ -75,10 +73,20 @@ const CheckOut = () => {
             // Calculate discount as a percentage of the total value
             const totalValue = eligiblePrice + ship;
             const discountPrice = (totalValue * couponCodeValue) / 100;
+            setAppliedCodes((prevCodes) => [...prevCodes, code]);
+            localStorage.setItem(
+              "appliedCodes",
+              JSON.stringify([...appliedCodes, code])
+            );
             setDiscountPrice(discountPrice);
           } else if (couponType === "ship") {
             // Store the discount value in a separate variable
             setShipDiscount(couponCodeValue);
+            setAppliedCodes((prevCodes) => [...prevCodes, code]);
+            localStorage.setItem(
+              "appliedCodes",
+              JSON.stringify([...appliedCodes, code])
+            );
           }
 
           setCouponCodeData(res.data.coupon);
@@ -92,6 +100,7 @@ const CheckOut = () => {
       }
     });
   };
+
   const subTotalPrice = cartItems?.reduce(
     (acc, item) => acc + item.qty * item?.priceToAdd,
     0

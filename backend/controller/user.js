@@ -456,5 +456,31 @@ router.post(
     }
   })
 );
+//delete code
+router.post(
+  "/delete-code",
+  catchAsyncErrors(async (req, res, next) => {
+    const userId = req.body.userId;
+
+    const appliedCodes = req.body.appliedCodes;
+
+    try {
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        { $pull: { discountCode: { code: { $in: appliedCodes } } } },
+        { new: true }
+      );
+
+      res.status(200).json({
+        message: "Xóa thành công",
+        user: updatedUser,
+      });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Internal Server Error", error: error.message });
+    }
+  })
+);
 
 module.exports = router;
