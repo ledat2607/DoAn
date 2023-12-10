@@ -17,6 +17,9 @@ import {
   OrderDetailPage,
   TrackOrderPage,
   UserInbox,
+  ForgotPasswordPage,
+  EmailResetPassword,
+  PhoneResetPassword,
 } from "./Routes.js";
 import {
   ShopCreate,
@@ -75,6 +78,9 @@ const App = () => {
         />
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/email-reset" element={<EmailResetPassword />} />
+        <Route path="/phone-reset" element={<PhoneResetPassword />} />
         <Route path="/sign-up" element={<SignupPage />} />
         <Route
           path="/activation/:activation_token"

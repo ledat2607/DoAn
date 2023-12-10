@@ -22,7 +22,21 @@ const ProductsPage = () => {
   const [maxPrice, setMaxPrice] = useState("");
   const [sortOption, setSortOption] = useState("desce");
   const [popUp, setPopup] = useState(false);
+  const [headerState, setHeaderState] = useState("");
 
+  useEffect(() => {
+    const storedTheme = localStorage.getItem("theme");
+    if (storedTheme) {
+      setHeaderState(storedTheme);
+    } else {
+      setHeaderState("light");
+    }
+  }, []);
+
+  const handleHeaderChange = (newHeaderState) => {
+    setHeaderState(newHeaderState);
+    localStorage.setItem("theme", newHeaderState);
+  };
   useEffect(() => {
     handleSearch();
   }, [sortOption]);
@@ -145,8 +159,14 @@ const ProductsPage = () => {
     setPopup(!popUp);
   };
   return (
-    <div>
-      <Header activeHeading={3} />
+    <div
+      className={`w-full h-[100vh] ${
+        headerState === "dark"
+          ? "bg-[#3c3b3b] text-gray-400 opacity-9 brightness-75"
+          : "bg-gray-100"
+      }`}
+    >
+      <Header activeHeading={3} onHeaderChange={handleHeaderChange} />
       <div className={`${styles.section} mt-5`}>
         <div className="800px:flex items-center 800px:h-[10vh] 800px:mt-0 mt-8">
           <div className="flex">

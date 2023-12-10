@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { productData } from "../../../static/data";
 import styles from "../../../styles/styles";
 import ProductCard from "../ProductCard/ProductCard";
-import { useDispatch, useSelector } from "react-redux";
-import { getAllEvents, getAllEventsShop } from "../../../redux/actions/event";
+import { useSelector } from "react-redux";
 
 const BestDeals = () => {
   const { allProducts } = useSelector((state) => state.products);

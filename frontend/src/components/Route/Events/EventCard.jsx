@@ -34,14 +34,14 @@ const EventCard = ({ active, data }) => {
           />
           <h1 className="ml-4">{data?.shop?.shopName}</h1>
         </div>
-        <div className="p-2 800px:w-[70%] w-full lg:-w-[10%] flex justify-center items-center ">
+        <div className="pt-2 800px:w-[80%] flex justify-center items-center ">
           <img
             src={`${backend_url}${data?.images}`}
             alt="img-event"
-            className="800px:ml-[5%] ml-0 mt-2 w-[200px]"
+            className="w-[200px]"
           />
           <h2
-            className={`${styles.productTitle} !text-[20px] 800px:text-[20px]`}
+            className={`${styles.productTitle} !text-[20px] 800px:text-[20px] ml-4`}
           >
             {data?.name}
           </h2>
@@ -51,16 +51,16 @@ const EventCard = ({ active, data }) => {
       <div className="800px:w-[60%] w-full flex flex-col justify-center">
         <p>{data?.description}</p>
         <div className="w-full flex py-2 items-center justify-between">
-          <div className="flex">
+          <div className="800px:flex">
             Giảm giá
             {data?.discountPercent <= 100 ? (
-              <h5 className="font-[500] text-[18px] text-[#d55b45] pr-3 line-through ml-2">
+              <p className="font-[500] text-[18px] text-[#d55b45] pr-3 line-through ml-2">
                 {data?.discountPercent}%
-              </h5>
+              </p>
             ) : (
-              <h5 className="font-bold text-[20px] text-red-500 font-Roboto ml-4 pr-4">
+              <p className="font-bold text-[20px] text-red-500 font-Roboto ml-4 pr-4">
                 {formatVietnameseCurrency(data?.discountPercent)}
-              </h5>
+              </p>
             )}
             cho tất cả sản phẩm thuộc danh mục '<i>{data?.category}</i>'.
           </div>

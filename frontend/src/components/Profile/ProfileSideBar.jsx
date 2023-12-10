@@ -31,10 +31,10 @@ const ProfileSideBar = ({ active, setActive, open }) => {
         className="flex items-center cursor-pointer w-full mb-8 relative"
         onClick={() => setActive(2)}
       >
-        <RiLockPasswordLine size={30} color={active === 8 ? "red" : ""} />
+        <RiLockPasswordLine size={30} color={active === 2 ? "red" : ""} />
         <span
           className={`pl-3 ${
-            active === 8 ? "text-red-500" : ""
+            active === 2 ? "text-red-500" : ""
           } 800px:block hidden`}
         >
           Thay đổi mật khẩu
@@ -42,12 +42,12 @@ const ProfileSideBar = ({ active, setActive, open }) => {
       </div>
       <div
         className="flex items-center cursor-pointer w-full mb-8"
-        onClick={() => setActive(2)}
+        onClick={() => setActive(3)}
       >
-        <HiOutlineShoppingCart size={30} color={active === 2 ? "red" : ""} />
+        <HiOutlineShoppingCart size={30} color={active === 3 ? "red" : ""} />
         <span
           className={`pl-3 ${
-            active === 2 ? "text-red-500" : ""
+            active === 3 ? "text-red-500" : ""
           } 800px:block hidden`}
         >
           Đơn hàng
@@ -55,12 +55,12 @@ const ProfileSideBar = ({ active, setActive, open }) => {
       </div>
       <div
         className="flex items-center cursor-pointer w-full mb-8"
-        onClick={() => setActive(3)}
+        onClick={() => setActive(4)}
       >
-        <HiOutlineReceiptRefund size={30} color={active === 3 ? "red" : ""} />
+        <HiOutlineReceiptRefund size={30} color={active === 4 ? "red" : ""} />
         <span
           className={`pl-3 ${
-            active === 3 ? "text-red-500" : ""
+            active === 4 ? "text-red-500" : ""
           } 800px:block hidden`}
         >
           Các đơn hàng hoàn trả
@@ -71,10 +71,10 @@ const ProfileSideBar = ({ active, setActive, open }) => {
         onClick={() => setActive(5) || navigate("/inbox")} //|| navigate("/inbox")
         title="Trò chuyện"
       >
-        <AiOutlineMessage size={30} color={active === 4 ? "red" : ""} />
+        <AiOutlineMessage size={30} color={active === 5 ? "red" : ""} />
         <span
           className={`pl-3 ${
-            active === 4 ? "text-red-500" : ""
+            active === 5 ? "text-red-500" : ""
           } 800px:block hidden`}
         >
           Trò chuyện
@@ -85,12 +85,12 @@ const ProfileSideBar = ({ active, setActive, open }) => {
       </div>
       <div
         className="flex items-center cursor-pointer w-full mb-8 relative"
-        onClick={() => setActive(5)} //|| navigate("/inbox")
+        onClick={() => setActive(6)} //|| navigate("/inbox")
       >
-        <MdOutlineTrackChanges size={30} color={active === 5 ? "red" : ""} />
+        <MdOutlineTrackChanges size={30} color={active === 6 ? "red" : ""} />
         <span
           className={`pl-3 ${
-            active === 5 ? "text-red-500" : ""
+            active === 6 ? "text-red-500" : ""
           } 800px:block hidden`}
         >
           Theo dõi đơn hàng
@@ -98,12 +98,12 @@ const ProfileSideBar = ({ active, setActive, open }) => {
       </div>
       <div
         className="flex items-center cursor-pointer w-full mb-8 relative"
-        onClick={() => setActive(6)} //|| navigate("/inbox")
+        onClick={() => setActive(7)} //|| navigate("/inbox")
       >
-        <AiOutlineCreditCard size={30} color={active === 6 ? "red" : ""} />
+        <AiOutlineCreditCard size={30} color={active === 7 ? "red" : ""} />
         <span
           className={`pl-3 ${
-            active === 6 ? "text-red-500" : ""
+            active === 7 ? "text-red-500" : ""
           } 800px:block hidden`}
         >
           Phương thức thanh toán
@@ -112,12 +112,12 @@ const ProfileSideBar = ({ active, setActive, open }) => {
 
       <div
         className="flex items-center cursor-pointer w-full mb-8 relative"
-        onClick={() => setActive(7)} //|| navigate("/inbox")
+        onClick={() => setActive(8)} //|| navigate("/inbox")
       >
-        <TbAddressBook size={30} color={active === 7 ? "red" : ""} />
+        <TbAddressBook size={30} color={active === 8 ? "red" : ""} />
         <span
           className={`pl-3 ${
-            active === 7 ? "text-red-500" : ""
+            active === 8  ? "text-red-500" : ""
           } 800px:block hidden`}
         >
           Địa chỉ giao hàng

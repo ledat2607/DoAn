@@ -6,6 +6,21 @@ const EventsPage = () => {
   const { allEvents } = useSelector((state) => state.events);
   const [sortedEvents, setSortedEvents] = useState([]);
 
+  const [headerState, setHeaderState] = useState("");
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem("theme");
+    if (storedTheme) {
+      setHeaderState(storedTheme);
+    } else {
+      setHeaderState("light");
+    }
+  }, []);
+
+  const handleHeaderChange = (newHeaderState) => {
+    setHeaderState(newHeaderState);
+    localStorage.setItem("theme", newHeaderState);
+  };
   useEffect(() => {
     if (allEvents) {
       const currentDate = new Date();
@@ -25,8 +40,14 @@ const EventsPage = () => {
   }, [allEvents]);
 
   return (
-    <div>
-      <Headers activeHeading={4} />
+    <div
+      className={`w-full 800px:h-[150vh] ${
+        headerState === "dark"
+          ? "bg-[#3c3b3b] text-gray-400 opacity-9 brightness-75"
+          : "bg-gray-100"
+      }`}
+    >
+      <Headers activeHeading={4} onHeaderChange={handleHeaderChange} />
       <div className="mt-[1%]">
         <EventCard active={true} data={sortedEvents[0]} />
       </div>

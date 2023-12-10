@@ -22,6 +22,7 @@ const ProductDetailsCard = ({ setOpen, open, data }) => {
   const [sortedEvents, setSortedEvents] = useState([]);
   const [isDiscounted, setIsDiscounted] = useState(false);
   const [dataEvent, setDataEvent] = useState();
+
   const toggleDescription = () => {
     setExpanded(!expanded);
   };
@@ -97,17 +98,31 @@ const ProductDetailsCard = ({ setOpen, open, data }) => {
     return result;
   }
   const addToCartHandler = () => {
-    dispatch(addToCart(user?._id, data.shop?._id, data?._id, count));
-    {
-      isAuthenticated
-        ? toast.success("Thêm vào giỏ hàng thành công !", {
-            onClose: () => {
-              dispatch(getAllCartItemsUser(user?._id));
-            },
-          })
-        : toast.warning("Vui lòng đăng nhập để tiếp tục !");
+    // Kiểm tra xem sản phẩm có nằm trong danh mục được khuyến mãi không
+    const isDiscountedProduct = sortedEvents.some(
+      (event) =>
+        event.shopId === data?.shopId && event?.category === data?.category
+    );
+
+    // Áp dụng giá trị tương ứng
+    const priceToAdd = isDiscountedProduct
+      ? (data?.discountPrice * (100 - dataEvent?.discountPercent)) / 100
+      : data?.discountPrice;
+
+    dispatch(
+      addToCart(user?._id, data.shop?._id, data?._id, count, priceToAdd)
+    );
+
+    // Hiển thị thông báo tương ứng
+    if (isAuthenticated) {
+      toast.success("Thêm vào giỏ hàng thành công !", {
+        onClose: () => {
+          dispatch(getAllCartItemsUser(user?._id));
+        },
+      });
+    } else {
+      toast.warning("Vui lòng đăng nhập để tiếp tục !");
     }
-    dispatch(getAllCartItemsUser(user?._id));
   };
   return (
     <div className="bg-[#fff]">

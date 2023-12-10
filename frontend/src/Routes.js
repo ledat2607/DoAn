@@ -13,6 +13,9 @@ import PaymentPage from "./pages/User/PaymentPage";
 import OrderDetailPage from "./pages/User/OrderDetailPage";
 import TrackOrderPage from "./pages/User/TrackOrderPage";
 import UserInbox from "./pages/User/UserInbox";
+import ForgotPasswordPage from "./pages/User/ForgotPasswordPage";
+import PhoneResetPassword from "./pages/User/PhoneResetPassword";
+import EmailResetPassword from "./pages/User/EmailResetPassword";
 export {
   LoginPage,
   SignupPage,
@@ -29,4 +32,7 @@ export {
   OrderDetailPage,
   TrackOrderPage,
   UserInbox,
+  ForgotPasswordPage,
+  EmailResetPassword,
+  PhoneResetPassword,
 };

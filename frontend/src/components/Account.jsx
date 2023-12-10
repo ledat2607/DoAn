@@ -42,7 +42,13 @@ const Account = () => {
   };
   return (
     <React.Fragment>
-      <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          textAlign: "center",
+        }}
+      >
         <Tooltip title="Account settings">
           <IconButton
             onClick={handleClick}
@@ -52,7 +58,7 @@ const Account = () => {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <Avatar sx={{ width: 45, height: 45 }}>
+            <Avatar sx={{ width: 35, height: 35 }}>
               <img
                 src={`${backend_url}${user?.avatar}`}
                 alt="useavt"

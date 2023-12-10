@@ -11,9 +11,9 @@ import { getAllCartItemsUser } from "../../redux/actions/cart";
 import { toast } from "react-toastify";
 const Cart = ({ setOpenCart, data }) => {
   return (
-    <div className="fixed top-0 left-0 w-full bg-[#0000004b] h-screen z-10">
+    <div className="fixed top-0 left-0 w-full bg-[#0000004b] min-h-[100vh] z-10">
       {data.length === 0 ? (
-        <div className="fixed top-0 right-0 min-h-full 800px:w-[25%] w-[80%] shadow-sm bg-white">
+        <div className="fixed top-0 right-0 min-h-[100vh] 800px:w-[25%] w-[80%] shadow-sm bg-white">
           <RxCross1
             className="flex justify-center items-end absolute right-3 top-3 cursor-pointer"
             size={30}
@@ -24,7 +24,7 @@ const Cart = ({ setOpenCart, data }) => {
           </div>
         </div>
       ) : (
-        <div className="fixed  top-0 right-0 min-h-full 800px:w-[25%] w-[80%] shadow-sm bg-white flex flex-col justify-between">
+        <div className="fixed  top-0 right-0 min-h-[100vh] 800px:w-[25%] w-[80%] shadow-sm bg-white flex flex-col justify-between">
           {/*items length */}
           <div>
             <div className={`flex p-4`}>
@@ -85,7 +85,9 @@ const CartSignle = ({ data }) => {
   const incre = async (id) => {
     try {
       await axios.post(`${server}/cart/incre-qty-cart-items/${id}`);
-      window.location.reload();
+      setTimeout(() => {
+        dispatch(getAllCartItemsUser(data.user?._id));
+      }, 10);
     } catch (error) {
       console.error("Lỗi xóa mục khỏi giỏ hàng:", error);
     }
@@ -94,7 +96,9 @@ const CartSignle = ({ data }) => {
   const decre = async (id) => {
     try {
       await axios.post(`${server}/cart/decre-qty-cart-items/${id}`);
-      window.location.reload();
+      setTimeout(() => {
+        dispatch(getAllCartItemsUser(data.user?._id));
+      }, 10);
     } catch (error) {
       console.error("Lỗi xóa mục khỏi giỏ hàng:", error);
     }
@@ -132,7 +136,7 @@ const CartSignle = ({ data }) => {
             className="bg-[#a7abb14f] rounded-full w-[25px] h-[25px] flex items-center justify-center cursor-pointer"
             onClick={() => setValue(value === 1 ? 1 : value - 1)}
           >
-            <button onClick={() => decre(data?._id)}>
+            <button onClick={() => decre(data?._id)} disabled={value === 1}>
               <HiOutlineMinus size={16} color="#7d879c" />
             </button>
           </div>

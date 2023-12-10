@@ -38,16 +38,21 @@ const Header = ({ activeHeading, onHeaderChange }) => {
   const [open, setOpen] = useState(false);
   const data = user?._id;
   const dispatch = useDispatch();
-  const [theme, setTheme] = useState("light"); // "light" or "dark"
+  const [theme, setTheme] = useState("light");
 
   const handleClick = () => {
     const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
     localStorage.setItem("theme", newTheme);
-
-    // Notify the parent component (HomePage) about the theme change
     onHeaderChange(newTheme);
   };
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+      setTheme(savedTheme);
+    }
+  }, []);
 
   useEffect(() => {
     dispatch(getAllCartItemsUser(data));
@@ -190,26 +195,23 @@ const Header = ({ activeHeading, onHeaderChange }) => {
                 <Account />
               ) : (
                 <Link to="/login">
-                  <CgProfile size={30} color="rgb(255 255 255 / 83%)" />
+                  <CgProfile
+                    size={30}
+                    color="rgb(255 255 255 / 83%)"
+                    className="ml-3"
+                  />
                 </Link>
               )}
             </div>
           </div>
-          <div className={`${styles.noramlFlex} mr-3`}>
+          <div
+            onClick={handleClick}
+            className="h-[40px] flex justify-center items-center"
+          >
             {theme === "light" ? (
-              <MdSunny
-                size={20}
-                fill="#fff"
-                onClick={handleClick}
-                className="cursor-pointer hover:fill-[#000]"
-              />
+              <MdSunny size={20} fill="#fff" className=" cursor-pointer mr-4" />
             ) : (
-              <FaMoon
-                size={20}
-                fill="#000"
-                onClick={handleClick}
-                className="cursor-pointer hover:fill-white"
-              />
+              <FaMoon size={20} fill="#000" className=" cursor-pointer mr-4" />
             )}
           </div>
           {/*cart popup */}

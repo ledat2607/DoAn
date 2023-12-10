@@ -108,12 +108,12 @@ const Login = () => {
                 </label>
               </div>
               <div className="text-md">
-                <a
-                  href=".forgot-password"
+                <Link
+                  to="/forgot-password"
                   className="font-medium text-gray-600 hover:text-red-500"
                 >
                   Quên mật khẩu
-                </a>
+                </Link>
               </div>
             </div>
             <div>

@@ -5,9 +5,25 @@ import styles from "../../styles/styles";
 import ProductCard from "../../components/Route/ProductCard/ProductCard";
 import { useSelector } from "react-redux";
 
-const BestSellingPage = ({ headerState }) => {
+const BestSellingPage = () => {
   const { allProducts } = useSelector((state) => state.products);
+
   const [data, setData] = useState([]);
+  const [headerState, setHeaderState] = useState("");
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem("theme");
+    if (storedTheme) {
+      setHeaderState(storedTheme);
+    } else {
+      setHeaderState("light");
+    }
+  }, []);
+
+  const handleHeaderChange = (newHeaderState) => {
+    setHeaderState(newHeaderState);
+    localStorage.setItem("theme", newHeaderState);
+  };
   useEffect(() => {
     if (allProducts) {
       const sortedProducts = [...allProducts].sort(
@@ -18,8 +34,14 @@ const BestSellingPage = ({ headerState }) => {
   }, [allProducts]);
 
   return (
-    <div>
-      <Header activeHeading={2} />
+    <div
+      className={`w-full h-[150vh] ${
+        headerState === "dark"
+          ? "bg-[#3c3b3b] text-gray-400 opacity-9 brightness-75"
+          : "bg-gray-100"
+      }`}
+    >
+      <Header activeHeading={2} onHeaderChange={handleHeaderChange} />
       <div className={`${styles.section} mt-5`}>
         <div className="grid grid-cols-2 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-4 lg:gap-[25px] xl:grid-cols-5 xl:gap-[30px] mb-12">
           {data &&

@@ -5,11 +5,26 @@ import { useParams } from "react-router-dom";
 import ProductDetails from "../../components/Products/ProductDetails";
 import SuggestedProduct from "../../components/Products/SuggestedProduct.jsx";
 import { useSelector } from "react-redux";
-const ProductDetailsPage = ({ headerState }) => {
+const ProductDetailsPage = () => {
   const { allProducts } = useSelector((state) => state.products);
   const { name } = useParams();
   const [data, setData] = useState(null);
   const productName = name.replace(/-/g, " ");
+  const [headerState, setHeaderState] = useState("");
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem("theme");
+    if (storedTheme) {
+      setHeaderState(storedTheme);
+    } else {
+      setHeaderState("light");
+    }
+  }, []);
+
+  const handleHeaderChange = (newHeaderState) => {
+    setHeaderState(newHeaderState);
+    localStorage.setItem("theme", newHeaderState);
+  };
   useEffect(() => {
     const data =
       allProducts && allProducts.find((i) => i?.name === productName);
@@ -17,8 +32,14 @@ const ProductDetailsPage = ({ headerState }) => {
   }, [allProducts, data]);
 
   return (
-    <div>
-      <Header />
+    <div
+      className={`w-full ${
+        headerState === "dark"
+          ? "bg-gray-900 text-gray-500 brightness-75"
+          : "bg-gray-100 text-gray-800"
+      }`}
+    >
+      <Header onHeaderChange={handleHeaderChange} />
       <ProductDetails data={data} />
       <div className="mt-5 bg-white">
         {data && <SuggestedProduct data={data} />}

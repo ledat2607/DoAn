@@ -136,36 +136,36 @@ const ProfileContent = ({ active }) => {
         </div>
       )}
       {/*order page */}
-      {active === 2 && (
+      {active === 3 && (
         <div>
           <AllOrder />
         </div>
       )}
       {/*refund page */}
-      {active === 3 && (
+      {active === 4 && (
         <div>
           <AllRefunds />
         </div>
       )}
       {/*track order */}
-      {active === 5 && (
+      {active === 6 && (
         <div>
           <TrackOrder />
         </div>
       )}
       {/*payment method */}
-      {active === 6 && (
+      {active === 7 && (
         <div>
           <PaymentMethod />
         </div>
       )}
       {/*Addresses */}
-      {active === 7 && (
+      {active === 8 && (
         <div>
           <Addresses />
         </div>
       )}
-      {active === 8 && (
+      {active === 2 && (
         <div>
           <ChangePassword />
         </div>

@@ -462,7 +462,12 @@ router.post(
   catchAsyncErrors(async (req, res, next) => {
     const userId = req.body.userId;
 
-    const appliedCodes = req.body.appliedCodes;
+    let appliedCodes = req.body.appliedCodes;
+
+    // Convert to array if it's a single value
+    if (!Array.isArray(appliedCodes)) {
+      appliedCodes = [appliedCodes];
+    }
 
     try {
       const updatedUser = await User.findByIdAndUpdate(

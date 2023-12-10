@@ -10,7 +10,7 @@ import {
 import { backend_url, server } from "../../server";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProductsShop } from "../../redux/actions/product";
-import { addToCart } from "../../redux/actions/cart";
+import { addToCart, getAllCartItemsUser } from "../../redux/actions/cart";
 import { toast } from "react-toastify";
 import Ratings from "./Ratings";
 import axios from "axios";
@@ -120,20 +120,35 @@ const ProductDetails = ({ data }) => {
 
     return result;
   }
-  const addToCartHandler = (id) => {
-    const isItemExists = cartItems && cartItems.find((i) => i._id === id);
-    if (isItemExists) {
-      dispatch(addToCart(user?._id, data.shop?._id, data?._id, 1));
-      toast.success("Thêm vào giỏ hàng thành công !");
+  const addToCartHandler = () => {
+    // Kiểm tra xem sản phẩm có nằm trong danh mục được khuyến mãi không
+    const isDiscountedProduct = sortedEvents.some(
+      (event) =>
+        event.shopId === data?.shopId && event?.category === data?.category
+    );
+
+    // Áp dụng giá trị tương ứng
+    const priceToAdd = isDiscountedProduct
+      ? (data?.discountPrice * (100 - dataEvent?.discountPercent)) / 100
+      : data?.discountPrice;
+
+    dispatch(
+      addToCart(user?._id, data.shop?._id, data?._id, count, priceToAdd)
+    );
+
+    // Hiển thị thông báo tương ứng
+    if (isAuthenticated) {
+      toast.success("Thêm vào giỏ hàng thành công !", {
+        onClose: () => {
+          dispatch(getAllCartItemsUser(user?._id));
+        },
+      });
+      setCount(1);
     } else {
-      if (data.stock < 1) {
-        toast.error("Vượt quá số lượng sản phẩm trong kho !");
-      } else {
-        dispatch(addToCart(user?._id, data.shop?._id, data?._id, count));
-        toast.success("Thêm vào giỏ hàng thành công !");
-      }
+      toast.warning("Vui lòng đăng nhập để tiếp tục !");
     }
   };
+
   const totalReviewsLength =
     products &&
     products.reduce((acc, product) => acc + product.reviews.length, 0);
@@ -149,7 +164,7 @@ const ProductDetails = ({ data }) => {
   const avg = totalRatings / totalReviewsLength || 0;
 
   const averageRating = avg.toFixed(1);
-  console.log(data);
+
   return (
     <div className="bg-white">
       {data ? (
@@ -374,10 +389,7 @@ const ProductDetailsInfo = ({
       {active === 1 ? (
         <>
           <p className="py-2 text-[18px] leading-8 pb-10 whitespace-pre-line">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Autem
-            maiores suscipit deserunt ut at molestias perspiciatis voluptatem.
-            Consectetur earum mollitia quaerat, harum saepe ut. Doloremque,
-            minus. Quis est pariatur vitae?
+            {data?.description}
           </p>
         </>
       ) : null}
@@ -431,12 +443,7 @@ const ProductDetailsInfo = ({
                 </h5>
               </div>
             </div>
-            <p className="pt-2">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius,
-              quos iste. Dolores, eveniet provident magni repudiandae id eius
-              natus rerum dicta, saepe modi pariatur perferendis delectus
-              aperiam tenetur dignissimos assumenda.
-            </p>
+            <p className="pt-2">{data?.shop.description}</p>
           </div>
           <div className="w-full 800px:w-[50%] mt-5 800px:mt-0 flex 800px:items-end flex-col">
             <div className="text-left">
