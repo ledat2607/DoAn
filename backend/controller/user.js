@@ -10,6 +10,7 @@ const fs = require("fs");
 const jwt = require("jsonwebtoken");
 const sendMail = require("../utils/sendMail");
 const sendToken = require("../utils/jwtToken");
+const sendCode = require("../utils/sendCode");
 const adminToken = require("../utils/adminToken");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const { isAuthenticated } = require("../middleware/auth");
@@ -487,5 +488,32 @@ router.post(
     }
   })
 );
+//get user by email
+router.get(
+  "/user-info-by-email/:email",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const email = req.params.email;
 
+      const user = await User.findOne({ email: email });
+      if (!user) {
+        return next(
+          new ErrorHandler("Không tìm thấy tài khoản nào với email này !", 400)
+        );
+      }
+      const verificationCode = await sendCode({
+        email: email,
+        subject: "Mã xác thực",
+        message: "Mã xác thực yêu cầu cấp lại mật khẩu",
+      });
+      res.status(200).json({
+        success: true,
+        user,
+        verificationCode,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  })
+);
 module.exports = router;

@@ -16,6 +16,7 @@ import UserInbox from "./pages/User/UserInbox";
 import ForgotPasswordPage from "./pages/User/ForgotPasswordPage";
 import PhoneResetPassword from "./pages/User/PhoneResetPassword";
 import EmailResetPassword from "./pages/User/EmailResetPassword";
+import ActiveCode from "./pages/User/ActiveCode";
 export {
   LoginPage,
   SignupPage,
@@ -35,4 +36,5 @@ export {
   ForgotPasswordPage,
   EmailResetPassword,
   PhoneResetPassword,
+  ActiveCode,
 };
