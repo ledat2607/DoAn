@@ -15,24 +15,20 @@ const DashboardHero = () => {
   const { products } = useSelector((state) => state.products);
   const [deliveredOrder, setDeliveredOder] = useState(null);
   const [cashOnDelivery, setCashOnDelivery] = useState(null);
+
   useEffect(() => {
     if (!orders || !products) {
-      // Dữ liệu chưa được tải lên từ API, bạn có thể thực hiện các xử lý khác tùy thuộc vào yêu cầu của bạn.
       return;
     }
-
     const orderData =
       orders &&
       orders?.filter((item) => item.status === "Giao hàng thành công");
-
     if (!orderData) {
       return;
     }
-
     const deliveredOrders = orderData?.filter(
       (item) => item.paymentInfo.type === "Paypal"
     );
-
     setDeliveredOder(deliveredOrders);
     setCashOnDelivery(orderData);
   }, [dispatch, seller?.id, orders, products]);
@@ -48,17 +44,54 @@ const DashboardHero = () => {
   const handlePopupToggle = () => {
     setIsPopupOpen(!isPopupOpen);
   };
+  const extendedStartDate = new Date();
+  extendedStartDate.setMonth(extendedStartDate.getMonth() - 2);
+  const monthlyOrders = orders.reduce((acc, order) => {
+    const deliveredDate = new Date(order.deliveredAt);
+    if (deliveredDate < extendedStartDate) {
+      return acc;
+    }
+    const deliveredMonth = deliveredDate.getMonth();
+    const existingMonth = acc.findIndex(
+      (item) => item.month === deliveredMonth
+    );
+    if (existingMonth !== -1) {
+      acc[existingMonth].count += 1;
+    } else {
+      acc.push({ month: deliveredMonth, count: 1 });
+    }
+    return acc;
+  }, []);
+  monthlyOrders.sort((a, b) => a.month - b.month);
+  const monthLabels = monthlyOrders.map((item) => {
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    return monthNames[item.month];
+  });
   const chartData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+    labels: monthLabels,
     datasets: [
       {
         label: "Số lượng đơn hàng",
-        data: [12, 19, 3, 5, 2, 50],
+        data: monthlyOrders.map((item) => item.count),
         fill: false,
         borderColor: "#077f9c",
       },
     ],
   };
+
   function formatVietnameseCurrency(number) {
     // Chia cho 1000 và làm tròn xuống để lấy phần nguyên
     let formattedNumber = Math.floor(number / 1000);
@@ -161,7 +194,7 @@ const DashboardHero = () => {
             </i>
             {isPopupOpen && (
               <div className="absolute  top-0 right-0 left-0 bottom-0 bg-gray-800 bg-opacity-50 z-50">
-                <div className="absolute top-1/2 left-1/2 w-[30vw] transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-md">
+                <div className="absolute top-1/2 left-1/2 800px:w-[30vw] w-[95%] transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-md">
                   <h3 className="text-xl font-bold mb-4">Biểu đồ đường</h3>
                   <Line
                     data={chartData}

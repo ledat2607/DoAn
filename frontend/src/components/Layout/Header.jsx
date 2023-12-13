@@ -7,7 +7,7 @@ import {
   AiOutlineHeart,
   AiOutlineShoppingCart,
 } from "react-icons/ai";
-import { MdSunny } from "react-icons/md";
+import { MdSunny, MdVoiceChat } from "react-icons/md";
 import { FaMoon } from "react-icons/fa";
 import Navbar from "./Navbar";
 import DropDown from "./DropDown";
@@ -86,7 +86,7 @@ const Header = ({ activeHeading, onHeaderChange }) => {
           </Link>
         </div>
         {/*Search box*/}
-        <div className="w-[50%] relative">
+        <div className="w-[50%] relative flex justify-center items-center">
           <input
             type="text"
             placeholder="Nhập sản phẩm cần tìm..."
@@ -96,7 +96,7 @@ const Header = ({ activeHeading, onHeaderChange }) => {
           />
           <AiOutlineSearch
             size={30}
-            className="absolute right-2 top-1.5 cursor-pointer"
+            className="absolute right-12 top-1.5 cursor-pointer"
           />
           {searchTerm && searchData && searchData.length !== 0 ? (
             <div className="absolute min-h-[30vh] bg-slate-50 shadow-sm-2 z-[9] p-4">
@@ -119,6 +119,7 @@ const Header = ({ activeHeading, onHeaderChange }) => {
                 })}
             </div>
           ) : null}
+          <MdVoiceChat size={30} className="ml-4"/>
         </div>
         <div className={`${styles.button} w-[180px] h-[40px] mr-4`}>
           {isSeller ? (
@@ -245,9 +246,12 @@ const Header = ({ activeHeading, onHeaderChange }) => {
             </Link>
           </div>
           <div className="relative mr-[20px]">
-            <AiOutlineShoppingCart size={40} />
+            <AiOutlineShoppingCart
+              size={40}
+              onClick={() => setOpenCart(!openCart)}
+            />
             <span className="absolute h-[20px] w-[20px] flex items-center justify-center bottom-5 left-6 cursor-pointer rounded-full bg-green-400 ">
-              1
+              {cartItems && cartItems.length}
             </span>
           </div>
         </div>
@@ -258,9 +262,13 @@ const Header = ({ activeHeading, onHeaderChange }) => {
               <div className="w-full flex justify-between pr-3">
                 <div>
                   <div className="relative mr-[15px]">
-                    <AiOutlineHeart size={30} className="mt-5 ml-3" />
+                    <AiOutlineHeart
+                      size={30}
+                      className="mt-5 ml-3"
+                      onClick={() => setOpenWishlist(!openWishlist)}
+                    />
                     <span className="absolute h-[20px] w-[20px] flex items-center justify-center bottom-3 left-6 cursor-pointer rounded-full bg-green-400 ">
-                      1
+                      {wishlistItems && wishlistItems.length}
                     </span>
                   </div>
                 </div>

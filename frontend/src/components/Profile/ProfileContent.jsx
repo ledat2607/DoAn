@@ -301,7 +301,6 @@ const ChangePassword = () => {
         { withCredentials: true }
       )
       .then((res) => {
-        console.log(res.data);
         toast.success("Cập nhật mật khẩu thành công!");
         setNewPassword("");
         setOldPassword("");
@@ -317,7 +316,7 @@ const ChangePassword = () => {
       </div>
       <div className="w-full ">
         <form aria-required onSubmit={passwordChangeHandler}>
-          <div className="w-[60%] block mx-auto p-2">
+          <div className="800px:w-[60%] w-full block mx-auto p-2">
             <label className="block p-2">Mật khẩu cũ</label>
             <div className="relative mt-2">
               <input
@@ -342,7 +341,7 @@ const ChangePassword = () => {
               )}
             </div>
           </div>
-          <div className="w-[60%] block mx-auto p-2">
+          <div className="800px:w-[60%] w-full block mx-auto p-2">
             <label className="block p-2">Mật khẩu mới</label>
             <div className="relative mt-2">
               <input
@@ -368,7 +367,7 @@ const ChangePassword = () => {
             </div>
           </div>
           <PasswordStrengthBar password={newPassword} />
-          <div className="w-[60%] block mx-auto p-2">
+          <div className="800px:w-[60%] w-full block mx-auto p-2">
             <label className="block p-2">Xác nhận mật khẩu mới</label>
             <div className="relative mt-2">
               <input

@@ -1,8 +1,15 @@
 import React, { useState, useRef } from "react";
 import styles from "../../styles/styles";
 import { AiOutlineReload } from "react-icons/ai";
+import { toast } from "react-toastify";
+import { server } from "../../server";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-const ActiveCode = ({ verificationCode }) => {
+const ActiveCode = () => {
+  const navigate = useNavigate();
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  console.log(storedUser);
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const inputRefs = useRef([
     React.createRef(),
@@ -12,54 +19,60 @@ const ActiveCode = ({ verificationCode }) => {
     React.createRef(),
     React.createRef(),
   ]);
-
   const handleChange = (index, value) => {
-    // Lọc chỉ giữ lại các chữ số
     const filteredValue = value.replace(/\D/g, "");
-
-    // Cập nhật giá trị của input tại index
     setCode((prevCode) => {
       const newCode = [...prevCode];
       newCode[index] = filteredValue.slice(0, 1); // Only keep the first character
       return newCode;
     });
 
-    // Nếu độ dài của giá trị tại index đạt đến 1, chuyển trỏ chuột đến input tiếp theo (nếu có)
     if (filteredValue.length === 1 && index < inputRefs.current.length - 1) {
       inputRefs.current[index + 1].current.focus();
     }
-
-    // Nếu giá trị của input tại index là rỗng và nút Backspace được nhấn, chuyển trỏ chuột về input trước đó (nếu có)
     if (filteredValue.length === 0 && index > 0) {
       const prevInputRef = inputRefs.current[index - 1];
       if (prevInputRef && prevInputRef.current) {
-        // Kiểm tra xem input trước đó có tồn tại không
         prevInputRef.current.focus();
       }
     }
   };
 
-  const handleReloadCode = () => {
-    // You can call the server to request a new verification code here
-    // and update the 'verificationCode' prop accordingly.
-    // For now, let's simulate a new verification code.
-    const newVerificationCode = Math.floor(100000 + Math.random() * 900000);
-    alert(`Đã gửi lại mã xác nhận mới: ${newVerificationCode}`);
+  const handleReloadCode = async () => {
+    try {
+      await handleGetUserByEmail(storedUser.email);
+      const newVerificationCode = localStorage.getItem("verificationCode");
+      setTimeout(() => {
+        toast.success(`Đã gửi lại mã!`);
+      }, 1000);
+    } catch (error) {
+      // Xử lý lỗi nếu cần
+      console.error("Error reloading code:", error);
+    }
   };
-
+  const handleGetUserByEmail = async () => {
+    await axios
+      .get(`${server}/user/user-info-by-email/${storedUser.email}`)
+      .then((res) => {
+        if (res.data.success === true) {
+          const { verificationCode } = res.data;
+          localStorage.setItem("verificationCode", verificationCode);
+        }
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message);
+      });
+  };
   const handleConfirm = () => {
-    // Join the entered code to compare with the verification code
     const enteredCode = code.join("");
 
-    // Retrieve the verification code from local storage
     const storedVerificationCode = localStorage.getItem("verificationCode");
 
     if (enteredCode === storedVerificationCode) {
-      // Codes match, show success message (replace with your actual success logic)
-      alert("Mã xác nhận thành công!");
+      navigate("/reset");
+      localStorage.removeItem("verificationCode");
     } else {
-      // Codes do not match, handle accordingly (replace with your actual error logic)
-      alert("Mã xác nhận không đúng. Vui lòng kiểm tra lại!");
+      toast.error("Mã xác nhận không đúng. Vui lòng kiểm tra lại!");
     }
   };
 

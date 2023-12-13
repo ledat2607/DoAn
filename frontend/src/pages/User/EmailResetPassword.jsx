@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { server } from "../../server.js";
 import { toast } from "react-toastify";
+import CryptoJS from "crypto-js";
 const EmailResetPassword = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");

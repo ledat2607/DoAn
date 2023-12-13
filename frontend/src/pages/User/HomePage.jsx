@@ -6,9 +6,11 @@ import Categories from "../../components/Route/Categories/Categories";
 import BestDeals from "../../components/Route/BestDeals/BestDeals";
 import FeaturedProduct from "../../components/Route/FeaturedProduct/FeaturedProduct";
 import Events from "../../components/Route/Events/Events";
+import Banner from "../../components/Layout/Banner";
 
 const HomePage = () => {
   const [headerState, setHeaderState] = useState("");
+  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
 
   useEffect(() => {
     const storedTheme = localStorage.getItem("theme");
@@ -36,7 +38,7 @@ const HomePage = () => {
       <Hero />
       <Categories />
       <BestDeals />
-      <Events />
+      <Banner />
       <FeaturedProduct />
       <Footer />
     </div>

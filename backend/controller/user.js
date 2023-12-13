@@ -377,6 +377,29 @@ router.put(
     }
   })
 );
+//forgot password
+router.put(
+  "/forgot-password/:email",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const user = await User.findOne({ email: req.params.email });
+      if (!user) {
+        return next(new ErrorHandler("Người dùng không tồn tại", 404));
+      }
+      if (req.body.newPassword !== req.body.confirmPassword) {
+        return next(new ErrorHandler("Mật khẩu xác nhận không chính xác !"));
+      }
+      user.password = req.body.newPassword;
+      await user.save();
+      res.status(201).json({
+        success: true,
+        message: "Cập nhật mật khẩu thành công",
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  })
+);
 //find user info
 router.get(
   "/user-info/:id",
@@ -495,7 +518,9 @@ router.get(
     try {
       const email = req.params.email;
 
-      const user = await User.findOne({ email: email });
+      const user = await User.findOne({ email: email }).select(
+        "email name avatar"
+      );
       if (!user) {
         return next(
           new ErrorHandler("Không tìm thấy tài khoản nào với email này !", 400)

@@ -21,6 +21,7 @@ import {
   EmailResetPassword,
   PhoneResetPassword,
   ActiveCode,
+  ResetPassword,
 } from "./Routes.js";
 import {
   ShopCreate,
@@ -82,6 +83,7 @@ const App = () => {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/email-reset" element={<EmailResetPassword />} />
         <Route path="/active-code" element={<ActiveCode />} />
+        <Route path="/reset" element={<ResetPassword />} />
         <Route path="/phone-reset" element={<PhoneResetPassword />} />
         <Route path="/sign-up" element={<SignupPage />} />
         <Route
