@@ -8,6 +8,8 @@ import { Line } from "react-chartjs-2";
 import { BsBank2 } from "react-icons/bs";
 import { useSelector, useDispatch } from "react-redux";
 import AllOrder from "./AllOrder.jsx";
+import axios from "axios";
+import { server } from "../../server.js";
 const DashboardHero = () => {
   const dispatch = useDispatch();
   const { seller } = useSelector((state) => state.seller);
@@ -15,14 +17,14 @@ const DashboardHero = () => {
   const { products } = useSelector((state) => state.products);
   const [deliveredOrder, setDeliveredOder] = useState(null);
   const [cashOnDelivery, setCashOnDelivery] = useState(null);
-
+  const [dataWithdraw, setDataWithdraw] = useState();
   useEffect(() => {
     if (!orders || !products) {
       return;
     }
     const orderData =
       orders &&
-      orders?.filter((item) => item.status === "Giao hàng thành công");
+      orders?.filter((item) => item?.status === "Giao hàng thành công");
     if (!orderData) {
       return;
     }
@@ -35,18 +37,18 @@ const DashboardHero = () => {
 
   const accountBalance =
     deliveredOrder &&
-    deliveredOrder?.reduce((acc, item) => acc + item.totalPrice, 0);
-
+    deliveredOrder?.reduce((acc, item) => acc + item?.totalPrice, 0);
+  const totalBankMoney = dataWithdraw && accountBalance - dataWithdraw?.amount;
   const totalMoney =
     cashOnDelivery &&
-    cashOnDelivery?.reduce((acc, item) => acc + item.totalPrice, 0);
+    cashOnDelivery?.reduce((acc, item) => acc + item?.totalPrice, 0);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const handlePopupToggle = () => {
     setIsPopupOpen(!isPopupOpen);
   };
   const extendedStartDate = new Date();
   extendedStartDate.setMonth(extendedStartDate.getMonth() - 2);
-  const monthlyOrders = orders.reduce((acc, order) => {
+  const monthlyOrders = orders?.reduce((acc, order) => {
     const deliveredDate = new Date(order.deliveredAt);
     if (deliveredDate < extendedStartDate) {
       return acc;
@@ -62,8 +64,8 @@ const DashboardHero = () => {
     }
     return acc;
   }, []);
-  monthlyOrders.sort((a, b) => a.month - b.month);
-  const monthLabels = monthlyOrders.map((item) => {
+  monthlyOrders?.sort((a, b) => a.month - b.month);
+  const monthLabels = monthlyOrders?.map((item) => {
     const monthNames = [
       "Jan",
       "Feb",
@@ -85,7 +87,7 @@ const DashboardHero = () => {
     datasets: [
       {
         label: "Số lượng đơn hàng",
-        data: monthlyOrders.map((item) => item.count),
+        data: monthlyOrders?.map((item) => item.count),
         fill: false,
         borderColor: "#077f9c",
       },
@@ -93,17 +95,21 @@ const DashboardHero = () => {
   };
 
   function formatVietnameseCurrency(number) {
-    // Chia cho 1000 và làm tròn xuống để lấy phần nguyên
     let formattedNumber = Math.floor(number / 1000);
-
-    // Nhân lại cho 1000 để có giá trị mong muốn
     formattedNumber *= 1000;
-
-    // Sử dụng hàm toLocaleString để định dạng số theo ngôn ngữ và định dạng của Việt Nam
     let result = formattedNumber.toLocaleString("vi-VN");
-
     return result;
   }
+  useEffect(() => {
+    axios
+      .get(`${server}/shop/get-withdraw-by-id/${seller?._id}`)
+      .then((res) => {
+        setDataWithdraw(res.data.seller);
+      })
+      .catch((err) => {
+        console.log(err.response.data.message);
+      });
+  }, []);
 
   return (
     <div className="w-full p-2">
@@ -123,7 +129,7 @@ const DashboardHero = () => {
               </h3>
             </div>
             <h5 className="pt-2 pl-[36px] 800px:text-[22px] text-[15px] font-[500]">
-              {formatVietnameseCurrency(accountBalance)}
+              {formatVietnameseCurrency(totalBankMoney)}
             </h5>
             <Link to="/dashboard-withdraw-money">
               <i className="pt-4 pl-2 800px:text-[18px] text-[15px] text-[#077f9c] ml-6">

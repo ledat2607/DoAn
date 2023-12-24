@@ -7,18 +7,13 @@ import { useSelector } from "react-redux";
 
 const EventCard = ({ active, data }) => {
   function formatVietnameseCurrency(number) {
-    // Chia cho 1000 và làm tròn xuống để lấy phần nguyên
     let formattedNumber = Math.floor(number / 1000);
-
-    // Nhân lại cho 1000 để có giá trị mong muốn
     formattedNumber *= 1000;
-
-    // Sử dụng hàm toLocaleString để định dạng số theo ngôn ngữ và định dạng của Việt Nam
     let result = formattedNumber.toLocaleString("vi-VN");
-
     return result;
   }
   const isEventStarted = new Date(data?.start_Date) <= new Date();
+  console.log(data);
   return (
     <div
       className={`w-full block bg-white rounded-lg lg:flex ${
@@ -35,11 +30,22 @@ const EventCard = ({ active, data }) => {
           <h1 className="ml-4">{data?.shop?.shopName}</h1>
         </div>
         <div className="pt-2 800px:w-[80%] flex justify-center items-center ">
-          <img
-            src={`${backend_url}${data?.images}`}
-            alt="img-event"
-            className="w-[200px]"
-          />
+          {data?.images && data.images.length > 0 ? (
+            data.images.map((image, index) => (
+              <img
+                key={index}
+                src={`${backend_url}${image}`}
+                alt={`img-event-${index}`}
+                className="w-[200px] mr-4"
+              />
+            ))
+          ) : (
+            <img
+              src="https://cdn.tgdd.vn/hoi-dap/1311826/flashsale-la-gi-vao-nhung-ngay-nao-cach-san-flashsale22.jpg"
+              alt="fallback-img"
+              className="w-[150px] h-[150px] rounded-full"
+            />
+          )}
           <h2
             className={`${styles.productTitle} !text-[20px] 800px:text-[20px] ml-4`}
           >

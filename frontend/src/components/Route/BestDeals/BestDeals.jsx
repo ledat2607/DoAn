@@ -7,11 +7,12 @@ import { useSelector } from "react-redux";
 const BestDeals = () => {
   const { allProducts } = useSelector((state) => state.products);
   const [data, setData] = useState([]);
+
   useEffect(() => {
     const allProductsData = allProducts ? [...allProducts] : [];
     const sortedData = allProductsData?.sort((a, b) => b.sold_out - a.sold_out);
-    const firstFive = sortedData && sortedData.slice(0, 5);
-    setData(firstFive);
+    const firstSix = sortedData && sortedData.slice(0, 5);
+    setData(firstSix);
   }, [allProducts]);
   return (
     <div className={`${styles.section}`}>

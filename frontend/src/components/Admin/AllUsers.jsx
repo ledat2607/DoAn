@@ -32,11 +32,11 @@ const AllUsers = () => {
   };
 
   const columns = [
-    { field: "id", headerName: "User ID", minWidth: 150, flex: 0.7 },
+    { field: "id", headerName: "Mã khách hàng", minWidth: 150, flex: 0.7 },
 
     {
       field: "name",
-      headerName: "name",
+      headerName: "Tên",
       minWidth: 130,
       flex: 0.7,
     },
@@ -49,7 +49,7 @@ const AllUsers = () => {
     },
     {
       field: "role",
-      headerName: "User Role",
+      headerName: "Quyền truy cập",
       type: "text",
       minWidth: 130,
       flex: 0.7,
@@ -57,7 +57,7 @@ const AllUsers = () => {
 
     {
       field: "joinedAt",
-      headerName: "joinedAt",
+      headerName: "Ngày đăng ký",
       type: "text",
       minWidth: 130,
       flex: 0.8,
@@ -67,7 +67,7 @@ const AllUsers = () => {
       field: " ",
       flex: 1,
       minWidth: 150,
-      headerName: "Delete User",
+      headerName: "Xóa",
       type: "number",
       sortable: false,
       renderCell: (params) => {
@@ -97,7 +97,7 @@ const AllUsers = () => {
   return (
     <div className="w-full flex justify-center pt-5">
       <div className="w-[97%]">
-        <h3 className="text-[22px] font-Poppins pb-2">All Users</h3>
+        <h3 className="text-[22px] font-Poppins pb-2">Quản lý User</h3>
         <div className="w-full min-h-[45vh] bg-white rounded">
           <DataGrid
             rows={row}

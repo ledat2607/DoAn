@@ -42,10 +42,7 @@ const createMessage = ({ senderId, receiverId, text, images }) => ({
 });
 
 io.on("connection", (socket) => {
-  // when connect
   console.log(`a user is connected`);
-
-  // take userId and socketId from user
   socket.on("addUser", (userId) => {
     addUser(userId, socket.id);
     io.emit("getUsers", users);

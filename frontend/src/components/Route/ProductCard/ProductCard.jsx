@@ -41,20 +41,14 @@ const ProductCard = ({ data }) => {
   useEffect(() => {
     if (allEvents) {
       const currentDate = new Date();
-
-      // Filter events based on status is "Đang diễn ra"
       const filteredEvents = allEvents.filter(
         (event) =>
           event.status === "Đang diễn ra" &&
           new Date(event.Finish_Date) > currentDate
       );
-
-      // Sort filteredEvents by sold_out in descending order
       filteredEvents.sort((a, b) => b.sold_out - a.sold_out);
 
       setSortedEvents(filteredEvents);
-
-      // Check if the current product is discounted in any ongoing event
       const discounted = filteredEvents.some(
         (event) =>
           event.shopId === data?.shopId && event?.category === data?.category
@@ -87,18 +81,11 @@ const ProductCard = ({ data }) => {
 
   //hiển thị định dạng tiền tệ
   function formatVietnameseCurrency(number) {
-    // Chia cho 1000 và làm tròn xuống để lấy phần nguyên
     let formattedNumber = Math.floor(number / 1000);
-
-    // Nhân lại cho 1000 để có giá trị mong muốn
     formattedNumber *= 1000;
-
-    // Sử dụng hàm toLocaleString để định dạng số theo ngôn ngữ và định dạng của Việt Nam
     let result = formattedNumber.toLocaleString("vi-VN");
-
     return result;
   }
-  //Thêm vào giỏ hàng
   const addToCartHandler = () => {
     // Kiểm tra xem sản phẩm có nằm trong danh mục được khuyến mãi không
     const isDiscountedProduct = sortedEvents.some(

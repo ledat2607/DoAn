@@ -403,7 +403,7 @@ const CartData = ({
         <BiSolidDiscount size={30} onClick={handleClick} />
         {openPopUp && (
           <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white p-6 rounded-md z-50">
+            <div className="bg-white 800px:w-[50%] w-[90%] p-6 rounded-md z-50">
               {/* Render or display the filtered discount codes within the popup */}
               {filterDiscountCodes().map((code) => (
                 <div
@@ -432,7 +432,7 @@ const CartData = ({
                 onClick={() => setOpenPopUp(false)}
                 className="bg-gray-500 text-white px-4 py-2 rounded-md mt-4"
               >
-                Close
+                Đóng
               </button>
             </div>
           </div>

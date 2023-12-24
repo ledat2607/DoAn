@@ -11,7 +11,7 @@ const sendShopToken = require("../utils/shopToken");
 const { upload } = require("../multer");
 const fs = require("fs");
 const Product = require("../model/product");
-const User = require("./user");
+const Withdraw = require("../model/withdraw");
 //create-shop
 router.post("/create-shop", upload.single("file"), async (req, res, next) => {
   try {
@@ -334,6 +334,72 @@ router.delete(
       });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+// update seller withdraw methods --- sellers
+router.put(
+  "/update-payment-methods",
+  isSeller,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const { withdrawMethod } = req.body;
+
+      const seller = await Shop.findByIdAndUpdate(req.seller._id, {
+        withdrawMethod,
+      });
+
+      res.status(201).json({
+        success: true,
+        seller,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+// delete seller withdraw merthods --- only seller
+router.delete(
+  "/delete-withdraw-method/",
+  isSeller,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const seller = await Shop.findById(req.seller._id);
+
+      if (!seller) {
+        return next(new ErrorHandler("Seller not found with this id", 400));
+      }
+
+      seller.withdrawMethod = null;
+
+      await seller.save();
+
+      res.status(201).json({
+        success: true,
+        seller,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+//get withdraw
+router.get(
+  "/get-withdraw-by-id/:id",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const sellerId = req.params.id;
+      const seller = await Withdraw.findOne({ sellerId: sellerId });
+      if (!seller) {
+        next(new ErrorHandler("Không tìm thấy dữ liệu", 400));
+      }
+      res.status(200).json({
+        success: true,
+        seller,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error, 400));
     }
   })
 );

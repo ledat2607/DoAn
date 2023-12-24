@@ -43,11 +43,11 @@ const AllSellers = () => {
     dispatch(getAllSellers());
   };
   const columns = [
-    { field: "id", headerName: "Seller ID", minWidth: 150, flex: 0.7 },
+    { field: "id", headerName: "Mã cửa hàng", minWidth: 150, flex: 0.7 },
 
     {
       field: "name",
-      headerName: "name",
+      headerName: "Tên",
       minWidth: 130,
       flex: 0.7,
     },
@@ -60,7 +60,7 @@ const AllSellers = () => {
     },
     {
       field: "address",
-      headerName: "Seller Address",
+      headerName: "Địa chỉ",
       type: "text",
       minWidth: 130,
       flex: 0.7,
@@ -68,7 +68,7 @@ const AllSellers = () => {
 
     {
       field: "joinedAt",
-      headerName: "joinedAt",
+      headerName: "Ngày đăng ký",
       type: "text",
       minWidth: 130,
       flex: 0.8,
@@ -139,7 +139,7 @@ const AllSellers = () => {
       field: " ",
       flex: 1,
       minWidth: 150,
-      headerName: "Delete Seller",
+      headerName: "Xóa",
       type: "number",
       sortable: false,
       renderCell: (params) => {
@@ -169,7 +169,7 @@ const AllSellers = () => {
   return (
     <div className="w-full flex justify-center pt-5">
       <div className="w-[97%]">
-        <h3 className="text-[22px] font-Poppins pb-2">All Users</h3>
+        <h3 className="text-[22px] font-Poppins pb-2">Quản lý Seller</h3>
         <div className="w-full min-h-[45vh] bg-white rounded">
           <DataGrid
             rows={row}
@@ -186,7 +186,7 @@ const AllSellers = () => {
                 <RxCross1 size={25} onClick={() => setOpen(false)} />
               </div>
               <h3 className="text-[25px] text-center py-5 font-Poppins text-[#000000cb]">
-                Bạn có chắc sẽ xóa người dùng và tất cả thông tin người dùng ?
+                Bạn có chắc sẽ xóa người dùng và tất cả thông tin seller ?
               </h3>
               <div className="w-full flex items-center justify-center">
                 <div
@@ -196,7 +196,7 @@ const AllSellers = () => {
                   Xác nhận
                 </div>
                 <div
-                  className={`${styles.button} w-[100px] !bg-slate-300 hover:!bg-slate-500 text-white text-[18px] !h-[42px] mr-4`}
+                  className={`${styles.button} ml-4 w-[100px] !bg-slate-300 hover:!bg-slate-500 text-white text-[18px] !h-[42px] mr-4`}
                   onClick={() => setOpen(false)}
                 >
                   Đóng

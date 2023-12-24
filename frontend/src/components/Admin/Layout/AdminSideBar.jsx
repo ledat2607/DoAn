@@ -123,7 +123,7 @@ const AdminSideBar = ({ active }) => {
       </div>
 
       <div className="w-full flex items-center p-4">
-        <Link to="/profile" className="w-full flex items-center">
+        <Link to="/admin/dashboard" className="w-full flex items-center">
           <AiOutlineSetting
             size={30}
             color={`${active === 8 ? "crimson" : "#555"}`}

@@ -10,6 +10,14 @@ const AllProducts = () => {
   const { seller } = useSelector((state) => state.seller);
   const dispatch = useDispatch();
   const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 4;
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = products?.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
   useEffect(() => {
     dispatch(getAllProductsShop(seller._id));
   }, [dispatch]);
@@ -36,11 +44,30 @@ const AllProducts = () => {
       window.location.reload(true);
     }
   };
+  const renderPagination = () => {
+    const pageNumbers = Math.ceil(products?.length / productsPerPage);
+
+    return (
+      <div className="flex justify-center mt-4 pb-8">
+        {Array.from({ length: pageNumbers }, (_, i) => i + 1).map((number) => (
+          <button
+            key={number}
+            onClick={() => setCurrentPage(number)}
+            className={`px-3 py-1 mx-1 rounded ${
+              currentPage === number ? "bg-blue-500 text-white" : "bg-gray-300"
+            }`}
+          >
+            {number}
+          </button>
+        ))}
+      </div>
+    );
+  };
   return (
     <div className="w-full">
-      {products &&
-        products.map((i, index) => (
-          <div className="flex justify-between mx-auto w-[95%] bg-white shadow-2xl p-4 rounded-md mt-6 800px:h-[150px] h-[120px]">
+      {currentProducts &&
+        currentProducts.map((i, index) => (
+          <div className="flex justify-between mx-auto w-[95%] bg-white shadow-2xl p-4 rounded-md mt-4 800px:h-[150px] h-[120px]">
             <div className="w-[120px] relative">
               <span className="800px:text-lg text-[12px]">Hình ảnh</span>
               <img
@@ -118,6 +145,7 @@ const AllProducts = () => {
             </div>
           </div>
         ))}
+      {renderPagination()}
     </div>
   );
 };

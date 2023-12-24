@@ -78,15 +78,19 @@ const Header = ({ activeHeading, onHeaderChange }) => {
   });
 
   return (
-    <div className={`w-full ${theme === "dark" ? "bg-[#1a1a1a]" : ""}`}>
-      <div className="ml-4 hidden 800px:h-[80px] 800px:flex items-center justify-between">
-        <div className="mt-5">
+    <div className={`w-full ${theme === "dark" ? "bg-gray-700" : ""}`}>
+      <div className="ml-4 hidden 800px:flex items-center justify-between">
+        <div className="mt-5 h-[7vh]">
           <Link to="/">
-            <img src="../../../img/logo.png" alt="logo" width={"100px"} />
+            <img
+              src="../../../img/logo.png"
+              alt="logo"
+             className="h-full"
+            />
           </Link>
         </div>
         {/*Search box*/}
-        <div className="w-[50%] relative flex justify-center items-center">
+        <div className="w-[50%] relative">
           <input
             type="text"
             placeholder="Nhập sản phẩm cần tìm..."
@@ -119,7 +123,7 @@ const Header = ({ activeHeading, onHeaderChange }) => {
                 })}
             </div>
           ) : null}
-          <MdVoiceChat size={30} className="ml-4"/>
+          {/* <MdVoiceChat size={30} className="ml-4"/> */}
         </div>
         <div className={`${styles.button} w-[180px] h-[40px] mr-4`}>
           {isSeller ? (

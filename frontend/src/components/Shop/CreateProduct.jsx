@@ -35,6 +35,7 @@ const CreateProduct = () => {
     if (success) {
       toast.success("Tạo mới thành công !");
       navigate("/dashboard");
+      window.location.reload(true);
     }
   }, [dispatch, error, success]);
 

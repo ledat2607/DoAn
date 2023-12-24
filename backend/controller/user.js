@@ -3,6 +3,7 @@ const path = require("path");
 const router = express.Router();
 const { upload } = require("../multer");
 const User = require("../model/user");
+const Order = require("../model/order");
 const Product = require("../model/product");
 const CoupounCode = require("../model/couponCode");
 const ErrorHandler = require("../utils/ErrorHandler");
@@ -270,7 +271,14 @@ router.put(
       const updatedUser = await User.findByIdAndUpdate(req.user.id, {
         avatar: fileUrl,
       });
-
+      const updatedOrders = await Order.updateMany(
+        { "user._id": req.user.id },
+        {
+          $set: {
+            "user.avatar": fileUrl,
+          },
+        }
+      );
       // Cập nhật avatar của người dùng trong tất cả các sản phẩm
       await Product.updateMany(
         { "reviews.user._id": req.user.id },

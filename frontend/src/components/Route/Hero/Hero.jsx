@@ -19,11 +19,9 @@ const Hero = () => {
         >
           Sự lựa chọn tốt nhất <br /> cho ngôi nhà của bạn
         </h1>
-        <p className="pt-5 text-[16px] font-[Poppins] font-[400] text-[#000000ba]">
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Beatae,
-          assumenda? Quisquam itaque <br /> exercitationem labore vel, dolore
-          quidem asperiores, laudantium temporibus soluta optio consequatur{" "}
-          <br /> aliquam deserunt officia. Dolorum saepe nulla provident.
+        <p className="pt-5 text-[16px] font-Roboto font-[400] text-[#000000ba]">
+         Cuộc sống sẽ trở nên tươi đẹp hơn nếu bạn dành thời gian để mua sắm
+          <br /> trang trí cho ngôi nhà của bạn.
         </p>
         <Link to="/products" className="inline-block">
           <div className={`${styles.button} w-[110px] h-[40px] mt-5`}>

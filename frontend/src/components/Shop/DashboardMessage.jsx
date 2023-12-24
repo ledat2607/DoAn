@@ -9,7 +9,7 @@ import styles from "../../styles/styles";
 import { TfiGallery } from "react-icons/tfi";
 import socketIO from "socket.io-client";
 import { format } from "timeago.js";
-const ENDPOINT = "https://socket-ecommerce-tu68.onrender.com/";
+const ENDPOINT = "http://localhost:3000/";
 const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 
 const DashboardMessages = () => {
@@ -25,7 +25,6 @@ const DashboardMessages = () => {
   const [images, setImages] = useState();
   const [open, setOpen] = useState(false);
   const scrollRef = useRef(null);
-  console.log(conversations);
 
   useEffect(() => {
     socketId.on("getMessage", (data) => {
@@ -70,14 +69,12 @@ const DashboardMessages = () => {
       });
     }
   }, [seller]);
-
   const onlineCheck = (chat) => {
     const chatMembers = chat.members.find((member) => member !== seller?._id);
     const online = onlineUsers.find((user) => user.userId === chatMembers);
-
+    console.log(chatMembers);
     return online ? true : false;
   };
-
   // get messages
   useEffect(() => {
     const getMessage = async () => {
@@ -236,6 +233,7 @@ const DashboardMessages = () => {
       {open && (
         <SellerInbox
           setOpen={setOpen}
+          key={userData?._id}
           newMessage={newMessage}
           setNewMessage={setNewMessage}
           sendMessageHandler={sendMessageHandler}
@@ -284,7 +282,6 @@ const MessageList = ({
     };
     getUser();
   }, [me, data]);
-  console.log(user);
 
   return (
     <div
@@ -308,7 +305,7 @@ const MessageList = ({
         {online ? (
           <div className="w-[12px] h-[12px] bg-green-400 rounded-full absolute top-[2px] right-[2px]" />
         ) : (
-          <div className="w-[12px] h-[12px] bg-[#c7b9b9] rounded-full absolute top-[2px] right-[2px]" />
+          <div className="w-[12px] h-[12px] bg-green-400 rounded-full absolute top-[2px] right-[2px]" />
         )}
       </div>
       <div className="pl-3">
@@ -352,7 +349,7 @@ const SellerInbox = ({
                 {userData?.name.split(" ")[2]} {userData?.name.split(" ")[3]}
               </>
             )}
-            <h1>{activeStatus ? "Active Now" : ""}</h1>
+            <h1>{activeStatus ? "Đang hoạt động" : "Đang hoạt động"}</h1>
           </div>
         </div>
         <AiOutlineArrowRight
@@ -428,7 +425,7 @@ const SellerInbox = ({
           <input
             type="text"
             required
-            placeholder="Enter your message..."
+            placeholder="Soạn tin nhắn..."
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             className={`${styles.input}`}

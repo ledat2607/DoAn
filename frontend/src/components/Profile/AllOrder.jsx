@@ -39,9 +39,9 @@ const AllOrder = () => {
       <div className="overflow-y-scroll max-h-[80vh]">
         <div className="w-[150vw] 800px:w-[95%] mx-auto bg-gray-300 rounded-[10px] flex items-center justify-between">
           <div className="ml-2 w-[35%]">Hình ảnh</div>
-          <div className="ml-2 w-[63%]">Trạng thái đơn hàng</div>
-          <div className="ml-4 w-[30%]">Số lượng</div>
-          <div className="p-2 w-[55%]">Tổng tiền</div>
+          <div className="ml-[10%] w-[60%]">Trạng thái đơn hàng</div>
+          <div className="w-[20%]">Số lượng</div>
+          <div className="w-[55%]">Tổng tiền</div>
           <div className="p-2 w-[35%]">Chức năng</div>
         </div>
       </div>

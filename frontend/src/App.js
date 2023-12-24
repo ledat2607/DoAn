@@ -50,6 +50,7 @@ import {
   AdminDashboardSellers,
   AdminDashboardProducts,
   AdminDashboardEvents,
+  AdminDashboardWithdraw,
 } from "./AdminRoutes.js";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -271,6 +272,10 @@ const App = () => {
         <Route path="/admin-sellers" element={<AdminDashboardSellers />} />
         <Route path="/admin-products" element={<AdminDashboardProducts />} />
         <Route path="/admin-events" element={<AdminDashboardEvents />} />
+        <Route
+          path="/admin-withdraw-request"
+          element={<AdminDashboardWithdraw />}
+        />
       </Routes>
       <ToastContainer
         position="bottom-right"

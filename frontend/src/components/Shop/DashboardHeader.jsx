@@ -35,7 +35,7 @@ const DashboardHeader = () => {
               color="#555"
             />
           </Link>
-          <Link to={`/shop/${seller._id}`} className="ml-5">
+          <Link to={`/shop/${seller?._id}`} className="ml-5">
             <img
               src={`${backend_url}${seller?.avatar.url}`}
               alt="seller-avatar"

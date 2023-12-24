@@ -231,7 +231,8 @@ export const categoriesData = [
     id: 7,
     title: "Thú cưng",
     subTitle: "",
-    image_Url: "https://cdn.openpr.com/T/c/Tc15444071_g.jpg",
+    image_Url:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRckjclM5iWc-958TXQH557y5Q8itxBOGnebQ&usqp=CAU",
   },
   {
     id: 8,

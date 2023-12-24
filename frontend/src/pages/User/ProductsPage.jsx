@@ -23,7 +23,20 @@ const ProductsPage = () => {
   const [sortOption, setSortOption] = useState("desce");
   const [popUp, setPopup] = useState(false);
   const [headerState, setHeaderState] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 10;
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = allProducts?.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
 
+  const totalPages = Math.ceil(allProducts?.length / productsPerPage);
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
   useEffect(() => {
     const storedTheme = localStorage.getItem("theme");
     if (storedTheme) {
@@ -167,7 +180,7 @@ const ProductsPage = () => {
       }`}
     >
       <Header activeHeading={3} onHeaderChange={handleHeaderChange} />
-      <div className={`${styles.section} mt-5`}>
+      <div className={`${styles.section} mt-5 pb-4`}>
         <div className="800px:flex items-center 800px:h-[10vh] 800px:mt-0 mt-8">
           <div className="flex">
             <LuListFilter size={30} onClick={togglePopup} />
@@ -274,13 +287,29 @@ const ProductsPage = () => {
         </div>
 
         <div className="800px:mt-0 grid grid-cols-2 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-4 lg:gap-[25px] xl:grid-cols-5 xl:gap-[30px] mb-12">
-          {data && data.map((i, index) => <ProductCard key={index} data={i} />)}
+          {currentProducts &&
+            currentProducts.map((i, index) => (
+              <ProductCard key={index} data={i} />
+            ))}
         </div>
         {data && data.length === 0 ? (
           <h1 className="text-center w-full pb-[110px] text-[20px]">
             Không tìm thấy sản phẩm
           </h1>
         ) : null}
+      </div>
+      <div className="flex justify-center mt-4 pb-4">
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index}
+            onClick={() => handlePageChange(index + 1)}
+            className={`mx-1 p-2 ${
+              currentPage === index + 1 ? "bg-gray-300" : "bg-gray-100"
+            }`}
+          >
+            {index + 1}
+          </button>
+        ))}
       </div>
     </div>
   );

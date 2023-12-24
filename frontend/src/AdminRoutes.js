@@ -3,8 +3,9 @@ import AdminDashboardPage from "../src/pages/Admin/AdminDashboardPage";
 import AdminDashboardOrders from "../src/pages/Admin/AdminDashboardOrders";
 import AdminDashboardUsers from "../src/pages/Admin/AdminDashboardUsers";
 import AdminDashboardSellers from "../src/pages/Admin/AdminDashboardSellers";
-import AdminDashboardProducts from "../src/pages/Admin/AdminDashboardProducts.jsx";
-import AdminDashboardEvents from "../src/pages/Admin/AdminDashboardEvents.jsx";
+import AdminDashboardProducts from "../src/pages/Admin/AdminDashboardProducts";
+import AdminDashboardEvents from "../src/pages/Admin/AdminDashboardEvents";
+import AdminDashboardWithdraw from "../src/pages/Admin/AdminDashboardWithdraw";
 export {
   AdminLoginPage,
   AdminDashboardPage,
@@ -13,4 +14,5 @@ export {
   AdminDashboardSellers,
   AdminDashboardProducts,
   AdminDashboardEvents,
+  AdminDashboardWithdraw,
 };

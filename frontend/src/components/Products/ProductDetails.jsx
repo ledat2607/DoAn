@@ -58,7 +58,7 @@ const ProductDetails = ({ data }) => {
           toast.error(error.response.data.message);
         });
     } else {
-      toast.error("Please login to create a conversation");
+      toast.error("Đăng nhập để tiếp tục");
     }
   };
   useEffect(() => {
@@ -389,7 +389,14 @@ const ProductDetailsInfo = ({
       {active === 1 ? (
         <>
           <p className="py-2 text-[18px] leading-8 pb-10 whitespace-pre-line">
-            {data?.description}
+            {data?.description.includes("\\n")
+              ? data?.description.split("\\n").map((line, index) => (
+                  <React.Fragment key={index}>
+                    {line}
+                    <br />
+                  </React.Fragment>
+                ))
+              : data?.description}
           </p>
         </>
       ) : null}

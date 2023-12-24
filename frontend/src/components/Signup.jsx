@@ -42,186 +42,197 @@ const Signup = () => {
     setAvatar(file);
   };
   return (
-    <div className="min-h-screen bg-gray-300 flex flex-col justify-center py-12 sm:px-6 lg-px-8">
-      <div className="sm:w-full sm:mx-auto sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Đăng nhập
-        </h2>
-      </div>
-      <div className="sm:w-full sm:mx-auto sm:max-w-md mt-8">
-        <div className="bg-gray-50  py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label
-                htmlFor="name"
-                className="block text-md font-medium text-gray-700"
-              >
-                Họ và tên
-              </label>
-              <div className="mt-3">
-                <input
-                  type="text"
-                  autoComplete="name"
-                  required
-                  placeholder="Vui lòng nhập họ và tên..."
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:ring-2 sm:text-sm"
-                />
-              </div>
-            </div>
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-md font-medium text-gray-700"
-              >
-                Địa chỉ email
-              </label>
-              <div className="mt-3">
-                <input
-                  type="email"
-                  autoComplete="email"
-                  required
-                  placeholder="Vui lòng nhập địa chỉ email..."
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:ring-2 sm:text-sm"
-                />
-              </div>
-            </div>
-            <div>
-              <label
-                htmlFor="phoneNumber"
-                className="block text-md font-medium text-gray-700"
-              >
-                Số điện thoại
-              </label>
-              <div className="mt-3">
-                <input
-                  type="number"
-                  autoComplete="phoneNumber"
-                  required
-                  placeholder="Vui lòng nhập số điện thoại..."
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:ring-2 sm:text-sm"
-                />
-              </div>
-            </div>
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-md font-medium text-gray-700"
-              >
-                Mật khẩu
-              </label>
-              <div className="mt-3 relative">
-                <input
-                  type={visible ? "text" : "password"}
-                  autoComplete="email"
-                  required
-                  placeholder="Vui lòng nhập mật khẩu..."
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:ring-2 sm:text-sm"
-                />
-                {visible ? (
-                  <AiOutlineEye
-                    className="absolute cursor-pointer right-2 top-2"
-                    size={25}
-                    onClick={() => setVisible(false)}
+    <div
+      className="w-full"
+      style={{
+        backgroundImage:
+          "url('https://www.wavecommerce.com.br/blog/wp-content/uploads/2020/06/profissionais-ecommerce.webp')",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+      }}
+    >
+      <div className="min-h-screen w-[95%] mx-auto flex flex-col justify-center">
+        <div className="sm:w-full sm:mx-auto sm:max-w-md">
+          <h2 className="text-center text-3xl font-extrabold text-red-700 uppercase">
+            Đăng ký
+          </h2>
+        </div>
+        <div className="sm:w-full sm:mx-auto sm:max-w-md mt-8">
+          <div className="bg-gray-50  py-8 px-4 shadow sm:rounded-lg sm:px-10">
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              <div>
+                <label
+                  htmlFor="name"
+                  className="block text-md font-medium text-gray-700"
+                >
+                  Họ và tên
+                </label>
+                <div className="mt-3">
+                  <input
+                    type="text"
+                    autoComplete="name"
+                    required
+                    placeholder="Vui lòng nhập họ và tên..."
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:ring-2 sm:text-sm"
                   />
-                ) : (
-                  <AiOutlineEyeInvisible
-                    className="absolute cursor-pointer right-2 top-2"
-                    size={25}
-                    onClick={() => setVisible(true)}
-                  />
-                )}
+                </div>
               </div>
-            </div>
-            <div>
-              <label
-                htmlFor="confirm"
-                className="block text-md font-medium text-gray-700"
-              >
-                Xác nhận mật khẩu
-              </label>
-              <div className="mt-3 relative">
-                <input
-                  type={visibleConfirm ? "text" : "password"}
-                  required
-                  placeholder="Vui lòng nhập mật khẩu..."
-                  value={confirm}
-                  onChange={(e) => setConfirm(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:ring-2 sm:text-sm"
-                />
-                {visibleConfirm ? (
-                  <AiOutlineEye
-                    className="absolute cursor-pointer right-2 top-2"
-                    size={25}
-                    onClick={() => setvisibleConfirm(false)}
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block text-md font-medium text-gray-700"
+                >
+                  Địa chỉ email
+                </label>
+                <div className="mt-3">
+                  <input
+                    type="email"
+                    autoComplete="email"
+                    required
+                    placeholder="Vui lòng nhập địa chỉ email..."
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:ring-2 sm:text-sm"
                   />
-                ) : (
-                  <AiOutlineEyeInvisible
-                    className="absolute cursor-pointer right-2 top-2"
-                    size={25}
-                    onClick={() => setvisibleConfirm(true)}
-                  />
-                )}
+                </div>
               </div>
-            </div>
-            <div>
-              <label
-                htmlFor="avatar"
-                className="block text-md font-medium text-gray-700"
-              ></label>
-              <div className="mt-2 flex items-center">
-                <span className="inline-block overflow-hidden h-10 w-10 rounded-full">
-                  {avatar ? (
-                    <img
-                      src={URL.createObjectURL(avatar)}
-                      className="h-full w-full object-cover rounded-full"
-                      alt="img-avatar"
+              <div>
+                <label
+                  htmlFor="phoneNumber"
+                  className="block text-md font-medium text-gray-700"
+                >
+                  Số điện thoại
+                </label>
+                <div className="mt-3">
+                  <input
+                    type="number"
+                    autoComplete="phoneNumber"
+                    required
+                    placeholder="Vui lòng nhập số điện thoại..."
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:ring-2 sm:text-sm"
+                  />
+                </div>
+              </div>
+              <div>
+                <label
+                  htmlFor="password"
+                  className="block text-md font-medium text-gray-700"
+                >
+                  Mật khẩu
+                </label>
+                <div className="mt-3 relative">
+                  <input
+                    type={visible ? "text" : "password"}
+                    autoComplete="email"
+                    required
+                    placeholder="Vui lòng nhập mật khẩu..."
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:ring-2 sm:text-sm"
+                  />
+                  {visible ? (
+                    <AiOutlineEye
+                      className="absolute cursor-pointer right-2 top-2"
+                      size={25}
+                      onClick={() => setVisible(false)}
                     />
                   ) : (
-                    <RxAvatar className="h-10 w-10 rounded-full" />
+                    <AiOutlineEyeInvisible
+                      className="absolute cursor-pointer right-2 top-2"
+                      size={25}
+                      onClick={() => setVisible(true)}
+                    />
                   )}
-                </span>
-                <label
-                  htmlFor="file-input"
-                  className="flex items-center justify-center ml-5 bg-white px-4 py-2 border border-gray-300 text-md rounded-md shadow-lg font-medium text-gray-800 hover:bg-gray-200"
-                >
-                  <span>Chọn hình ảnh</span>
-                  <input
-                    type="file"
-                    name="avatar"
-                    id="file-input"
-                    accept=".jpg,.jpeg,.png"
-                    className="sr-only"
-                    onChange={handleChangeImageInput}
-                  />
-                </label>
+                </div>
               </div>
-            </div>
-            <div>
-              <button
-                type="submit"
-                className="group relative w-[50%] m-auto h-[40px] flex items-center justify-center py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-700"
-              >
-                Đăng ký
-              </button>
-            </div>
-            <div className={`${styles.noramlFlex} w-full`}>
-              <h4>Bạn đã có tài khoản ?</h4>
-              <Link
-                to="/login"
-                className="pl-2 cursor-pointer text-blue-400 hover:text-blue-900 font-medium"
-              >
-                Đăng nhập
-              </Link>
-            </div>
-          </form>
+              <div>
+                <label
+                  htmlFor="confirm"
+                  className="block text-md font-medium text-gray-700"
+                >
+                  Xác nhận mật khẩu
+                </label>
+                <div className="mt-3 relative">
+                  <input
+                    type={visibleConfirm ? "text" : "password"}
+                    required
+                    placeholder="Vui lòng nhập mật khẩu..."
+                    value={confirm}
+                    onChange={(e) => setConfirm(e.target.value)}
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:ring-2 sm:text-sm"
+                  />
+                  {visibleConfirm ? (
+                    <AiOutlineEye
+                      className="absolute cursor-pointer right-2 top-2"
+                      size={25}
+                      onClick={() => setvisibleConfirm(false)}
+                    />
+                  ) : (
+                    <AiOutlineEyeInvisible
+                      className="absolute cursor-pointer right-2 top-2"
+                      size={25}
+                      onClick={() => setvisibleConfirm(true)}
+                    />
+                  )}
+                </div>
+              </div>
+              <div>
+                <label
+                  htmlFor="avatar"
+                  className="block text-md font-medium text-gray-700"
+                ></label>
+                <div className="mt-2 flex items-center">
+                  <span className="inline-block overflow-hidden h-10 w-10 rounded-full">
+                    {avatar ? (
+                      <img
+                        src={URL.createObjectURL(avatar)}
+                        className="h-full w-full object-cover rounded-full"
+                        alt="img-avatar"
+                      />
+                    ) : (
+                      <RxAvatar className="h-10 w-10 rounded-full" />
+                    )}
+                  </span>
+                  <label
+                    htmlFor="file-input"
+                    className="flex items-center justify-center ml-5 bg-white px-4 py-2 border border-gray-300 text-md rounded-md shadow-lg font-medium text-gray-800 hover:bg-gray-200"
+                  >
+                    <span>Chọn hình ảnh</span>
+                    <input
+                      type="file"
+                      name="avatar"
+                      id="file-input"
+                      accept=".jpg,.jpeg,.png"
+                      className="sr-only"
+                      onChange={handleChangeImageInput}
+                    />
+                  </label>
+                </div>
+              </div>
+              <div>
+                <button
+                  type="submit"
+                  className="group relative w-[50%] m-auto h-[40px] flex items-center justify-center py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-700"
+                >
+                  Đăng ký
+                </button>
+              </div>
+              <div className={`${styles.noramlFlex} w-full`}>
+                <h4>Bạn đã có tài khoản ?</h4>
+                <Link
+                  to="/login"
+                  className="pl-2 cursor-pointer text-blue-400 hover:text-blue-900 font-medium"
+                >
+                  Đăng nhập
+                </Link>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>

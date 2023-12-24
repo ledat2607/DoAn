@@ -24,7 +24,15 @@ const AllCoupounCode = () => {
   const [sum, setSum] = useState();
   const [typeCode, setTypeCode] = useState("select");
   const [valueDiscount, setvalueDiscount] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const coupounsPerPage = 4;
 
+  const indexOfLastCoupoun = currentPage * coupounsPerPage;
+  const indexOfFirstCoupoun = indexOfLastCoupoun - coupounsPerPage;
+  const currentCoupouns = coupouns.slice(
+    indexOfFirstCoupoun,
+    indexOfLastCoupoun
+  );
   const handleInputChange = (e) => {
     setvalueDiscount(e.target.value);
   };
@@ -140,8 +148,8 @@ const AllCoupounCode = () => {
     toast.success("Mã code đã được sao chép!");
   };
   return (
-    <div className="w-full">
-      <div className="w-[95%] mx-auto mt-5" onClick={handleClickOpen}>
+    <div className="w-full flex flex-col justify-between pb-4">
+      <div className="w-[95%] mx-auto mt-2" onClick={handleClickOpen}>
         <span
           className={`${styles.button} w-[100px] h-[40px] !bg-blue-200 hover:!bg-gray-900 !shadow-2xl`}
         >
@@ -281,9 +289,9 @@ const AllCoupounCode = () => {
         </div>
       )}
       <div className="w-full">
-        {coupouns &&
-          coupouns.map((i, index) => (
-            <div className="flex justify-between mx-auto w-[80%] bg-white shadow-2xl p-4 rounded-md mt-6 800px:h-[150px] h-[120px]">
+        {currentCoupouns &&
+          currentCoupouns.map((i, index) => (
+            <div className="flex justify-between mx-auto w-[80%] bg-white shadow-xl p-4 rounded-md mt-3 800px:h-[150px] h-[120px]">
               <div className="w-[300px]">
                 <h1 className="800px:text-lg text-[12px] text-center">
                   Tên mã giảm giá
@@ -364,6 +372,22 @@ const AllCoupounCode = () => {
               </div>
             </div>
           ))}
+      </div>
+      <div className="flex justify-center items-end mt-4">
+        {Array.from(
+          { length: Math.ceil(coupouns.length / coupounsPerPage) },
+          (_, index) => (
+            <span
+              key={index}
+              onClick={() => setCurrentPage(index + 1)}
+              className={`cursor-pointer mx-2 ${
+                currentPage === index + 1 ? "text-blue-500" : "text-black"
+              }`}
+            >
+              {index + 1}
+            </span>
+          )
+        )}
       </div>
     </div>
   );

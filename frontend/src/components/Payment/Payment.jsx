@@ -144,7 +144,7 @@ const PaymentInfo = ({
             ) : null}
           </div>
           <h4 className="text-[18px] pl-2 font-[600] text-[#000000b1]">
-            Pay with Paypal
+            Thanh toán qua Paypal
           </h4>
         </div>
 
@@ -152,10 +152,10 @@ const PaymentInfo = ({
         {select === 2 ? (
           <div className="w-full flex border-b">
             <div
-              className={`${styles.button} !bg-[#f63b60] text-white h-[45px] rounded-[5px] cursor-pointer text-[18px] font-[600]`}
+              className={`${styles.button} w-[150px] !bg-[#f63b60] text-white h-[45px] rounded-[5px] cursor-pointer text-[18px] font-[600]`}
               onClick={() => setOpen(true)}
             >
-              Pay Now
+              Thanh toán ngay
             </div>
             {open && (
               <div className="w-full fixed top-0 left-0 bg-[#00000039] h-screen flex items-center justify-center z-[99999]">
